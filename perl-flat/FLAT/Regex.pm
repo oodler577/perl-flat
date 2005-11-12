@@ -1,34 +1,12 @@
 package FLAT::Regex;
 use strict;
-use Parse::RecDescent;
 use Carp;
 
-# use FLAT::Regex::Parser;
+use FLAT::Regex::Parser;
 use FLAT::Regex::Op;
 
-# my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star ]);
-
+my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star ]);
 #### TODO: error checking in the parse
-
-use vars '$CHAR';
-$CHAR = qr{ [A-Za-z0-9_\!\@\#\$\%\&] | \[[^\]]*\] }x;
-
-my $PARSER = Parse::RecDescent->new(<<'__EOG__') or die;
-  parse:
-      alt /^\Z/            { $item[1] }
-  alt:
-      concat(2.. /[+|]/)   { FLAT::Regex::Op::alt->from_parse(@item) }
-    | concat               { $item[1] }
-  concat:
-      star(2..)            { FLAT::Regex::Op::concat->from_parse(@item) }
-    | star                 { $item[1] }
-  star :
-      atomic '*'           { FLAT::Regex::Op::star->from_parse(@item) }
-    | atomic               { $item[1] }
-  atomic:
-      "(" alt ")"          { $item[2] }
-    | /$FLAT::Regex::CHAR/ { FLAT::Regex::Op::atomic->from_parse(@item) }
-__EOG__
 
 sub new {
     my ($pkg, $string) = @_;
