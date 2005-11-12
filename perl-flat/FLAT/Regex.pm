@@ -3,26 +3,26 @@ use strict;
 use Parse::RecDescent;
 use Carp;
 
+use FLAT::Regex::Op;
+
 use vars '$CHAR';
 $CHAR = qr{ [A-Za-z0-9_\!\@\#\$\%\&] | \[[^\]]*\] }x;
 
 my $PARSER = Parse::RecDescent->new(<<'__EOG__') or die;
-
   regex:
       alt /^\Z/            { $item[1] }
   alt:
-      concat(2.. /[+|]/)   { FLAT::Regex::op::alt->_init( @{$item[1]} ) }
+      concat(2.. /[+|]/)   { FLAT::Regex::Op::alt->from_parse(@item) }
     | concat               { $item[1] }
   concat:
-      star(2..)            { FLAT::Regex::op::concat->_init( @{$item[1]} ) }
+      star(2.. //)         { FLAT::Regex::Op::concat->from_parse(@item) }
     | star                 { $item[1] }
-  star :
-      atomic '*'           { FLAT::Regex::op::star->_init( $item[1] ) }
+  star:
+      atomic '*'           { FLAT::Regex::Op::star->from_parse(@item) }
     | atomic               { $item[1] }
   atomic:
       "(" alt ")"          { $item[2] }
-    | /$FLAT::Regex::CHAR/ { FLAT::Regex::op::atomic->_init( $item[1] ) }
-
+    | /$FLAT::Regex::CHAR/ { FLAT::Regex::Op::atomic->from_parse(@item) }
 __EOG__
 
 #### TODO: error checking in the parse
@@ -31,35 +31,42 @@ sub new {
     my ($pkg, $string) = @_;
     my $result = $PARSER->regex($string)
         or croak qq[``$string'' is not a valid regular expression];
-    return $result;
+
+    $pkg->_from_op( $result );
 }
 
-sub _init {
-    my $pkg = shift;
-    ## flatten alike operations, i.e, "a+(b+c)" into "a+b+c"
-    my @flat = map { UNIVERSAL::isa($_, $pkg) ? $_->_members : $_ } @_;
-
-    bless \@flat, $pkg;
+sub _from_op {
+    my ($proto, $op) = @_;
+    $proto = ref $proto || $proto; ## I really do want this
+    
+    bless [ $op ], $proto;
 }
-sub _members {
-    my $self = shift;
-    @$self[0 .. $#$self];
+
+sub op {
+    $_[0][0];
 }
 
 use overload '""' => 'as_string';
 sub as_string {
-    $_[0]->_as_string(0);
+    $_[0]->op->as_string(0);
+}
+
+
+#### regular language standard interface implementation:
+#### TODO: parameter checking.
+
+sub as_dfa {
+    croak "Not Yet";
 }
 
 sub as_regex {
     $_[0];
 }
 
-#### regular language standard interface implementation:
-#### TODO: parameter checking.
-
 sub union {
-    FLAT::Regex::op::alt->_init( map { $_->as_regex } @_ );
+    my $self = $_[0];
+    my $op   = FLAT::Regex::op::alt->new( map { $_->as_regex->op } @_ );
+    $self->_from_op($op);
 }
 
 sub intersect {
@@ -71,62 +78,24 @@ sub complement {
 }
 
 sub concat {
-    FLAT::Regex::op::concat->_init( map { $_->as_regex } @_ );
+    my $self = $_[0];
+    my $op = FLAT::Regex::op::concat->new( map { $_->as_regex->op } @_ );
+    $self->_from_op($op);
 }
 
 sub kleene {
-    FLAT::Regex::op::star->_init( $_[0] );
+    my $self = shift;
+    my $op   = FLAT::Regex::op::star->new( $self->op );
+    $self->_from_op($op);
 }
 
-## note: "reverse" conflicts with perl builtin
 sub reverse {
     my $self = shift;
-    
-    $self->isa("FLAT::Regex::op::atomic")
-        and return $self;
-
-    $self->isa("FLAT::Regex::op::concat") 
-        and return FLAT::Regex::op::concat->_init(
-            CORE::reverse map { $_->reverse } $self->_members
-        );
-        
-    $self->isa("FLAT::Regex::op::alt")
-        and return FLAT::Regex::op::alt->_init(
-            map { $_->reverse } $self->_members
-        );
-
-    $self->isa("FLAT::Regex::op::star")
-        and return FLAT::Regex::op::star->_init( $self->_members->reverse );
+    my $op   = $self->op->reverse;
+    $self->_from_op($op);
 }
 
-#### regex operators / components
-
-@FLAT::Regex::op::atomic::ISA =
-@FLAT::Regex::op::concat::ISA =
-@FLAT::Regex::op::alt::ISA    =
-@FLAT::Regex::op::star::ISA   = qw[FLAT::Regex];
-
-sub FLAT::Regex::op::atomic::_as_string {
-    $_[0][0]
-}
-
-sub FLAT::Regex::op::concat::_as_string {
-    my ($self, $prec) = @_;
-    my $result = join "", map { $_->_as_string(2) } $self->_members;
-    return $prec > 2 ? "($result)" : $result;
-}
-
-sub FLAT::Regex::op::alt::_as_string {
-    my ($self, $prec) = @_;
-    my $result = join "+", map { $_->_as_string(1) } $self->_members;
-    return $prec > 1 ? "($result)" : $result;
-}
-
-sub FLAT::Regex::op::star::_as_string {
-    my $self   = shift;
-    my $result = $self->[0]->_as_string(3) . "*";
-    return $result;
-}
+1;
 
 __END__
 
