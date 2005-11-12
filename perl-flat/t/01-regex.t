@@ -1,5 +1,5 @@
 use Test::More 'no_plan';
-use FLAT::Regex;
+use FLAT;
 
 use Data::Dumper;
 
@@ -27,12 +27,12 @@ is( "". regex("[]"),
     "[]",
     "epsilon" );
 
-
 for ( ")ab",  "a(bc(d)", "ab)cd(ef", "a+b+", "a++b", "+a", "h**", "a+*" ) {
     eval { regex($_) };
     ok( $@,
         "Parse error caught: $_" );
 }
+
 
 
 $reg = regex( "abc+def+ghi*+(a+b)*" );

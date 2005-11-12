@@ -8,6 +8,7 @@ sub new {
 
     bless \@flat, $pkg;
 }
+
 sub members {
     my $self = shift;
     wantarray ? @$self[0 .. $#$self] : $self->[0];

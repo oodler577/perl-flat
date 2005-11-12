@@ -12,38 +12,41 @@ $CHAR = qr{ [A-Za-z0-9_\$\#] | \[[^\]]*\] }x;
 
 sub new {
     my $pkg = shift;
-    my @ops = sort { "FLAT::Regex::Op::$a"->precedence
-                        <=> "FLAT::Regex::Op::$b"->precedence }
-              @_;
+    my @ops = sort { $a->{prec} <=> $b->{prec} }
+              map {{
+                  pkg   => "FLAT::Regex::Op::$_",
+                  prec  => "FLAT::Regex::Op::$_"->precedence,
+                  spec  => "FLAT::Regex::Op::$_"->parse_spec,
+                  short => $_
+              }} @_;
 
-    my $prev      = shift @ops;
-    my $lowest    = $prev;
-
+    my $lowest = shift @ops;
     my $grammar = qq!
             parse:
-                $prev /^\\Z/ { \$item[1] }
+                $lowest->{short} /^\\Z/ { \$item[1] }
     !;
     
+    my $prev = $lowest;
     for (@ops) {
-        my $spec = sprintf "FLAT::Regex::Op::$prev"->parse_spec, $_;
+        my $spec = sprintf $prev->{spec}, $_->{short};
         
         $grammar .= qq!
-            $prev:
-                $spec { FLAT::Regex::Op::$prev->from_parse(\@item) }
-              | $_ { \$item[1] }
+            $prev->{short}:
+                $spec       { $prev->{pkg}\->from_parse(\@item) }
+              | $_->{short} { \$item[1] }
         !;
         
         $prev = $_;
     }            
 
-    my $spec = sprintf "FLAT::Regex::Op::$prev"->parse_spec, "atomic";
+    my $spec = sprintf $prev->{spec}, "atomic";
     $grammar .= qq!
-            $prev:
-                $spec { FLAT::Regex::Op::$prev->from_parse(\@item) }
+            $prev->{short}:
+                $spec  { $prev->{pkg}\->from_parse(\@item) }
               | atomic { \$item[1] }
 
             atomic:
-                "(" $lowest ")" { \$item[2] }
+                "(" $lowest->{short} ")" { \$item[2] }
               | /\$FLAT::Regex::Parser::CHAR/
                           { FLAT::Regex::Op::atomic->from_parse(\@item) }
     !;
@@ -55,6 +58,8 @@ sub new {
 
 
 __END__
+
+original parser:
 
 use vars '$CHAR';
 $CHAR = qr{ [A-Za-z0-9_\!\@\#\$\%\&] | \[[^\]]*\] }x;

@@ -36,15 +36,6 @@ sub as_string {
 #### regular language standard interface implementation:
 #### TODO: parameter checking?
 
-sub as_dfa {
-    croak "FLAT::Regex::as_dfa? Not Yet";
-}
-
-sub as_nfa {
-    croak "FLAT::Regex::as_nfa? Not Yet";
-}
-
-
 sub as_regex {
     $_[0];
 }
@@ -92,9 +83,6 @@ sub is_finite {
     $_[0]->op->is_finite;
 }
 
-sub is_infinite {
-    ! $_[0]->is_finite;
-}
 
 1;
 
