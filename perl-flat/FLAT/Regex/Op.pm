@@ -10,7 +10,7 @@ sub new {
 }
 sub members {
     my $self = shift;
-    @$self[0 .. $#$self];
+    wantarray ? @$self[0 .. $#$self] : $self->[0];
 }
 
 
@@ -20,8 +20,11 @@ sub members {
 package FLAT::Regex::Op::atomic;
 use base 'FLAT::Regex::Op';
 
+my $EPSILON = "[]";
+my $NULL    = "#";
+
 sub as_string {
-    $_[0][0]
+    $_[0]->members;
 }
 
 sub from_parse {
@@ -33,6 +36,18 @@ sub reverse {
     $_[0];
 }
 
+sub is_empty {
+    $_[0]->members eq $NULL;
+}
+
+sub has_nonempty_string {
+    my $self = shift;
+    $self->members ne $EPSILON and $self->members ne $NULL;
+}
+
+sub is_finite {
+    1
+}
 
 ##############################
 package FLAT::Regex::Op::star;
@@ -56,6 +71,18 @@ sub reverse {
     my $self = shift;
     my $op   = $self->members->reverse;
     __PACKAGE__->new($op);
+}
+
+sub is_empty {
+    0
+}
+
+sub has_nonempty_string {
+    $_[0]->members->has_nonempty_string;
+}
+
+sub is_finite {
+    ! $_[0]->members->has_nonempty_string;
 }
 
 
@@ -86,6 +113,37 @@ sub reverse {
     __PACKAGE__->new(@ops);
 }
 
+sub is_empty {
+    my $self = shift;
+    my @members = $self->members;
+    for (@members) {
+        return 1 if $_->is_empty;
+    }
+    return 0;
+}
+
+sub has_nonempty_string {
+    my $self = shift;
+    return 0 if $self->is_empty;
+    
+    my @members = $self->members;
+    for (@members) {
+        return 1 if $_->has_nonempty_string;
+    }
+    return 0;
+}
+
+sub is_finite {
+    my $self = shift;
+    return 1 if $self->is_empty;
+    
+    my @members = $self->members;
+    for (@members) {
+        return 0 if not $_->is_finite;
+    }
+    return 1;
+}
+
 #############################
 package FLAT::Regex::Op::alt;
 use base 'FLAT::Regex::Op';
@@ -112,4 +170,30 @@ sub reverse {
     __PACKAGE__->new(@ops);
 }
 
+sub is_empty {
+    my $self = shift;
+    my @members = $self->members;
+    for (@members) {
+        return 0 if not $_->is_empty;
+    }
+    return 1;
+}
+
+sub has_nonempty_string {
+    my $self = shift;
+    my @members = $self->members;
+    for (@members) {
+        return 1 if $_->has_nonempty_string;
+    }
+    return 0;
+}
+
+sub is_finite {
+    my $self = shift;
+    my @members = $self->members;
+    for (@members) {
+        return 0 if not $_->is_finite;
+    }
+    return 1;
+}
 1;

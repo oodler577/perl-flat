@@ -84,6 +84,18 @@ sub reverse {
     $self->_from_op($op);
 }
 
+sub is_empty {
+    $_[0]->op->is_empty;
+}
+
+sub is_finite {
+    $_[0]->op->is_finite;
+}
+
+sub is_infinite {
+    ! $_[0]->is_finite;
+}
+
 1;
 
 __END__
