@@ -3,21 +3,26 @@ use strict;
 use Parse::RecDescent;
 use Carp;
 
+# use FLAT::Regex::Parser;
 use FLAT::Regex::Op;
+
+# my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star ]);
+
+#### TODO: error checking in the parse
 
 use vars '$CHAR';
 $CHAR = qr{ [A-Za-z0-9_\!\@\#\$\%\&] | \[[^\]]*\] }x;
 
 my $PARSER = Parse::RecDescent->new(<<'__EOG__') or die;
-  regex:
+  parse:
       alt /^\Z/            { $item[1] }
   alt:
       concat(2.. /[+|]/)   { FLAT::Regex::Op::alt->from_parse(@item) }
     | concat               { $item[1] }
   concat:
-      star(2.. //)         { FLAT::Regex::Op::concat->from_parse(@item) }
+      star(2..)            { FLAT::Regex::Op::concat->from_parse(@item) }
     | star                 { $item[1] }
-  star:
+  star :
       atomic '*'           { FLAT::Regex::Op::star->from_parse(@item) }
     | atomic               { $item[1] }
   atomic:
@@ -25,11 +30,9 @@ my $PARSER = Parse::RecDescent->new(<<'__EOG__') or die;
     | /$FLAT::Regex::CHAR/ { FLAT::Regex::Op::atomic->from_parse(@item) }
 __EOG__
 
-#### TODO: error checking in the parse
-
 sub new {
     my ($pkg, $string) = @_;
-    my $result = $PARSER->regex($string)
+    my $result = $PARSER->parse($string)
         or croak qq[``$string'' is not a valid regular expression];
 
     $pkg->_from_op( $result );
@@ -53,11 +56,16 @@ sub as_string {
 
 
 #### regular language standard interface implementation:
-#### TODO: parameter checking.
+#### TODO: parameter checking?
 
 sub as_dfa {
-    croak "Not Yet";
+    croak "FLAT::Regex::as_dfa? Not Yet";
 }
+
+sub as_nfa {
+    croak "FLAT::Regex::as_nfa? Not Yet";
+}
+
 
 sub as_regex {
     $_[0];
@@ -70,11 +78,14 @@ sub union {
 }
 
 sub intersect {
-    croak "Not Yet";
+    my @dfas = map { $_->as_dfa } @_;
+    my $self = shift @dfas;
+    $self->intersect(@dfas)->as_regex;
 }
 
 sub complement {
-    croak "Not Yet";
+    my $self = shift;
+    $self->as_dfa->complement->as_regex;
 }
 
 sub concat {

@@ -6,9 +6,6 @@ sub new {
     ## flatten alike operations, i.e, "a+(b+c)" into "a+b+c"
     my @flat = map { UNIVERSAL::isa($_, $pkg) ? $_->members : $_ } @_;
 
-    use Data::Dumper;
-#    print "Creating new $pkg: ", Dumper(\@flat), $/;
-
     bless \@flat, $pkg;
 }
 sub members {
@@ -36,15 +33,45 @@ sub reverse {
     $_[0];
 }
 
-######################
 
-package FLAT::Regex::Op::concat;
+##############################
+package FLAT::Regex::Op::star;
 use base 'FLAT::Regex::Op';
+
+sub parse_spec { "%s '*'" }
+sub precedence { 30 }
 
 sub as_string {
     my ($self, $prec) = @_;
-    my $result = join "", map { $_->as_string(2) } $self->members;
-    return $prec > 2 ? "($result)" : $result;
+    my $result = $self->members->as_string($self->precedence) . "*";
+    return $prec > $self->precedence ? "($result)" : $result;
+}
+
+sub from_parse {
+    my ($pkg, @item) = @_;
+    $pkg->new( $item[1] );
+}
+
+sub reverse {
+    my $self = shift;
+    my $op   = $self->members->reverse;
+    __PACKAGE__->new($op);
+}
+
+
+################################
+package FLAT::Regex::Op::concat;
+use base 'FLAT::Regex::Op';
+
+sub parse_spec { "%s(2..)"; }
+sub precedence { 20 }
+
+sub as_string {
+    my ($self, $prec) = @_;
+    my $result = join "",
+                 map { $_->as_string($self->precedence) }
+                 $self->members;
+    return $prec > $self->precedence ? "($result)" : $result;
 }
 
 sub from_parse {
@@ -59,14 +86,19 @@ sub reverse {
     __PACKAGE__->new(@ops);
 }
 
-
+#############################
 package FLAT::Regex::Op::alt;
 use base 'FLAT::Regex::Op';
 
+sub parse_spec { "%s(2.. /[+|]/)" }
+sub precedence { 10 }
+
 sub as_string {
     my ($self, $prec) = @_;
-    my $result = join "+", map { $_->as_string(1) } $self->members;
-    return $prec > 1 ? "($result)" : $result;
+    my $result = join "+",
+                 map { $_->as_string($self->precedence) }
+                 $self->members;
+    return $prec > $self->precedence ? "($result)" : $result;
 }
 
 sub from_parse {
@@ -79,26 +111,5 @@ sub reverse {
     my @ops  = map { $_->reverse } $self->members;
     __PACKAGE__->new(@ops);
 }
-
-package FLAT::Regex::Op::star;
-use base 'FLAT::Regex::Op';
-
-sub as_string {
-    my $self   = shift;
-    my $result = $self->[0]->as_string(3) . "*";
-    return $result;
-}
-
-sub from_parse {
-    my ($pkg, @item) = @_;
-    $pkg->new( $item[1] );
-}
-
-sub reverse {
-    my $self = shift;
-    my $op   = $self->members->reverse;
-    __PACKAGE__->new($op);
-}
-
 
 1;
