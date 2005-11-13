@@ -8,9 +8,11 @@ use FLAT::Regex::Op;
 my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star ]);
 #### TODO: error checking in the parse
 
+sub _parser { $PARSER }
+
 sub new {
     my ($pkg, $string) = @_;
-    my $result = $PARSER->parse($string)
+    my $result = $pkg->_parser->parse($string)
         or croak qq[``$string'' is not a valid regular expression];
 
     $pkg->_from_op( $result );
