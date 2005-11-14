@@ -1,0 +1,4 @@
+use lib '..';
+use FLAT::Regex::Parser;
+
+FLAT::Regex::Parser->new( qw[ star alt concat ] );
