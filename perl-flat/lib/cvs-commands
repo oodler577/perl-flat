@@ -1,3 +1,0 @@
-export CVS_RSH=ssh
-# export CVSROOT=:pserver:blokhead@cvs.sourceforge.net:/cvsroot/perl-flat
-export CVSROOT=:ext:blokhead@cvs.sourceforge.net:/cvsroot/perl-flat

@@ -1,8 +1,0 @@
-t/01-regex.t
-MANIFEST
-lib/FLAT/Regex/Op.pm
-lib/FLAT/Regex/Parser.pm
-lib/FLAT/Regex/WithNegations.pm
-lib/FLAT/Regex.pm
-lib/FLAT.pm
-Makefile.PL
