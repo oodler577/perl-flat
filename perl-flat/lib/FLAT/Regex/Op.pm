@@ -28,6 +28,14 @@ sub as_string {
     $_[0]->members;
 }
 
+sub as_perl_regex {
+    my $r = $_[0]->members;
+
+    return "(?:)" if $r eq $EPSILON;
+    return "(?!)" if $r eq $NULL;
+    return quotemeta $r;
+}
+
 sub from_parse {
     my ($pkg, @item) = @_;
     $pkg->new( $item[1] );
@@ -61,6 +69,12 @@ sub as_string {
     my ($self, $prec) = @_;
     my $result = $self->members->as_string($self->precedence) . "*";
     return $prec > $self->precedence ? "($result)" : $result;
+}
+
+sub as_perl_regex {
+    my ($self, $prec) = @_;
+    my $result = $self->members->as_perl_regex($self->precedence) . "*";
+    return $prec > $self->precedence ? "(?:$result)" : $result;   
 }
 
 sub from_parse {
@@ -100,6 +114,14 @@ sub as_string {
                  map { $_->as_string($self->precedence) }
                  $self->members;
     return $prec > $self->precedence ? "($result)" : $result;
+}
+
+sub as_perl_regex {
+    my ($self, $prec) = @_;
+    my $result = join "",
+                 map { $_->as_perl_regex($self->precedence) }
+                 $self->members;
+    return $prec > $self->precedence ? "(?:$result)" : $result;
 }
 
 sub from_parse {
@@ -158,6 +180,14 @@ sub as_string {
                  map { $_->as_string($self->precedence) }
                  $self->members;
     return $prec > $self->precedence ? "($result)" : $result;
+}
+
+sub as_perl_regex {
+    my ($self, $prec) = @_;
+    my $result = join "|",
+                 map { $_->as_perl_regex($self->precedence) }
+                 $self->members;
+    return $prec > $self->precedence ? "(?:$result)" : $result;
 }
 
 sub from_parse {

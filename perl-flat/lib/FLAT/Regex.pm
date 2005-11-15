@@ -35,6 +35,10 @@ sub as_string {
     $_[0]->op->as_string(0);
 }
 
+sub as_perl_regex {
+    "(?:" . $_[0]->op->as_perl_regex(0) . ")";
+}
+
 
 #### regular language standard interface implementation:
 #### TODO: parameter checking?
