@@ -1,4 +1,4 @@
-package FLAT::Regex::WithNegations;
+package FLAT::Regex::WithExtraOps;
 use base 'FLAT::Regex';
 
 use strict;
@@ -83,9 +83,9 @@ sub is_empty {
     my $self = shift;
     my @members = $self->members;
     for (@members) {
-        return 0 if not $_->is_empty;
+        return 1 if $_->is_empty;
     }
-    return 1;
+    return 0;
 }
 
 sub has_nonempty_string {
