@@ -18,6 +18,7 @@ $CMDLINEOPTS{LENGTH} = 5;
 $CMDLINEOPTS{AND} = 10;
 $CMDLINEOPTS{OR} = 6;
 $CMDLINEOPTS{STAR} = 10;
+$CMDLINEOPTS{NEGATE} = 3;
 $CMDLINEOPTS{OPEN} = 5;
 $CMDLINEOPTS{CLOSE} = 0;
 $CMDLINEOPTS{n} = 100;
@@ -27,6 +28,7 @@ $CMDLINEOPTS{n} = 100;
             "and=s"      => \$CMDLINEOPTS{AND},
 	    "or=s"       => \$CMDLINEOPTS{OR},
             "star=s"     => \$CMDLINEOPTS{STAR},
+	    "neg=s"      => \$CMDLINEOPTS{NEGATE},
 	    "open=s"     => \$CMDLINEOPTS{OPEN},
 	    "close=s"    => \$CMDLINEOPTS{CLOSE},
 	    );
@@ -52,6 +54,8 @@ sub getRandomRE {
       $str .= "&[]";
     } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
       $str .= "*";    
+    } elsif (int(rand 100) < $CMDLINEOPTS{NEGATE}) {
+      $str .= "~".getRandomChar();    
     } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
       $str .= "(";
       push(@closeparens,'[])');
