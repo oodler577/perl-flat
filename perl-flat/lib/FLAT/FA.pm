@@ -7,7 +7,7 @@ use Carp;
 sub new {
     my $pkg = shift;
     bless {
-        STATE_NAMES => [],
+#        STATE_NAMES => [],
         STATES      => {},
         TRANS       => []
     }, $pkg;
@@ -42,10 +42,10 @@ sub delete_state {
         
         delete $self->{STATES}{$_};
 
-        for (@{ $self->{STATES} }) {
+        for ( values %{ $self->{STATES} } ) {
             $_->{num}-- if $_->{num} > $id;
         }
-        delete $self->{STATE_NAMES}[$id];
+#        splice @{ $self->{STATE_NAMES} }, $id, 1;
     }
 }
 
@@ -58,22 +58,22 @@ sub add_state {
     
     my $id = $self->num_states;
     for (@states) {
-        $id++;
         push @$_, undef for @{ $self->{TRANS} };
-        push @{ $self->{TRANS} }, [ (undef) x $id ];
+        push @{ $self->{TRANS} }, [ (undef) x ($id + 1) ];
         $self->{STATES}{$_} = {
             num => $id,
             starting => 0,
             accepting => 0
         };
-        push @{ $self->{STATE_NAMES} }, $_;
+#        push @{ $self->{STATE_NAMES} }, $_;
+        $id++;
     }
 }
 
 sub _state_id {
     my ($self, $state) = @_;
     carp "'$state' is not a state" if not $self->is_state($state);
-    $self->{STATE}{$state}{num};
+    $self->{STATES}{$state}{num};
 }
 
 ##############
@@ -161,11 +161,20 @@ sub successors {
     my ($self, $state, $symb) = @_;
     carp "'$state' is not a state" if not $self->is_state($state);
     
+    if (@_ == 3) {
+        if (! ref $symb) {
+            $symb = do {
+                my $temp = $symb;
+                sub { $_[0] eq $temp };
+            }    
+        }
+    }
+    
     my @states = grep { defined $self->get_transition($state, $_) }
                  $self->get_states;
     return @_ == 2
         ? @states
-        : grep { $self->get_transition($state, $_) eq $symb } @names;
+        : grep { $symb->( $self->get_transition($state, $_) ) } @states;
 }
 
 1;
