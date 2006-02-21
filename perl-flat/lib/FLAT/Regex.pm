@@ -39,6 +39,10 @@ sub as_perl_regex {
     "(?:" . $_[0]->op->as_perl_regex(0) . ")";
 }
 
+sub as_nfa {
+    $_[0]->op->as_nfa;
+}
+
 
 #### regular language standard interface implementation:
 #### TODO: parameter checking?

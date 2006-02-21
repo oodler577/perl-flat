@@ -10,14 +10,14 @@ use Data::Dumper;
 
 my $fa = FLAT::FA->new;
 
-$fa->add_state(qw[ foo bar baz ]);
-$fa->set_starting("foo");
+$fa->add_states(3);
+$fa->set_starting(0);
 
-$fa->set_transition("foo", "bar", "a");
-$fa->set_transition("bar", "bar", "z");
-$fa->set_transition("bar", "foo", "a");
-$fa->set_transition("baz", "foo", "b");
-$fa->set_transition("baz", "baz", "c");
+$fa->set_transition(0, 1, "a");
+$fa->set_transition(1, 1, "z");
+$fa->set_transition(1, 0, "a");
+$fa->set_transition(2, 0, "b");
+$fa->set_transition(2, 2, "c");
 
 print Dumper $fa;
 $fa->prune;

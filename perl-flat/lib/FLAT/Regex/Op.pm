@@ -36,6 +36,15 @@ sub as_perl_regex {
     return quotemeta $r;
 }
 
+sub as_nfa {
+    my $r = $_[0]->members;
+    
+    FLAT::NFA->singleton(
+        $r eq $EPSILON ? "" :
+        $r eq $NULL    ? undef : $r
+    );
+}
+
 sub from_parse {
     my ($pkg, @item) = @_;
     $pkg->new( $item[1] );
@@ -75,6 +84,11 @@ sub as_perl_regex {
     my ($self, $prec) = @_;
     my $result = $self->members->as_perl_regex($self->precedence) . "*";
     return $prec > $self->precedence ? "(?:$result)" : $result;   
+}
+
+sub as_nfa {
+    my $self = shift;
+    $self->members->as_nfa->kleene;
 }
 
 sub from_parse {
@@ -122,6 +136,12 @@ sub as_perl_regex {
                  map { $_->as_perl_regex($self->precedence) }
                  $self->members;
     return $prec > $self->precedence ? "(?:$result)" : $result;
+}
+
+sub as_nfa {
+    my $self = shift;
+    my @parts = map { $_->as_nfa } $self->members;
+    $parts[0]->concat( @parts[1..$#parts] );
 }
 
 sub from_parse {
@@ -188,6 +208,12 @@ sub as_perl_regex {
                  map { $_->as_perl_regex($self->precedence) }
                  $self->members;
     return $prec > $self->precedence ? "(?:$result)" : $result;
+}
+
+sub as_nfa {
+    my $self = shift;
+    my @parts = map { $_->as_nfa } $self->members;
+    $parts[0]->union( @parts[1..$#parts] );
 }
 
 sub from_parse {
