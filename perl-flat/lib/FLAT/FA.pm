@@ -28,12 +28,24 @@ sub is_state {
     exists $self->{STATES}->{$state};
 }
 
+sub _assert_states {
+    my ($self, @states) = @_;
+    for (@states) {
+        croak "'$_' is not a state" if not $self->is_state($_);
+    }
+}
+sub _assert_non_states {
+    my ($self, @states) = @_;
+    for (@states) {
+        croak "There is already a state called '$_'" if $self->is_state($_);    
+    }
+}
+
+
 sub delete_state {
     my ($self, @states) = @_;
 
-    for (@states) {
-        carp "'$_' is not a state" if not $self->is_state($_);
-    }
+    $self->_assert_states(@states);
 
     for (@states) {
         my $id = $self->_state_id($_);
@@ -52,9 +64,7 @@ sub delete_state {
 sub add_state {
     my ($self, @states) = @_;
     
-    for (@states) {
-        carp "There is already a state called '$_'" if $self->is_state($_);    
-    }    
+    $self->_assert_non_states(@states);
     
     my $id = $self->num_states;
     for (@states) {
@@ -72,7 +82,7 @@ sub add_state {
 
 sub _state_id {
     my ($self, $state) = @_;
-    carp "'$state' is not a state" if not $self->is_state($state);
+    $self->_assert_states($state);
     $self->{STATES}{$state}{num};
 }
 
@@ -80,25 +90,17 @@ sub _state_id {
 
 sub is_starting {
     my ($self, $state) = @_;
-    carp "$state is not a state" if not $self->is_state($state);
+    $self->_assert_states($state);
     return $self->{STATES}->{$state}{starting};
 }
 sub set_starting {
     my ($self, @states) = @_;
-
-    for (@states) {
-        carp "'$_' is not a state" if not $self->is_state($_);
-    }
-    
+    $self->_assert_states(@states);
     $self->{STATES}->{$_}{starting} = 1 for @states;
 }
 sub unset_starting {
     my ($self, @states) = @_;
-
-    for (@states) {
-        carp "'$_' is not a state" if not $self->is_state($_);
-    }
-    
+    $self->_assert_states(@states);
     $self->{STATES}->{$_}{starting} = 0 for @states;
 }
 sub get_starting {
@@ -110,25 +112,17 @@ sub get_starting {
 
 sub is_accepting {
     my ($self, $state) = @_;
-    carp "$state is not a state" if not $self->is_state($state);
+    $self->_assert_states($state);
     return $self->{STATES}->{$state}{accepting};
 }
 sub set_accepting {
     my ($self, @states) = @_;
-
-    for (@states) {
-        carp "'$_' is not a state" if not $self->is_state($_);
-    }
-    
+    $self->_assert_states(@states);
     $self->{STATES}->{$_}{accepting} = 1 for @states;
 }
 sub unset_accepting {
     my ($self, @states) = @_;
-
-    for (@states) {
-        carp "'$_' is not a state" if not $self->is_state($_);
-    }
-    
+    $self->_assert_states(@states);
     $self->{STATES}->{$_}{accepting} = 0 for @states;
 }
 sub get_accepting {
@@ -159,22 +153,69 @@ sub remove_transition {
 
 sub successors {
     my ($self, $state, $symb) = @_;
-    carp "'$state' is not a state" if not $self->is_state($state);
     
-    if (@_ == 3) {
-        if (! ref $symb) {
-            $symb = do {
-                my $temp = $symb;
-                sub { $_[0] eq $temp };
-            }    
+    my @states = ref $state eq 'ARRAY'
+        ? @$state
+        : ($state);
+        
+    $self->_assert_states(@states);
+    
+    if (@_ == 3 and !ref $symb) {
+        my $cmp = $symb;
+        
+        if (defined $cmp) {
+            $symb = sub { defined $_[0] and $cmp eq $_[0] };
+        } else {
+            $symb = sub { not defined $_[0] };
         }
+    } elsif (@_ == 2) {
+        $symb = sub { defined $_[0] };
     }
     
-    my @states = grep { defined $self->get_transition($state, $_) }
-                 $self->get_states;
-    return @_ == 2
-        ? @states
-        : grep { $symb->( $self->get_transition($state, $_) ) } @states;
+    my %succ;
+    
+    for my $s (@states) {
+        $succ{$_}++
+            for grep { $symb->( $self->get_transition($s, $_) ) }
+                $self->get_states;
+    }
+    return keys %succ;
+}
+
+############
+sub prune {
+    my $self = shift;
+    
+    my @queue = $self->get_starting;
+    my %seen  = map { $_ => 1 } @queue;
+    
+    while (@queue) {
+        @queue = grep { ! $seen{$_}++ } $self->successors(\@queue);
+    }
+    
+    my @useless = grep { !$seen{$_} } $self->get_states;
+    $self->delete_state(@useless);
+    
+    return @useless;
+}
+
+
+############
+
+use Storable 'dclone';
+sub clone {
+    dclone( $_[0] );
+}
+
+sub _fresh_state_names {
+    my ($self, $num) = @_;
+    
+    my @names;
+    while (@names < $num) {
+        my $name = join "", map { (0 .. 9, 'a' .. 'z')[rand 36] } 1 .. 8;
+        push @names, $name if not $self->is_state($name);
+    }
+    return wantarray ? @names : $names[0];
 }
 
 1;

@@ -10,20 +10,16 @@ use Data::Dumper;
 
 my $fa = FLAT::FA->new;
 
-$fa->add_state("foo");
-print Dumper $fa;
+$fa->add_state(qw[ foo bar baz ]);
+$fa->set_starting("foo");
 
-$fa->add_state("bar");
-print Dumper $fa;
-
-$fa->set_transition("foo", "bar", "q");
+$fa->set_transition("foo", "bar", "a");
 $fa->set_transition("bar", "bar", "z");
 $fa->set_transition("bar", "foo", "a");
+$fa->set_transition("baz", "foo", "b");
+$fa->set_transition("baz", "baz", "c");
+
 print Dumper $fa;
-
-print Dumper [ $fa->successors("bar") ];
-
-
-$fa->delete_state("foo");
+$fa->prune;
 print Dumper $fa;
 
