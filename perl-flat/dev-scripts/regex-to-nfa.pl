@@ -8,7 +8,11 @@ use FLAT::NFA;
 
 my $regex = shift;
 
-my $dot = FLAT::Regex->new($regex)->as_nfa->as_graphviz;
+my $nfa = FLAT::Regex->new($regex)->as_nfa;
+my $dot = $nfa->as_graphviz;
+my $summary = $nfa->as_summary;
+
+print "$summary\n";
 
 open my $fh, "|-", "dot -Tpng -o output.png"
    or die "Couldn't run dot: $!\n";
