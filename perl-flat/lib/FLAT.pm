@@ -1,5 +1,7 @@
 package FLAT;
 use FLAT::Regex;
+use FLAT::NFA;
+use FLAT::DFA;
 use Carp;
 
 use vars '$VERSION';

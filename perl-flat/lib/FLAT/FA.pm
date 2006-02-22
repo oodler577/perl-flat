@@ -4,11 +4,14 @@ use strict;
 use base 'FLAT';
 use Carp;
 
+use FLAT::Transition;
+
 sub new {
     my $pkg = shift;
     bless {
-        STATES      => [],
-        TRANS       => []
+        STATES => [],
+        TRANS  => [],
+        ALPHA  => {}
     }, $pkg;
 }
 
@@ -47,8 +50,12 @@ sub delete_states {
     $self->_assert_states(@states);
 
     for my $s ( sort { $b <=> $a } @states ) {
-        splice @{ $self->{TRANS} }, $s, 1;
-        splice @$_, $s, 1 for @{ $self->{TRANS} };
+        $self->_decr_alphabet($_)
+            for @{ splice @{ $self->{TRANS} }, $s, 1  };
+
+        $self->_decr_alphabet( splice @$_, $s, 1 )
+            for @{ $self->{TRANS} };
+            
         splice @{ $self->{STATES} }, $s, 1;
     }
 }
@@ -116,52 +123,86 @@ sub get_accepting {
 
 ###############
 
+sub _decr_alphabet {
+    my ($self, $t) = @_;
+    return if not defined $t;
+    for ($t->alphabet) {
+        delete $self->{ALPHA}{$_} if not --$self->{ALPHA}{$_};
+    }
+}
+sub _incr_alphabet {
+    my ($self, $t) = @_;
+    return if not defined $t;
+    $self->{ALPHA}{$_}++ for $t->alphabet;
+}
+
 sub set_transition {
-    my ($self, $state1, $state2, $label) = @_;
-    $self->_assert_states($state1, $state2);
-    $self->{TRANS}[$state1][$state2] = $label;
+    my ($self, $state1, $state2, @label) = @_;
+    $self->remove_transition($state1, $state2);
+
+    @label = grep defined, @label;
+    return if not @label;
+    
+    my $t = $self->{TRANS_CLASS}->new(@label);
+    $self->_incr_alphabet($t);
+
+    $self->{TRANS}[$state1][$state2] = $t;
+}
+
+sub add_transition {
+    my ($self, $state1, $state2, @label) = @_;
+
+    @label = grep defined, @label;
+    return if not @label;
+
+    my $t = $self->get_transition($state1, $state2);
+    $self->_decr_alphabet($t);
+    
+    if (!$t) {
+        $t = $self->{TRANS}[$state1][$state2] = $self->{TRANS_CLASS}->new;
+    }
+    
+    $t->add(@label);
+    $self->_incr_alphabet($t);
 }
 
 sub get_transition {
     my ($self, $state1, $state2) = @_;
     $self->_assert_states($state1, $state2);
-    return $self->{TRANS}[$state1][$state2];
+    
+    $self->{TRANS}[$state1][$state2];
 }
 
 sub remove_transition {
     my ($self, $state1, $state2) = @_;
-    $self->set_transition($state1, $state2, undef);
+
+    $self->_decr_alphabet( $self->{TRANS}[$state1][$state2] );
+    $self->{TRANS}[$state1][$state2] = undef;
 }
 
 sub successors {
     my ($self, $state, $symb) = @_;
     
-    my @states = ref $state eq 'ARRAY'
-        ? @$state
-        : ($state);
+    my @states = ref $state eq 'ARRAY' ? @$state : ($state);
+    my @symbs  = defined $symb
+                  ? (ref $symb  eq 'ARRAY' ? @$symb  : ($symb))
+                  : ();
         
     $self->_assert_states(@states);
     
-    if (@_ == 3 and !ref $symb) {
-        my $cmp = $symb;
-        
-        if (defined $cmp) {
-            $symb = sub { defined $_[0] and $cmp eq $_[0] };
-        } else {
-            $symb = sub { not defined $_[0] };
-        }
-    } elsif (@_ == 2) {
-        $symb = sub { defined $_[0] };
-    }
-    
     my %succ;
-    
     for my $s (@states) {
         $succ{$_}++
-            for grep { $symb->( $self->get_transition($s, $_) ) }
-                $self->get_states;
+            for grep { my $t = $self->{TRANS}[$s][$_];
+                       defined $t && (@symbs ? $t->does(@symbs) : 1) } $self->get_states;
     }
+    
     return keys %succ;
+}
+
+sub alphabet {
+    my $self = shift;
+    grep length, keys %{ $self->{ALPHA} };
 }
 
 ############
@@ -210,10 +251,13 @@ sub _swallow {
     push @$_, (undef) x $N2
         for @{ $self->{TRANS} };
 
-    push @{ $self->{TRANS} }, [ (undef) x $N1, @$_ ]
+    push @{ $self->{TRANS} }, [ (undef) x $N1, @{ clone $_ } ]
         for @{ $other->{TRANS} };
 
     push @{ $self->{STATES} }, @{ clone $other->{STATES} };
+    
+    $self->{ALPHA}{$_} += $other->{ALPHA}{$_}
+        for keys %{ $other->{ALPHA} };
     
     return map { $_ + $N1 } $other->get_states;
 }

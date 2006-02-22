@@ -2,6 +2,15 @@ package FLAT::NFA;
 use strict;
 use base 'FLAT::FA';
 
+use FLAT::Transition;
+
+sub new {
+    my $pkg = shift;
+    my $self = $pkg->SUPER::new(@_);
+    $self->{TRANS_CLASS} = "FLAT::Transition";
+    return $self;
+}
+
 sub singleton {
     my ($class, $char) = @_;
     my $nfa = $class->new;
@@ -122,14 +131,17 @@ sub is_empty {
     my %seen = map { $_ => 1 } @queue;
     
     while (@queue) {
-        return 1 if grep { $self->is_accepting($_) } @queue;
+        return 0 if grep { $self->is_accepting($_) } @queue;
         @queue = grep { !$seen{$_}++ } $self->successors(\@queue);
     }
-    return 0;
+    return 1;
 }
 
 sub is_finite {
     my $self = shift;
+    
+    my @alphabet = $self->alphabet;
+    return 1 if @alphabet == 0;
     
     my @queue = $self->get_starting;
     my %seen = map { $_ => 1 } @queue;
@@ -138,29 +150,16 @@ sub is_finite {
         @queue = grep { !$seen{$_}++ } $self->successors(\@queue);
     }
     
-    my @visible = grep { $self->is_accepting($_) } keys %seen;
-    for my $s (@visible) {
-        @queue = ($s);
-        %seen = ( $s => 0 );
+    for my $s ( grep { $self->is_accepting($_) } keys %seen ) {
+        @queue = $self->epsilon_closure($s);
+        %seen  = map { $_ => 1 } @queue;
+        
         while (@queue) {
-            my @eps = grep { !$seen{$_} } @queue;
-            my @non = grep { $seen{$_} } @queue;
-            
-            my @succ_non = $self->successors(\@queue,
-                                sub { defined $_[0] && length $_[0] } );
-            push @succ_non, $self->successors(\@non, "");
+            my @next = $self->epsilon_closure(
+                            $self->successors(\@queue, \@alphabet) );
 
-            my @succ_eps = $self->successors(\@eps, "");
-            
-            my @new_eps = grep { not exists $seen{$_} } @succ_eps;
-            $seen{$_} = 0 for @new_eps;
-
-            my @new_non = grep { !$seen{$_} } @succ_non;
-            $seen{$_} = 1 for @new_non;
-            
-            return 0 if grep { $s eq $_ } @new_non;
-
-            @queue = (@new_non, @new_eps);
+            return 0 if grep { $s eq $_ } @next;
+            @queue = grep { !$seen{$_}++ } @next;
         }
     }
     return 1;
@@ -198,13 +197,52 @@ sub as_graphviz {
         
         if (defined $t) {
             push @trans, sprintf qq[%s -> %s [label="%s"]\n],
-                $s1, $s2, length $t ? $t : "epsilon";
+                $s1, $s2, $t->as_string;
         }
     }}
     
     return sprintf "digraph G {\ngraph [rankdir=LR]\n\n%s\n%s}\n",
         join("", @states),
         join("", @trans);
+}
+
+sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
+sub as_dfa {
+    my $self = shift;
+    
+    my $result = FLAT::DFA->new;
+    my %subset;
+    
+    my %final = map { $_ => 1 } $self->get_accepting;
+    my @start = sort { $a <=> $b }
+                $self->epsilon_closure( $self->get_starting );
+
+    my $start = $subset{ _SET_ID(@start) } = $result->add_states(1);
+    $result->set_starting($start);
+    $result->set_accepting( $subset{$start} )
+        if grep $_, @final{@start};
+
+    my @queue = (\@start);
+    while (@queue) {
+        my @states = @{ shift @queue };
+        my $S      = $subset{ _SET_ID(@states) };
+        
+        for my $symb ($self->alphabet) {
+            my @to = $self->epsilon_closure(
+                            $self->successors(\@states, $symb) );
+
+            if ( not exists $subset{_SET_ID(@to)} ) {
+                push @queue, \@to;
+                my $T = $subset{_SET_ID(@to)} = $result->add_states(1);
+                $result->set_accepting($T)
+                    if grep $_, @final{@to};
+            }
+            
+            $result->add_transition($S, $subset{ _SET_ID(@to) }, $symb);
+        }
+    }
+
+    $result;
 }
 
 ##########

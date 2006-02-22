@@ -13,12 +13,16 @@ sub foo {
 }
 
 
-for (qw{ ab|cd|[] ab*  []* (a|b)* ([]|[])*  }) {
+for (qw{ ab|cd|[] ab*  []* (a|b)* ([]|[])* }, "#*", "###") {
     my $nfa = foo($_);
 
     print "$_ is: ";
-    print $nfa->is_finite ? "finite\n" : "infinite\n";
+    print $nfa->is_finite ? "finite, " : "infinite, ";
+    print $nfa->is_empty ? "empty, " : "nonempty, ";
+    print "alphabet = ", $nfa->alphabet, "\n";
 }
+
+#######
 
 my $x = FLAT::NFA->singleton("a");
 my $y = FLAT::NFA->singleton("d");
@@ -26,6 +30,12 @@ my $y = FLAT::NFA->singleton("d");
 my $z = $x->clone;
 $z->_swallow($y);
 
-print Dumper $x, $y, $z;
+# print Dumper $x, $y, $z;
 
 
+########
+
+$x = FLAT::NFA->singleton(undef);
+$y = $x->kleene;
+
+print Dumper $x, $y;
