@@ -2,19 +2,27 @@ package FLAT::NFA;
 use strict;
 use base 'FLAT::FA';
 
-sub as_nfa { $_[0]->clone }
+sub singleton {
+    my ($class, $char) = @_;
+    my $nfa = $class->new;
 
-sub epsilon_closure {
-    my ($self, @states) = @_;
-    my %seen  = map { $_ => 1 } @states;
-    my @queue = @states;
-    
-    while (@queue) {
-        @queue = grep { ! $seen{$_}++ } $self->successors( \@queue, "" );
+    if (not defined $char) {
+        $nfa->add_states(1);
+        $nfa->set_starting(0);
+    } elsif ($char eq "") {
+        $nfa->add_states(1);
+        $nfa->set_starting(0);
+        $nfa->set_accepting(0);
+    } else {
+        $nfa->add_states(2);
+        $nfa->set_starting(0);
+        $nfa->set_accepting(1);
+        $nfa->set_transition(0, 1, $char);
     }
-    
-    keys %seen;
+    return $nfa;
 }
+
+sub as_nfa { $_[0]->clone }
 
 sub union {
     my @nfas = map { $_->as_nfa } @_;
@@ -23,27 +31,16 @@ sub union {
     my @newstate = ([ $result->get_states ]);
     
     for (1 .. $#nfas) {
-        push @newstate, [ $result->add_states( $nfas[$_]->num_states ) ];
+        push @newstate, [ $result->_swallow( $nfas[$_] ) ];
     }
 
-    my ($newstart) = $result->add_states(1);
+    my $newstart = $result->add_states(1);
     $result->unset_starting($result->get_states);
     $result->set_starting($newstart);
     
     for my $nfa_id (0 .. $#nfas) {
-        for my $s1 ($nfas[$nfa_id]->get_states) {
-        for my $s2 ($nfas[$nfa_id]->get_states) {
-            $result->set_transition(
-                    $newstate[$nfa_id][$s1],
-                    $newstate[$nfa_id][$s2],
-                    $nfas[$nfa_id]->get_transition($s1, $s2) );
-        }}
-    
         $result->set_transition( $newstart, $newstate[$nfa_id][$_], "" )
             for $nfas[$nfa_id]->get_starting;
-
-        $result->set_accepting(
-            @{$newstate[$nfa_id]}[ $nfas[$nfa_id]->get_accepting ] );
     }
 
     $result;
@@ -54,30 +51,23 @@ sub concat {
     
     my $result = $nfas[0]->clone;
     my @newstate = ([ $result->get_states ]);
+    my @start = $result->get_starting;
 
     for (1 .. $#nfas) {
-        push @newstate, [ $result->add_states( $nfas[$_]->num_states ) ];
+        push @newstate, [ $result->_swallow( $nfas[$_] ) ];
     }
 
     $result->unset_accepting($result->get_states);
+    $result->unset_starting($result->get_states);
+    $result->set_starting(@start);
     
-    for my $nfa_id (0 .. $#nfas) {
-        for my $s1 ($nfas[$nfa_id]->get_states) {
-        for my $s2 ($nfas[$nfa_id]->get_states) {
+    for my $nfa_id (1 .. $#nfas) {
+        for my $s1 ($nfas[$nfa_id-1]->get_accepting) {
+        for my $s2 ($nfas[$nfa_id]->get_starting) {
             $result->set_transition(
-                    $newstate[$nfa_id][$s1],
-                    $newstate[$nfa_id][$s2],
-                    $nfas[$nfa_id]->get_transition($s1, $s2) );
+                $newstate[$nfa_id-1][$s1],
+                $newstate[$nfa_id][$s2], "" );
         }}
-
-        if ($nfa_id > 0) {
-            for my $s1 ($nfas[$nfa_id-1]->get_accepting) {
-            for my $s2 ($nfas[$nfa_id]->get_starting) {
-                $result->set_transition(
-                    $newstate[$nfa_id-1][$s1],
-                    $newstate[$nfa_id][$s2], "" );
-            }}
-        }
     }
 
     $result->set_accepting(
@@ -107,32 +97,98 @@ sub kleene {
     $result;
 }
 
-sub singleton {
-    my ($class, $char) = @_;
-    my $nfa = $class->new;
-
-    if (not defined $char) {
-        $nfa->add_states(1);
-        $nfa->set_starting(0);
-    } elsif ($char eq "") {
-        $nfa->add_states(1);
-        $nfa->set_starting(0);
-        $nfa->set_accepting(0);
-    } else {
-        $nfa->add_states(2);
-        $nfa->set_starting(0);
-        $nfa->set_accepting(1);
-        $nfa->set_transition(0, 1, $char);
-    }
-    return $nfa;
+sub reverse {
+    my $self = $_[0]->clone;
+    $self->_transpose;
+    
+    my @start = $self->get_starting;
+    my @final = $self->get_accepting;
+    
+    $self->unset_accepting( $self->get_states );
+    $self->unset_starting( $self->get_states );
+    
+    $self->set_accepting( @start );
+    $self->set_starting( @final );
+    
+    $self;
 }
+
+###########
+
+sub is_empty {
+    my $self = shift;
+    
+    my @queue = $self->get_starting;
+    my %seen = map { $_ => 1 } @queue;
+    
+    while (@queue) {
+        return 1 if grep { $self->is_accepting($_) } @queue;
+        @queue = grep { !$seen{$_}++ } $self->successors(\@queue);
+    }
+    return 0;
+}
+
+sub is_finite {
+    my $self = shift;
+    
+    my @queue = $self->get_starting;
+    my %seen = map { $_ => 1 } @queue;
+    
+    while (@queue) {
+        @queue = grep { !$seen{$_}++ } $self->successors(\@queue);
+    }
+    
+    my @visible = grep { $self->is_accepting($_) } keys %seen;
+    for my $s (@visible) {
+        @queue = ($s);
+        %seen = ( $s => 0 );
+        while (@queue) {
+            my @eps = grep { !$seen{$_} } @queue;
+            my @non = grep { $seen{$_} } @queue;
+            
+            my @succ_non = $self->successors(\@queue,
+                                sub { defined $_[0] && length $_[0] } );
+            push @succ_non, $self->successors(\@non, "");
+
+            my @succ_eps = $self->successors(\@eps, "");
+            
+            my @new_eps = grep { not exists $seen{$_} } @succ_eps;
+            $seen{$_} = 0 for @new_eps;
+
+            my @new_non = grep { !$seen{$_} } @succ_non;
+            $seen{$_} = 1 for @new_non;
+            
+            return 0 if grep { $s eq $_ } @new_non;
+
+            @queue = (@new_non, @new_eps);
+        }
+    }
+    return 1;
+}
+
+sub epsilon_closure {
+    my ($self, @states) = @_;
+    my %seen  = map { $_ => 1 } @states;
+    my @queue = @states;
+    
+    while (@queue) {
+        @queue = grep { ! $seen{$_}++ } $self->successors( \@queue, "" );
+    }
+    
+    keys %seen;
+}
+
+
+###########
 
 sub as_graphviz {
     my $self = shift;
     
     my @states = map {
-        sprintf "%s [shape=%s]\n",
-            $_, $self->is_accepting($_) ? "doublecircle" : "circle"
+        sprintf qq{%s [label="%s",shape=%s]\n},
+            $_,
+            ($self->is_starting($_) ? "start" : ""),
+            ($self->is_accepting($_) ? "doublecircle" : "circle")
     } $self->get_states;
     
     my @trans;
@@ -150,5 +206,7 @@ sub as_graphviz {
         join("", @states),
         join("", @trans);
 }
+
+##########
 
 1;

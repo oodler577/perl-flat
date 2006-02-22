@@ -41,7 +41,7 @@ sub _assert_non_states {
 }
 
 
-sub delete_state {
+sub delete_states {
     my ($self, @states) = @_;
 
     $self->_assert_states(@states);
@@ -66,7 +66,8 @@ sub add_states {
         };
     }
     
-    return ($id .. ($id+$num-1));
+    return wantarray ? ($id .. ($id+$num-1))
+                     : $id+$num-1;
 }
 
 ##############
@@ -186,6 +187,35 @@ sub prune {
 use Storable 'dclone';
 sub clone {
     dclone( $_[0] );
+}
+
+sub _transpose {
+    my $self = shift;
+    my $N = $self->num_states - 1;
+    
+    $self->{TRANS} = [
+        map {
+            my $row = $_; 
+            [ map { $_->[$row] } @{$self->{TRANS}} ]
+        } 0 .. $N
+    ];
+}
+
+## add an FA's states & transitions to this FA (as disjoint union)
+sub _swallow {
+    my ($self, $other) = @_;
+    my $N1 = $self->num_states;
+    my $N2 = $other->num_states;
+    
+    push @$_, (undef) x $N2
+        for @{ $self->{TRANS} };
+
+    push @{ $self->{TRANS} }, [ (undef) x $N1, @$_ ]
+        for @{ $other->{TRANS} };
+
+    push @{ $self->{STATES} }, @{ clone $other->{STATES} };
+    
+    return map { $_ + $N1 } $other->get_states;
 }
 
 1;
