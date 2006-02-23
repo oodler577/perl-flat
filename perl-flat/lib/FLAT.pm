@@ -11,11 +11,11 @@ $VERSION = 0.01;
 ## they can override these with more efficient versions if they like.
 
 sub as_dfa {
-    $_[0]->as_nfa->determinize;
+    $_[0]->as_nfa->as_dfa;
 }
 
 sub as_min_dfa {
-    $_[0]->as_dfa->minimize;
+    $_[0]->as_dfa->as_min_dfa;
 }
 
 sub is_infinite {
@@ -40,6 +40,11 @@ sub symdiff {
 sub equals {
     $_[0]->symdiff($_[1])->is_empty
 }
+
+sub is_subset_of {
+    $_[0]->difference($_[1])->is_empty
+}
+
 
 BEGIN {
     for my $method (qw[ as_nfa as_regex union intersect complement concat

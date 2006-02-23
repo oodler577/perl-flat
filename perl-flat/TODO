@@ -1,1 +1,9 @@
-error checking for 0-state FAs...
+error checking for doing certain operations on 0-state FAs...
+
+in dfa minimization, there should be some way to return the equivalence
+   classes, as well as perhaps the distinguishing strings
+
+TESTS TESTS TESTS TESTS TESTS TESTS TESTS
+
+keep track of where in the code we assume ->get_states are numbers (if
+  we want to add state label support back).
