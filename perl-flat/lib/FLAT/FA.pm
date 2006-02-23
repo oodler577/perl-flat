@@ -262,4 +262,44 @@ sub _swallow {
     return map { $_ + $N1 } $other->get_states;
 }
 
+############
+
+sub as_summary {
+    my $self = shift;
+    my $out = ''; 
+    $out .= sprintf ("States         : ");
+    my @start;
+    my @final;
+    foreach ($self->get_states()) {
+      $out .= sprintf "'$_' ";
+      if ($self->is_starting($_)) {
+        push(@start,$_);
+      }
+      if ($self->is_accepting($_)) {
+        push(@final,$_);
+      }
+    }
+    $out .= sprintf ("\nStart State    : '%s'\n",join('',@start));
+    $out .= sprintf ("Final State(s) : ");
+    foreach (@final) {
+      $out .= sprintf "'$_' ";
+    }
+    $out .= sprintf ("\nAlphabet       : ");
+    foreach ($self->alphabet()) {
+      $out .= sprintf "'$_' ";
+    }
+    $out .= sprintf ("\nTransitions    :\n");
+    my @trans;
+     for my $s1 ($self->get_states) {
+     for my $s2 ($self->get_states) {
+         my $t = $self->get_transition($s1, $s2);
+         if (defined $t) {
+             push @trans, sprintf qq[%s -> %s on "%s"\n],
+                 $s1, $s2, $t->as_string;
+         }
+     }}
+    $out .= join('',@trans);
+    return $out;        
+}
+
 1;
