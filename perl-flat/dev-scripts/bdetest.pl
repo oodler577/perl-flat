@@ -8,5 +8,4 @@ use Data::Dumper;
 
 my $RE = FLAT::Regex::WithExtraOps->new('ab|c* & (a|b)*');
 
-#
 print $RE->as_string;
