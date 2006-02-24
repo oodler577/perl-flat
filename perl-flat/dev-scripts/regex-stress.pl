@@ -3,8 +3,9 @@ use strict;
 
 use lib qw(../lib);
 use FLAT;
-use FLAT::Regex::WithExtraOps;
-use Data::Dumper;
+use FLAT::Regex;
+use FLAT::NFA;
+use FLAT::DFA;
 use Getopt::Long;  # used to process commandline options
 $|++;
 
@@ -15,20 +16,16 @@ srand $$;
 my %CMDLINEOPTS = ();
 # Percent chance of each operator occuring
 $CMDLINEOPTS{LENGTH} = 5;
-$CMDLINEOPTS{AND} = 10;
 $CMDLINEOPTS{OR} = 6;
 $CMDLINEOPTS{STAR} = 10;
-$CMDLINEOPTS{NEGATE} = 3;
 $CMDLINEOPTS{OPEN} = 5;
 $CMDLINEOPTS{CLOSE} = 0;
 $CMDLINEOPTS{n} = 100;
 
  GetOptions("l=s"        => \$CMDLINEOPTS{LENGTH},
  	    "n=s"        => \$CMDLINEOPTS{n},
-            "and=s"      => \$CMDLINEOPTS{AND},
 	    "or=s"       => \$CMDLINEOPTS{OR},
             "star=s"     => \$CMDLINEOPTS{STAR},
-	    "neg=s"      => \$CMDLINEOPTS{NEGATE},
 	    "open=s"     => \$CMDLINEOPTS{OPEN},
 	    "close=s"    => \$CMDLINEOPTS{CLOSE},
 	    );
@@ -50,12 +47,8 @@ sub getRandomRE {
     # % chance of an "or"
     if (int(rand 100) < $CMDLINEOPTS{OR}) {
       $str .= "|[]";
-    } elsif (int(rand 100) < $CMDLINEOPTS{AND}) {
-      $str .= "&[]";
     } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
       $str .= "*";    
-    } elsif (int(rand 100) < $CMDLINEOPTS{NEGATE}) {
-      $str .= "~".getRandomChar();    
     } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
       $str .= "(";
       push(@closeparens,'[])');
@@ -72,6 +65,7 @@ sub getRandomRE {
 
 for (1..$CMDLINEOPTS{n}) {
   my $str = getRandomRE();  
-  my $RE = FLAT::Regex::WithExtraOps->new($str);
-  print "$str : ".$RE->as_string;
+  my $RE = FLAT::Regex->new($str);
+  print $RE->as_regex();
+  print $RE->as_nfa()->as_dfa()->as_min_dfa()->as_summary();
 }
