@@ -24,18 +24,13 @@ for (qw{ ab|cd|[] ab*  []* (a|b)* ([]|[])* }, "#*", "###") {
 
 #######
 
-my $x = FLAT::NFA->singleton("a");
-my $y = FLAT::NFA->singleton("d");
+my $nfa = foo("ab(c|d)*e");
 
-my $z = $x->clone;
-$z->_swallow($y);
+for (qw[ abe abce abcdcdcdcde bcde be abcd ab ]) {
+    printf "$_ in the language? %s\n",
+       $nfa->contains($_) ? "yes!" : "no";
+    my @t = $nfa->trace($_);
 
-# print Dumper $x, $y, $z;
-
-
-########
-
-$x = FLAT::NFA->singleton(undef);
-$y = $x->kleene;
-
-print Dumper $x, $y;
+    print "[@$_] " for @t;
+    print $/;
+}

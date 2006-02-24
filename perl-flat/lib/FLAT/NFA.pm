@@ -37,20 +37,22 @@ sub union {
     my @nfas = map { $_->as_nfa } @_;
     
     my $result = $nfas[0]->clone;
-    my @newstate = ([ $result->get_states ]);
     
-    for (1 .. $#nfas) {
-        push @newstate, [ $result->_swallow( $nfas[$_] ) ];
-    }
+    $result->_swallow($_) for @nfas[1 .. $#nfas];
 
-    my $newstart = $result->add_states(1);
-    $result->unset_starting($result->get_states);
-    $result->set_starting($newstart);
+#    my @newstate = ([ $result->get_states ]);
+#    for (1 .. $#nfas) {
+#        push @newstate, [ $result->_swallow( $nfas[$_] ) ];
+#    }
+
+#    my $newstart = $result->add_states(1);
+#    $result->unset_starting($result->get_states);
+#    $result->set_starting($newstart);
     
-    for my $nfa_id (0 .. $#nfas) {
-        $result->set_transition( $newstart, $newstate[$nfa_id][$_], "" )
-            for $nfas[$nfa_id]->get_starting;
-    }
+#    for my $nfa_id (0 .. $#nfas) {
+#        $result->set_transition( $newstart, $newstate[$nfa_id][$_], "" )
+#            for $nfas[$nfa_id]->get_starting;
+#    }
 
     $result;
 }
@@ -177,6 +179,29 @@ sub epsilon_closure {
     keys %seen;
 }
 
+
+sub contains {
+    my ($self, $string) = @_;
+
+    my @active = $self->epsilon_closure( $self->get_starting );    
+    for my $char (split //, $string) {
+        return 0 if ! @active;
+        @active = $self->epsilon_closure( $self->successors(\@active, $char) );
+    }
+    return !! grep { $self->is_accepting($_) } @active;
+}
+
+sub trace {
+    my ($self, $string) = @_;
+
+    my @trace = ([ $self->epsilon_closure( $self->get_starting ) ]);
+    
+    for my $char (split //, $string) {
+        push @trace,
+            [ $self->epsilon_closure( $self->successors($trace[-1], $char) ) ];
+    }
+    return @trace;
+}
 
 ############
 
