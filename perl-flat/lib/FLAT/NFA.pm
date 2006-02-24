@@ -270,6 +270,36 @@ sub as_dfa {
     $result;
 }
 
-##########
-
 1;
+
+__END__
+
+=head1 NAME
+
+FLAT::NFA - Nondeterministic finite automata
+
+=head1 SYNOPSIS
+
+A FLAT::NFA object is a finite automata whose transitions are labeled
+either wtih characters or the empty string (epsilon).
+
+=head1 USAGE
+
+In addition to implementing the interface specified in L<FLAT>, FLAT::NFA
+objects provide the following NFA-specific methods:
+
+=over
+
+=item $nfa-E<gt>epsilon_closure(@states)
+
+Returns the set of states (without duplicates) which are reachable from
+@states via zero or more epsilon-labeled transitions.
+
+=item $nfa-E<gt>trace($string)
+
+Returns a list of N+1 arrayrefs, where N is the length of $string. The
+I-th arrayref contains the states which are reachable from the starting
+state(s) of $nfa after reading I characters of $string. Correctly accounts
+for epsilon transitions.
+
+=back

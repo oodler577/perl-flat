@@ -86,3 +86,20 @@ sub as_min_dfa {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+FLAT::DFA - Deterministic finite automata
+
+=head1 SYNOPSIS
+
+A FLAT::DFA object is a finite automata whose transitions are labeled
+with single characters. Furthermore, each state has exactly one outgoing
+transition for each available label/character.
+
+=head1 USAGE
+
+FLAT::DFA is a subclass of FLAT::NFA and its objects provide the same
+methods.

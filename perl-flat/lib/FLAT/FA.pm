@@ -303,3 +303,161 @@ sub as_summary {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+FLAT::FA - Base class for regular finite automata
+
+=head1 SYNOPSIS
+
+A FLAT::FA object is a collection of states and transitions. Each state
+may be labeled as starting or accepting. Each transition between states
+is labeled with a transition object.
+
+=head1 USAGE
+
+FLAT::FA is a superclass that is not intended to be used directly. However,
+it does provide the following methods:
+
+=head2 Manipulation & Inspection Of States
+
+=over
+
+=item $fa-E<gt>get_states
+
+Returns a list of all the state "names" in $fa.
+
+=item $fa-E<gt>num_states
+
+Returns the number of states in $fa.
+
+=item $fa-E<gt>is_state($state_id)
+
+Returns a boolean indicating whether $state_id is a recognized state "name."
+
+=item $fa-E<gt>delete_states(@states)
+
+Deletes the states given in @states and their corresponding transitions. The
+remaining states in the FA may be "renamed" (renumbered)! Return value not
+used.
+
+=item $fa-E<gt>add_states($num)
+
+Adds $num states to $fa, and returns a list of the new state "names."
+
+=item $fa-E<gt>get_starting
+
+=item $fa-E<gt>get_accepting
+
+Returns a list of all the states which are labeled as starting/accepting,
+respectively.
+
+=item $fa-E<gt>set_accepting(@states)
+
+=item $fa-E<gt>unset_accepting(@states)
+
+=item $fa-E<gt>set_starting(@states)
+
+=item $fa-E<gt>unset_starting(@states)
+
+Sets/unsets a list of states as being labeled starting/accepting,
+respectively.
+
+=item $fa-E<gt>is_starting($state)
+
+=item $fa-E<gt>is_accepting($state)
+
+Returns a boolean indicating whether $state is labeled as starting/accepting,
+respectively.
+
+=item $fa-E<gt>prune
+
+Deletes the states which are not reachable (via zero or more transitions)
+from starting states. Returns a list of the "names" of states that were
+deleted.
+
+=back
+
+=head2 Manipulation & Inspection Of Transitions
+
+Each transition between states is a transition object, which knows how
+to organize several "labels." Think of this as the mechanism by which
+multiple arrows in the state diagram between the same states are collapsed
+to a single arrow. This interface is abstracted away into the following
+public methods:
+
+=over
+
+=item $fa-E<gt>set_transition($state1, $state2, @labels)
+
+Resets the transition between $state1 and $state2 to a transition
+initialized using data @labels. If @labels is omitted or contains
+only undefined elements, then the call is equivalent to C<remove_transition>.
+
+=item $fa-E<gt>add_transition($state1, $state2, @labels)
+
+Adds @labels to the transition between $state1 and $state2.
+
+=item $fa-E<gt>get_transition($state1, $state2)
+
+Returns the transition object stored between $state1 and $state2, or
+undef if there is no transition.
+
+=item $fa-E<gt>remove_transition($state1, $state2)
+
+Removes the transition object between $state1 and $state2.
+
+=item $fa-E<gt>successors(\@states)
+
+=item $fa-E<gt>successors($state)
+
+=item $fa-E<gt>successors(\@states, $label)
+
+=item $fa-E<gt>successors($state, $label)
+
+=item $fa-E<gt>successors(\@states, \@labels)
+
+=item $fa-E<gt>successors($state, \@labels)
+
+Given a state/set of states, and one or more labels, returns a list of
+the states (without duplicates) reachable from the states via a single
+transition having any of the given labels. If no labels are given, returns
+the states reachable by any (single) transition.
+
+Note that this method makes no distinction for epsilon transitions, these
+are only special in FLAT::NFA objects.
+
+=item $fa-E<gt>alphabet
+
+Returns the list of characters (without duplicates) used among all
+transition labels in the automaton.
+
+=back
+
+=head2 Conversions To External Formats
+
+=over
+
+=item $fa-E<gt>as_graphviz
+
+Returns a string containing a GraphViz (dot) description of the automaton,
+suitable for rendering with your favorite GraphViz layout engine.
+
+=item $fa-E<gt>as_summary
+
+Returns a string containing a plaintext description of the automaton,
+suitable for debugging purposes.
+
+=back
+
+=head2 Miscellaneous
+
+=over
+
+=item $fa-E<gt>clone
+
+Returns an identical copy of $fa.
+
+=back

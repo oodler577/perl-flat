@@ -99,4 +99,73 @@ sub is_finite {
 
 __END__
 
-TODO: documentation
+=head1 NAME
+
+FLAT::Regex - Regular expressions
+
+=head1 SYNOPSIS
+
+A FLAT::Regex object is a regular expression.
+
+=head1 USAGE
+
+In addition to implementing the interface specified in L<FLAT>, FLAT::Regex
+objects provide the following regex-specific methods:
+
+=over
+
+=item FLAT::Regex-E<gt>new($string)
+
+Returns a regex object representing the expression given in $string. C<|>
+and C<+> can both be used to denote alternation. C<*> denotes Kleene star, and
+parentheses can be used for grouping. No other features or shortcut notation
+is currently supported (character classes, {n,m} repetition, etc).
+
+Whitespaces is ignored. To specify a literal space, use C<[ ]>. This syntax
+can also be used to specify atomic "characters" longer than a single
+character. For example, the expression:
+
+  [foo]abc[bar]*
+
+is treated as a regular expression over the symbols "a", "b", "c", "foo",
+and "bar". In particular, this means that when the regular expression is
+reversed, "foo" and "bar" remain the same (i.e, they do not become "oof" and
+"rab").
+
+The empty regular expression (epsilon) is written as C<[]>, and the null
+regular expression (sometimes called phi) is specified with the C<#>
+character. To specify a literal hash-character, use C<[#]>. Including
+literal square bracket characters is currently not supported.
+
+=item $regex-E<gt>as_string
+
+Returns the string representation of the regex, in the same format as above.
+It is NOT necessarily true that
+
+  FLAT::Regex->new($string)->as_string
+
+is the same as $string, especially if $string contains unneeded whitespace
+or redundant parentheses.
+
+=item $regex-E<gt>as_perl_regex
+
+Returns an equivalent Perl regular expression. The Perl regex will NOT be
+anchored to the beginning and end of the string. In particular this means
+that
+
+  $string =~ $regex->as_perl_regex
+
+and
+
+  $regex->contains($string)
+
+may not be equivalent.
+
+The Perl regex will not contain capturing parentheses. "Extended" characters
+that are written as "[stuff]" in FLAT regexes will be written without the
+square brackets in the corresponding Perl regex. So the following:
+
+  FLAT::Regex->new("[foo][bar]*")->as_perl_regex
+
+will be equal to "(?:foo(?:bar)*)".
+=back

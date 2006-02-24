@@ -60,6 +60,8 @@ BEGIN {
 
 1;
 
+__END__
+
 =head1 NAME
 
 FLAT - Formal Language & Automata Toolkit

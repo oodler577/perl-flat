@@ -21,33 +21,38 @@ sub members {
 package FLAT::Regex::Op::atomic;
 use base 'FLAT::Regex::Op';
 
-my $EPSILON = "[]";
-my $NULL    = "#";
-
 sub as_string {
-    $_[0]->members;
+    my $t = $_[0]->members;
+    
+    return "#" if not defined $t;
+    return 1 == length $t
+        ? $t
+        : "[$t]";
 }
 
 sub as_perl_regex {
     my $r = $_[0]->members;
 
-    return "(?:)" if $r eq $EPSILON;
-    return "(?!)" if $r eq $NULL;
-    return quotemeta $r;
+    return "(?!)" if not defined $r;
+    
+    $r = quotemeta $r;
+    return length $r == 1 ? $r : "(?:$r)";
 }
 
 sub as_nfa {
-    my $r = $_[0]->members;
-    
-    FLAT::NFA->singleton(
-        $r eq $EPSILON ? "" :
-        $r eq $NULL    ? undef : $r
-    );
+    FLAT::NFA->singleton( $_[0]->members );
 }
 
 sub from_parse {
     my ($pkg, @item) = @_;
-    $pkg->new( $item[1] );
+    my $i = $item[1];
+    
+    return $pkg->new("")    if $i eq "[]";
+    return $pkg->new(undef) if $i eq "#";
+    
+    $i =~ s/^\[|\]$//g;
+    
+    return $pkg->new($i);
 }
 
 sub reverse {
@@ -55,12 +60,12 @@ sub reverse {
 }
 
 sub is_empty {
-    $_[0]->members eq $NULL;
+    not defined $_[0]->members;
 }
 
 sub has_nonempty_string {
     my $self = shift;
-    $self->members ne $EPSILON and $self->members ne $NULL;
+    defined $self->members and length $self->members;
 }
 
 sub is_finite {

@@ -4,5 +4,9 @@ lib/FLAT/Regex/Op.pm
 lib/FLAT/Regex/Parser.pm
 lib/FLAT/Regex/WithNegations.pm
 lib/FLAT/Regex.pm
+lib/FLAT/FA.pm
+lib/FLAT/NFA.pm
+lib/FLAT/DFA.pm
+lib/FLAT/Transition.pm
 lib/FLAT.pm
 Makefile.PL
