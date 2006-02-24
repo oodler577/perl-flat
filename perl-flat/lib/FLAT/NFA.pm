@@ -231,7 +231,7 @@ sub as_graphviz {
         join("", @trans);
 }
 
-sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
+sub _SET_ID { join "\0", sort { $a <=> $b } @_; } # could this be encapsulated as inside of a closure or anonymous function?
 sub as_dfa {
     my $self = shift;
     

@@ -68,6 +68,17 @@ sub as_string {
     return $prec > $self->precedence ? "($result)" : $result;
 }
 
+sub shuffle {
+    my $self = shift;
+    # will handle shuffle operatation
+}
+
+sub as_pfa {
+    my $self = shift;
+    # ... will turn shuffle instance into PFA - similar to Op->alt->as_nfa,
+    # but a tiny different...if I may offer you a riddle :) 
+}
+
 sub from_parse {
     my ($pkg, @item) = @_;
     $pkg->new( @{ $item[1] } );

@@ -1,56 +1,30 @@
-package FLAT::PFA;
+package FLAT::PFA; # should this be FLAT::NFA::PFA ? .. might be too confusing
 use strict;
-use base 'FLAT::FA';
+use base 'FLAT::NFA';
 
 use FLAT::Transition;
 
 sub new {
     my $pkg = shift;
-    my $self = $pkg->SUPER::new(@_);
-    $self->{TRANS_CLASS} = "FLAT::Transition";
+    my $self = $pkg->SUPER::new(@_); # Inherits constructor from NFA
+                                     # contains states (actually nodes), alphabet, and 
+                                     # transitions like NFA
+    $self->{TIED} = [];              # tracks tied nodes
+    $self->{ACTIVE_NODES} = [];      # tracks active nodes - could be label like start and final
     return $self;
 }
 
-sub singleton {
-    my ($class, $char) = @_;
-    my $nfa = $class->new;
+# Uses FLAT::NFA methods for fall back, including: union, concat, kleene, and singleton
 
-    if (not defined $char) {
-        $nfa->add_states(1);
-        $nfa->set_starting(0);
-    } elsif ($char eq "") {
-        $nfa->add_states(1);
-        $nfa->set_starting(0);
-        $nfa->set_accepting(0);
-    } else {
-        $nfa->add_states(2);
-        $nfa->set_starting(0);
-        $nfa->set_accepting(1);
-        $nfa->set_transition(0, 1, $char);
-    }
-    return $nfa;
-}
+sub as_pfa { $_[0]->clone() }
 
-sub as_pfa {
 
-}
-
+# PFA->NFA conversion algorithm
 sub as_nfa {
 
 }
 
-sub union {
-
-}
-
-sub concat {
-
-}
-
-sub kleene {
-
-}
-
+# Shuffle constructor
 sub shuffle {
 
 }
@@ -87,6 +61,10 @@ In addition to implementing the interface specified in L<FLAT>, FLAT::PFA
 objects provide the following PFA-specific methods:
 
 =over
+
+item $pfa-E<gt>shuffle
+
+Cloning method; returns a copy of itself.
 
 =item $pfa-E<gt>shuffle
 
