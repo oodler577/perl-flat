@@ -25,7 +25,7 @@ sub as_string {
     my $t = $_[0]->members;
     
     return "#" if not defined $t;
-    return 1 == length $t
+    return $t =~ /^\w$/
         ? $t
         : "[$t]";
 }
@@ -36,7 +36,7 @@ sub as_perl_regex {
     return "(?!)" if not defined $r;
     
     $r = quotemeta $r;
-    return length $r == 1 ? $r : "(?:$r)";
+    return $r =~ /^\w$/ ? $r : "(?:$r)";
 }
 
 sub as_nfa {

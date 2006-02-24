@@ -36,7 +36,15 @@ sub as_string {
 }
 
 sub as_perl_regex {
-    "(?:" . $_[0]->op->as_perl_regex(0) . ")";
+    my ($self, %opts) = @_;
+    
+    my $fmt = $opts{anchored} ? '(?:\A%s\z)' : '(?:%s)';
+    return sprintf $fmt, $self->op->as_perl_regex(0);
+}
+
+sub contains {
+    my ($self, $string) = @_;
+    $string =~ $self->as_perl_regex(anchored => 1);
 }
 
 sub as_nfa {
@@ -137,6 +145,9 @@ regular expression (sometimes called phi) is specified with the C<#>
 character. To specify a literal hash-character, use C<[#]>. Including
 literal square bracket characters is currently not supported.
 
+The expression "" (or any string containing only whitespace) is not a valid
+FLAT regex expression. Either C<[]> or C<#> are probably what was intended.
+
 =item $regex-E<gt>as_string
 
 Returns the string representation of the regex, in the same format as above.
@@ -144,28 +155,23 @@ It is NOT necessarily true that
 
   FLAT::Regex->new($string)->as_string
 
-is the same as $string, especially if $string contains unneeded whitespace
-or redundant parentheses.
+is identical to $string, especially if $string contains whitespace or
+redundant parentheses.
 
 =item $regex-E<gt>as_perl_regex
 
-Returns an equivalent Perl regular expression. The Perl regex will NOT be
-anchored to the beginning and end of the string. In particular this means
-that
+=item $regex-E<gt>as_perl_regex(anchored => $bool);
 
-  $string =~ $regex->as_perl_regex
-
-and
-
-  $regex->contains($string)
-
-may not be equivalent.
+Returns an equivalent Perl regular expression. If the "anchored" option
+is set to a true value, the regular expression will be anchored with
+C<\A> and C<\z>. The default behavior is to omit the anchors.
 
 The Perl regex will not contain capturing parentheses. "Extended" characters
-that are written as "[stuff]" in FLAT regexes will be written without the
+that are written as "[char]" in FLAT regexes will be written without the
 square brackets in the corresponding Perl regex. So the following:
 
   FLAT::Regex->new("[foo][bar]*")->as_perl_regex
 
 will be equal to "(?:foo(?:bar)*)".
+
 =back
