@@ -281,7 +281,7 @@ FLAT::NFA - Nondeterministic finite automata
 =head1 SYNOPSIS
 
 A FLAT::NFA object is a finite automata whose transitions are labeled
-either wtih characters or the empty string (epsilon).
+either with characters or the empty string (epsilon).
 
 =head1 USAGE
 
