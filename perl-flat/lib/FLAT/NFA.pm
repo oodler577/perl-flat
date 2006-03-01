@@ -202,6 +202,25 @@ sub trace {
     }
     return @trace;
 }
+############
+
+sub _extend_alphabet {
+    my ($self, @alpha) = @_;
+    
+    my %alpha = map { $_ => 1 } @alpha;
+    delete $alpha{$_} for $self->alphabet;
+
+    return if not keys %alpha;
+
+    my $trash = $self->add_states(1);
+    for my $state ($self->get_states) {
+        next if $state eq $trash;
+        for my $char (keys %alpha) {
+            $self->add_transition($state, $trash, $char);
+        }
+    }
+    $self->add_transition($trash, $trash, $self->alphabet);
+}
 
 ############
 
@@ -231,7 +250,7 @@ sub as_graphviz {
         join("", @trans);
 }
 
-sub _SET_ID { join "\0", sort { $a <=> $b } @_; } # could this be encapsulated as inside of a closure or anonymous function?
+sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
 sub as_dfa {
     my $self = shift;
     

@@ -10,3 +10,4 @@ lib/FLAT/DFA.pm
 lib/FLAT/Transition.pm
 lib/FLAT.pm
 Makefile.PL
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -9,28 +9,13 @@ use Data::Dumper;
 # printf "$regex becomes %s\n", $regex->as_perl_regex;
 
 sub foo {
-    FLAT::Regex->new(shift)->as_nfa;
+    FLAT::Regex->new(shift)->as_min_dfa;
 }
 
 
-for (qw{ ab|cd|[] ab*  []* (a|b)* ([]|[])* }, "#*", "###") {
-    my $nfa = foo($_);
+my $dfa1 = foo("((a+b)(a+b))*");
+my $dfa2 = foo("a*");
 
-    print "$_ is: ";
-    print $nfa->is_finite ? "finite, " : "infinite, ";
-    print $nfa->is_empty ? "empty, " : "nonempty, ";
-    print "alphabet = ", $nfa->alphabet, "\n";
-}
+my $result = $dfa1->intersect($dfa2);
 
-#######
-
-my $nfa = foo("ab(c|d)*e");
-
-for (qw[ abe abce abcdcdcdcde bcde be abcd ab ]) {
-    printf "$_ in the language? %s\n",
-       $nfa->contains($_) ? "yes!" : "no";
-    my @t = $nfa->trace($_);
-
-    print "[@$_] " for @t;
-    print $/;
-}
+print $result->as_graphviz;

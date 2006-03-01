@@ -13,6 +13,63 @@ sub set_starting {
         if $num != 1;
 }
 
+sub complement {
+    my $self = $_[0]->clone;
+    
+    for my $s ($self->get_states) {
+        $self->is_accepting($s)
+            ? $self->unset_accepting($s)
+            : $self->set_accepting($s);
+    }
+    
+    return $self;
+}
+
+sub _TUPLE_ID { join "\0", @_ }
+sub _uniq { my %seen; grep { !$seen{$_}++ } @_; }
+
+## this method still needs more work..
+sub intersect {
+    my @dfas = map { $_->as_dfa } @_;
+    
+    my $return = FLAT::DFA->new;
+    my %newstates;
+    my @alpha = _uniq( map { $_->alphabet } @dfas );
+    
+    $_->_extend_alphabet(@alpha) for @dfas;
+
+    my @start = map { $_->get_starting } @dfas;
+    my $start = $newstates{ _TUPLE_ID(@start) } = $return->add_states(1);
+    $return->set_starting($start);
+    $return->set_accepting($start)
+        if ! grep { ! $dfas[$_]->is_accepting( $start[$_] ) } 0 .. $#dfas;
+
+    my @queue = (\@start);
+    while (@queue) {
+        my @tuple = @{ shift @queue };
+
+        for my $char (@alpha) {
+            my @next = map { $dfas[$_]->successors( $tuple[$_], $char ) }
+                        0 .. $#dfas;
+            
+            warn "[@tuple] --> [@next] via $char\n";
+            
+            if (not exists $newstates{ _TUPLE_ID(@next) }) {
+                my $s = $newstates{ _TUPLE_ID(@next) } = $return->add_states(1);
+                $return->set_accepting($s)
+                    if ! grep { ! $dfas[$_]->is_accepting( $next[$_] ) } 0 .. $#dfas;
+                push @queue, \@next;
+            }
+            
+            $return->add_transition( $newstates{ _TUPLE_ID(@tuple) },
+                                     $newstates{ _TUPLE_ID(@next) },
+                                     $char );
+        }            
+    }
+
+    return $return;    
+}
+
 sub unset_starting {
     my $self = shift;
     $self->SUPER::unset_starting(@_);
