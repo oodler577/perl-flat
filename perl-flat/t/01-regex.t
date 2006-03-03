@@ -1,11 +1,15 @@
-use Test::More tests => 65;
+use Test::More tests => 66;
 use FLAT;
 
-use Data::Dumper;
+# use Data::Dumper;
 
 my $reg;
 
 sub regex { FLAT::Regex->new(@_) }
+
+is( ref regex("a"),
+    "FLAT::Regex",
+    "blessed reference" );
 
 is( regex( "(((a)bc)def)ghi" )->as_string,
     "abcdefghi",

@@ -217,7 +217,7 @@ sub prune {
     }
     
     my @useless = grep { !$seen{$_} } $self->get_states;
-    $self->delete_state(@useless);
+    $self->delete_states(@useless);
     
     return @useless;
 }
