@@ -1,6 +1,7 @@
 package FLAT::PFA; # should this be FLAT::NFA::PFA ? .. might be too confusing
 use strict;
 use base 'FLAT::NFA';
+use Carp;
 
 use FLAT::Transition;
 
@@ -14,19 +15,46 @@ sub new {
     return $self;
 }
 
-# Uses FLAT::NFA methods for fall back, including: union, concat, kleene, and singleton
+sub singleton {
+    my ($class, $char) = @_;
+    my $pfa = $class->new;
+
+    if (not defined $char) {
+        $pfa->add_states(1);
+        $pfa->set_starting(0);
+    } elsif ($char eq "") {
+        $pfa->add_states(1);
+        $pfa->set_starting(0);
+        $pfa->set_accepting(0);
+    } else {
+        $pfa->add_states(2);
+        $pfa->set_starting(0);
+        $pfa->set_accepting(1);
+        $pfa->set_transition(0, 1, $char);
+    }
+    # need to handle nodes...\
+    
+    return $pfa;
+}
 
 sub as_pfa { $_[0]->clone() }
 
 
 # PFA->NFA conversion algorithm
 sub as_nfa {
+  return FLAT::NFA->singleton();
+}
+
+# Uses FLAT::NFA methods for fall back, including: 
+# union, concat, and kleene
+
+# Shuffle constructor - pinch with lambda transitions
+sub shuffle {
 
 }
 
-# Shuffle constructor
-sub shuffle {
-
+sub reverse {
+  croak "Not implemented for PFAs (yet?)";
 }
 
 1;

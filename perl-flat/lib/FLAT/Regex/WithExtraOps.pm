@@ -3,15 +3,26 @@ use base 'FLAT::Regex';
 
 use strict;
 use Carp;
+use FLAT::PFA;
 
 my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star negate shuffle ]);
 sub _parser { $PARSER }
 
+sub members {
+    my $self = shift;
+    wantarray ? @$self[0 .. $#$self] : $self->[0];
+}
+
+# In the absence of a shuffle operator, the PFA will be a NFA
+sub as_pfa {
+    FLAT::PFA->singleton( $_[0]->members );
+}
+
 #### Precedence
 # 30 ::star
 # 20 ::concat
-# 15 ::negate   <---<<
-# 12 ::shuffle  <---<<
+# 15 ::negate   <---<< WithExtraOps
+# 12 ::shuffle  <---<< WithExtraOps
 # 10 ::alt
 # 0  ::atomic
 
@@ -56,6 +67,7 @@ sub is_finite {
 ###############################
 package FLAT::Regex::Op::shuffle;
 use base 'FLAT::Regex::Op';
+use Carp;
 
 sub parse_spec { "%s(2.. /[&]/)" }
 sub precedence { 12 }
@@ -68,51 +80,26 @@ sub as_string {
     return $prec > $self->precedence ? "($result)" : $result;
 }
 
-sub shuffle {
-    my $self = shift;
-    # will handle shuffle operatation
-}
-
-sub as_pfa {
-    my $self = shift;
-    # ... will turn shuffle instance into PFA - similar to Op->alt->as_nfa,
-    # but a tiny different...if I may offer you a riddle :) 
-}
-
 sub from_parse {
     my ($pkg, @item) = @_;
     $pkg->new( @{ $item[1] } );
 }
 
+## note: "reverse" conflicts with perl builtin
 sub reverse {
     my $self = shift;
-    my @ops  = map { $_->reverse } $self->members;
-    __PACKAGE__->new(@ops);
+    my $op   = $self->members->reverse;
+    __PACKAGE__->new($op);
 }
 
 sub is_empty {
-    my $self = shift;
-    my @members = $self->members;
-    for (@members) {
-        return 1 if $_->is_empty;
-    }
-    return 0;
+    croak "Not implemented for shuffled regexes";
 }
 
 sub has_nonempty_string {
-    my $self = shift;
-    my @members = $self->members;
-    for (@members) {
-        return 1 if $_->has_nonempty_string;
-    }
-    return 0;
+    croak "Not implemented for shuffled regexes";
 }
 
 sub is_finite {
-    my $self = shift;
-    my @members = $self->members;
-    for (@members) {
-        return 0 if not $_->is_finite;
-    }
-    return 1;
+    croak "Not implemented for shuffled regexes";
 }
