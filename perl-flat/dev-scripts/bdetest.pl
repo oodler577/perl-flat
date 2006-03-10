@@ -3,9 +3,13 @@ use strict;
 
 use lib qw(../lib);
 use FLAT;
+use FLAT::NFA;
+use FLAT::Regex;
 use FLAT::Regex::WithExtraOps;
 use Data::Dumper;
 
-my $RE = FLAT::Regex::WithExtraOps->new('ab|c* & (a|b)*');
+# This is mainly my test script for FLAT::FA::PFA.pm
 
-print $RE->as_string;
+my $PRE = FLAT::Regex::WithExtraOps->new('ab+c*&(a+b)*');
+
+print $PRE->as_string;
