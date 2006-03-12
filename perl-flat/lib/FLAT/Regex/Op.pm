@@ -43,6 +43,10 @@ sub as_nfa {
     FLAT::NFA->singleton( $_[0]->members );
 }
 
+sub as_pfa {
+    FLAT::PFA->singleton( $_[0]->members );
+}
+
 sub from_parse {
     my ($pkg, @item) = @_;
     my $i = $item[1];
@@ -96,6 +100,11 @@ sub as_nfa {
     $self->members->as_nfa->kleene;
 }
 
+sub as_pfa {
+    my $self = shift;
+    $self->members->as_pfa->kleene;
+}
+
 sub from_parse {
     my ($pkg, @item) = @_;
     $pkg->new( $item[1] );
@@ -146,6 +155,12 @@ sub as_perl_regex {
 sub as_nfa {
     my $self = shift;
     my @parts = map { $_->as_nfa } $self->members;
+    $parts[0]->concat( @parts[1..$#parts] );
+}
+
+sub as_pfa {
+    my $self = shift;
+    my @parts = map { $_->as_pfa } $self->members;
     $parts[0]->concat( @parts[1..$#parts] );
 }
 
@@ -218,6 +233,12 @@ sub as_perl_regex {
 sub as_nfa {
     my $self = shift;
     my @parts = map { $_->as_nfa } $self->members;
+    $parts[0]->union( @parts[1..$#parts] );
+}
+
+sub as_pfa {
+    my $self = shift;
+    my @parts = map { $_->as_pfa } $self->members;
     $parts[0]->union( @parts[1..$#parts] );
 }
 

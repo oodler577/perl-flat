@@ -11,10 +11,4 @@ my $PRE = FLAT::Regex::WithExtraOps->new('(ab+c*)&(a+b)*');
 
 my $PFA = $PRE->as_pfa();
 
-my $NFA = $PFA->as_nfa();
-
-my $DFA = $NFA->as_dfa();
-
-my $DFA_min = $DFA->as_min_dfa();
-
 print $PRE->as_string;

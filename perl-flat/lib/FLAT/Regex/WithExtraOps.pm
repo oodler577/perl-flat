@@ -3,7 +3,6 @@ use base 'FLAT::Regex';
 
 use strict;
 use Carp;
-use FLAT::PFA;
 
 my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star negate shuffle ]);
 sub _parser { $PARSER }
@@ -11,11 +10,6 @@ sub _parser { $PARSER }
 sub members {
     my $self = shift;
     wantarray ? @$self[0 .. $#$self] : $self->[0];
-}
-
-# In the absence of a shuffle operator, the PFA will be a NFA
-sub as_pfa {
-    FLAT::PFA->singleton( $_[0]->members );
 }
 
 #### Precedence
@@ -85,11 +79,14 @@ sub from_parse {
     $pkg->new( @{ $item[1] } );
 }
 
-## note: "reverse" conflicts with perl builtin
+# Implement
+sub as_pfa {
+    my $self = shift;
+}
+
+# Implement?
 sub reverse {
     my $self = shift;
-    my $op   = $self->members->reverse;
-    __PACKAGE__->new($op);
 }
 
 sub is_empty {

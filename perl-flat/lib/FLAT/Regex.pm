@@ -51,6 +51,9 @@ sub as_nfa {
     $_[0]->op->as_nfa;
 }
 
+sub as_pfa {
+    $_[0]->op->as_pfa;
+}
 
 #### regular language standard interface implementation:
 #### TODO: parameter checking?

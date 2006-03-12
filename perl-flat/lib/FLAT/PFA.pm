@@ -42,19 +42,29 @@ sub as_pfa { $_[0]->clone() }
 
 # PFA->NFA conversion algorithm
 sub as_nfa {
-  return FLAT::NFA->singleton();
+  
 }
 
-# Uses FLAT::NFA methods for fall back, including: 
-# union, concat, and kleene
+sub union {
+
+}
+
+sub concat {
+
+}
+
+sub kleene {
+
+}
 
 # Shuffle constructor - pinch with lambda transitions
 sub shuffle {
 
 }
 
+# Implement?
 sub reverse {
-  croak "Not implemented for PFAs (yet?)";
+
 }
 
 1;
