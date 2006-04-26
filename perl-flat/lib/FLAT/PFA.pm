@@ -5,14 +5,14 @@ use Carp;
 
 use FLAT::Transition;
 
-#
+
 # Note: in a PFA, states are made up of active nodes.  In this implementation, we have
 # decided to retain the functionality of the state functions in FA.pm, although the entities
 # being manipulated are technically nodes, not states.  States are only explicitly tracked
 # once the PFA is serialized into an NFA.  Therefore, the TRANS member of the PFA object is
 # the nodal transition function, gamma.  The state transition function, delta, is not used
 # in anyway, but is derived out of the PFA->NFA conversion process.
-#
+
 
 # The new way of doing things eliminated from PFA.pm of FLAT::Legacy is the 
 # need to explicitly track: start nodes, final nodes, symbols, and lambda & epsilon symbols,  
