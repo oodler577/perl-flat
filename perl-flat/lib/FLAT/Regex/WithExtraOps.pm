@@ -79,14 +79,16 @@ sub from_parse {
     $pkg->new( @{ $item[1] } );
 }
 
-# Implement
 sub as_pfa {
     my $self = shift;
+    my @parts = map { $_->as_pfa } $self->members;
+    $parts[0]->shuffle( @parts[1..$#parts] );
 }
 
 # Implement?
 sub reverse {
     my $self = shift;
+    croak "Not implemented for shuffled regexes";
 }
 
 sub is_empty {

@@ -20,8 +20,6 @@ use FLAT::Transition;
 sub new {
     my $pkg = shift;
     my $self = $pkg->SUPER::new(@_); # <-- SUPER is FLAT::NFA
-    $self->{TIED} = [];              # tracks tied nodes
-    $self->{ACTIVE_NODES} = [];      # tracks active nodes - could be label like start and final
     $self->{LAMBDA} = '#lambda';     # special lambda symbol - used internally
     return $self;
 }
@@ -30,7 +28,6 @@ sub new {
 sub singleton {
     my ($class, $char) = @_;
     my $pfa = $class->new;
-    
     if (not defined $char) {
         $pfa->add_states(1);
         $pfa->set_starting(0);
@@ -66,13 +63,26 @@ sub get_lambda {
 
 # will implement the joining of two PFAs with lambda transitions
 sub shuffle {
-  croak "PFA::shuffle is not yet supported";
-  # can't use _swallow, but might be able to use a modifed version of it...
-  # look at FLAT::Legacy
+    my @pfas = map { $_->as_pfa } @_;
+    my $result = $pfas[0]->clone;
+    $result->_swallow($_) for @pfas[1 .. $#pfas];
+    my ($newstart, $newfinal) = $result->add_states(2);
+    my @starting = $result->get_starting;
+    my @accepting = $result->get_accepting;
+    $result->unset_starting(@starting);
+    $result->unset_accepting(@accepting);  
+    $result->set_starting($newstart);
+    $result->set_accepting($newfinal);
+    foreach (@starting) {
+      $result->set_transition($newstart,$_,$result->get_lambda());
+    }
+    foreach (@accepting) {
+      $result->set_transition($_,$newfinal,$result->get_lambda());    
+    }
+    return $result;
 }
 
-<<<<<<< PFA.pm
-# joins two PFAs in a union (or)
+# joins two PFAs in a union (or) - no change from NFA
 sub union {
     my @pfas = map { $_->as_pfa } @_;
     my $result = $pfas[0]->clone;
@@ -80,7 +90,7 @@ sub union {
     $result;
 }
 
-# joins two PFAs via concatenation
+# joins two PFAs via concatenation  - no change from NFA
 sub concat {
     my @pfas = map { $_->as_pfa } @_;
     
@@ -111,7 +121,7 @@ sub concat {
     $result;
 }
 
-# forms closure around a the given PFA
+# forms closure around a the given PFA  - no change from NFA
 sub kleene {
     my $result = $_[0]->clone;
     
@@ -133,10 +143,22 @@ sub kleene {
     $result;
 }
 
-# reversal should be like the transpose of the nodal transitoin
-# matrix, but I still have to make sure 
+
+# reverse  - no change from NFA
 sub reverse {
-   croak "PFA::reverse is not yet supported";
+    my $self = $_[0]->clone;
+    $self->_transpose;
+    
+    my @start = $self->get_starting;
+    my @final = $self->get_accepting;
+    
+    $self->unset_accepting( $self->get_states );
+    $self->unset_starting( $self->get_states );
+    
+    $self->set_accepting( @start );
+    $self->set_starting( @final );
+    
+    $self;
 }
 
 1;
