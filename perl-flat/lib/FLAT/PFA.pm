@@ -47,6 +47,8 @@ sub singleton {
 # attack of the clones
 sub as_pfa { $_[0]->clone() }
 
+# 
+sub as_nfa { $_[0]->clone() }
 
 # set lambda symbol - temp fix for larger problem of special symbols
 # like epsilon and lambda
@@ -62,23 +64,18 @@ sub get_lambda {
 }
 
 # will implement the joining of two PFAs with lambda transitions
+# BUG - need to fix
 sub shuffle {
     my @pfas = map { $_->as_pfa } @_;
+
     my $result = $pfas[0]->clone;
-    $result->_swallow($_) for @pfas[1 .. $#pfas];
-    my ($newstart, $newfinal) = $result->add_states(2);
-    my @starting = $result->get_starting;
-    my @accepting = $result->get_accepting;
-    $result->unset_starting(@starting);
-    $result->unset_accepting(@accepting);  
-    $result->set_starting($newstart);
-    $result->set_accepting($newfinal);
-    foreach (@starting) {
-      $result->set_transition($newstart,$_,$result->get_lambda());
+    my @newstate = ([ $result->get_states ]);
+    my @start = $result->get_starting;
+
+    for (1 .. $#pfas) {
+        push @newstate, [ $result->_swallow( $pfas[$_] ) ];
     }
-    foreach (@accepting) {
-      $result->set_transition($_,$newfinal,$result->get_lambda());    
-    }
+
     return $result;
 }
 
