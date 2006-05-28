@@ -64,18 +64,27 @@ sub get_lambda {
 }
 
 # will implement the joining of two PFAs with lambda transitions
-# BUG - need to fix
+# need to fix
 sub shuffle {
     my @pfas = map { $_->as_pfa } @_;
-
     my $result = $pfas[0]->clone;
-    my @newstate = ([ $result->get_states ]);
-    my @start = $result->get_starting;
-
+    # iteratively add lambda pinch to all PFAs
     for (1 .. $#pfas) {
-        push @newstate, [ $result->_swallow( $pfas[$_] ) ];
+        $result->_swallow( $pfas[$_] );
+	my @starting = $result->get_starting();
+	my @accepting = $result->get_accepting();
+	$result->unset_starting(@starting);
+	$result->unset_accepting(@accepting);
+        my ($newstart, $newfinal) = $result->add_states(2);
+	$result->set_starting($newstart);
+	$result->set_accepting($newfinal);
+	foreach (@starting) {
+          $result->set_transition($newstart,$_,'#lambda');
+	}
+	foreach (@accepting) {
+          $result->set_transition($_,$newfinal,'#lambda');
+	}	
     }
-
     return $result;
 }
 
@@ -84,8 +93,9 @@ sub union {
     my @pfas = map { $_->as_pfa } @_;
     my $result = $pfas[0]->clone;
     $result->_swallow($_) for @pfas[1 .. $#pfas];
-    $result;
-}
+    my ($newstart, $newfinal) = $result->add_states(2);
+    
+    }
 
 # joins two PFAs via concatenation  - no change from NFA
 sub concat {
