@@ -47,9 +47,6 @@ sub singleton {
 # attack of the clones
 sub as_pfa { $_[0]->clone() }
 
-# 
-sub as_nfa { $_[0]->clone() }
-
 # set lambda symbol - temp fix for larger problem of special symbols
 # like epsilon and lambda
 sub set_lambda {
@@ -169,6 +166,17 @@ sub reverse {
 }
 
 1;
+
+# stretching my legs after a few months being gone..
+
+sub as_nfa { 
+    my $self = shift;
+    
+    my $result = FLAT::DFA->new;
+    my %subset;
+    
+    $result;
+ }
 
 __END__
 

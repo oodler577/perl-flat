@@ -251,6 +251,7 @@ sub as_graphviz {
 }
 
 sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
+
 sub as_dfa {
     my $self = shift;
     
