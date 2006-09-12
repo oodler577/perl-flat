@@ -167,15 +167,25 @@ sub reverse {
 
 1;
 
-# stretching my legs after a few months being gone..
+# stretching my legs after a few months being gone ... see if the legacy conversion
+# can be modified to work
 
 sub as_nfa { 
     my $self = shift;
-    
-    my $result = FLAT::DFA->new;
-    my %subset;
-    
-    $result;
+    my @Dstates = $self->get_states();
+    my %Dtran =(); # hash of serialized state names that have been searched
+    # New NFA object reference
+    my $result = FLAT::NFA->new();    
+
+    print Dumper(@Dstates);
+
+#    while (@Dstates) {
+#      foreach ($self->alphabet()) {
+     
+#      }
+#    }
+
+    return $result;
  }
 
 __END__

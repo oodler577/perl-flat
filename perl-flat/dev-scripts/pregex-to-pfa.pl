@@ -12,13 +12,16 @@ my $PRE = FLAT::Regex::WithExtraOps->new($ARGV[0]);
 
 my $PFA = $PRE->as_pfa();
 
-my $dot = $PFA->as_graphviz;
+my $graphviz = $PFA->as_graphviz;
 my $summary = $PFA->as_summary;
 
 print "$summary\n";
 
-open my $fh, "|-", "dot -Tpng -o output.png"
-   or die "Couldn't run dot: $!\n";
+open my $fh, "|-", "circo -Tpng -o output.png"
+   or die "Couldn't run graphviz: $!\n";
 
-print $fh $dot;
+print $fh $graphviz;
 close $fh;
+
+my $NFA = $PFA->as_nfa();
+print Dumper($NFA);
