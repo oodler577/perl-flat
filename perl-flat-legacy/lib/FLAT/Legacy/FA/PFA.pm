@@ -226,7 +226,7 @@ sub to_nfa {
         # @next contains new, obviously
 	push(@next,@new);
 	# @next also contains @T - @tied
-	push(@next,$self->compliment(\@T,\@tied));
+	push(@next,$self->complement(\@T,\@tied));
 	# see if the resulting state can be added to @Dstates
         my $state = $self->serialize_name(@next);
 	if (!defined($Dtran{$state})) {
@@ -240,7 +240,7 @@ sub to_nfa {
           if (defined($self->{_TRANSITIONS}{$node}{$symbol})) {
 	    my @new = $self->get_transition_on($node,$symbol);
 	    foreach my $new (@new) {
-	      my @next = $self->compliment(\@T,[$node]);
+	      my @next = $self->complement(\@T,[$node]);
 	      push(@next,$new);
               my $state = $self->serialize_name(@next);
 	      if (!defined($Dtran{$state})) {

@@ -235,7 +235,7 @@ sub to_file {
   close(FH);
 }
 
-sub  compliment {
+sub  complement {
   my $self = shift;
   my $set1 = shift;
   my $set2 = shift;
