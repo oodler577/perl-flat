@@ -61,7 +61,7 @@ sub get_lambda {
 }
 
 # will implement the joining of two PFAs with lambda transitions
-# need to fix
+# need to fix <-- still broken?  need to check!!
 sub shuffle {
     my @pfas = map { $_->as_pfa } @_;
     my $result = $pfas[0]->clone;
@@ -170,20 +170,39 @@ sub reverse {
 # stretching my legs after a few months being gone ... see if the legacy conversion
 # can be modified to work
 
+# See FLAT::Legacy::PFA for the initialization stuff - I am sure it can be refined a lot!
+# PSUEDO CODE
+#   my @Dstates = get_starting();
+#   while (@Dstates) 
+#   { my @T = @{pop (@Dstates)};                !!remember that states are made up of 1 or more nodes
+#     my $current = $self->serialize_name(@T) 
+#     add $current (or @T) to @DONE stack
+#     foreach my $symbol ($self->alphabet)
+#     {  if ($symbol eq $LAMBDA)
+#        {  foreach my $L ($self->get_tied_from($current))
+#           {  foreach my $U ($self->move($L,$LAMBDA) push(@N,unique($U)); }
+#        }
+#        else
+#        {  foreach my $t (@T)  
+#           {  foreach my $U ($self->move($U,$symbol))
+#              {  push(@N,$self->complement(@T,$t)) };
+#           }
+#        }       
+#        Ndtran [N,$symbol] := N !!add new transition
+#        if N unmarked, add N to Dstates
+#    }
+#  }
+
+#1. make sure psuedo code is correct
+#2. implement it, including any require initializations
+#3. refine, refactor
+
 sub as_nfa { 
     my $self = shift;
     my @Dstates = $self->get_states();
     my %Dtran =(); # hash of serialized state names that have been searched
     # New NFA object reference
     my $result = FLAT::NFA->new();    
-
-    print Dumper(@Dstates);
-
-#    while (@Dstates) {
-#      foreach ($self->alphabet()) {
-     
-#      }
-#    }
 
     return $result;
  }

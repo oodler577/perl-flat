@@ -7,3 +7,7 @@ TESTS TESTS TESTS TESTS TESTS TESTS TESTS
 
 keep track of where in the code we assume ->get_states are numbers (if
   we want to add state label support back).
+
+input and output options and formats
+
+

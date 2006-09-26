@@ -3,7 +3,6 @@ use strict;
 
 use lib qw(../lib);
 use FLAT::Regex::WithExtraOps;
-use Data::Dumper;
 use FLAT::PFA;
 
 # This is mainly my test script for FLAT::FA::PFA.pm
@@ -24,4 +23,3 @@ print $fh $graphviz;
 close $fh;
 
 my $NFA = $PFA->as_nfa();
-print Dumper($NFA);
