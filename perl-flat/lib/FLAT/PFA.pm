@@ -165,8 +165,6 @@ sub reverse {
     $self;
 }
 
-1;
-
 # stretching my legs after a few months being gone ... see if the legacy conversion
 # can be modified to work
 
@@ -174,7 +172,8 @@ sub reverse {
 # PSUEDO CODE
 #   my @Dstates = get_starting();
 #   while (@Dstates) 
-#   { my @T = @{pop (@Dstates)};                !!remember that states are made up of 1 or more nodes
+#   { my @T = @{pop (@Dstates)};                
+#    #remember that states are made up of 1 or more nodes
 #     my $current = $self->serialize_name(@T) 
 #     add $current (or @T) to @DONE stack
 #     foreach my $symbol ($self->alphabet)
@@ -206,6 +205,8 @@ sub as_nfa {
 
     return $result;
  }
+
+1;
 
 __END__
 

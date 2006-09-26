@@ -10,7 +10,7 @@ my $regex = shift;
 
 my $nfa = FLAT::Regex->new($regex)->as_nfa;
 my $dot = $nfa->as_graphviz;
-my $summary = $nfa->as_summary;
+zmy $summary = $nfa->as_summary;
 
 print "$summary\n";
 
