@@ -10,4 +10,4 @@ keep track of where in the code we assume ->get_states are numbers (if
 
 input and output options and formats
 
-
+look at creating a 'drop in' regex/pregex parser using the custom recdesc one build for FLAT::Legacy

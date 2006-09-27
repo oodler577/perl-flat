@@ -11,10 +11,11 @@ my $PRE = FLAT::Regex::WithExtraOps->new($ARGV[0]);
 
 my $PFA = $PRE->as_pfa();
 
+my $gdl = $PFA->as_gdl;
 my $graphviz = $PFA->as_graphviz;
 my $summary = $PFA->as_summary;
 
-print "$summary\n";
+print "$gdl\n";
 
 open my $fh, "|-", "circo -Tpng -o output.png"
    or die "Couldn't run graphviz: $!\n";

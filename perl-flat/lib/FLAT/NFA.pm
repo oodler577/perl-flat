@@ -222,8 +222,36 @@ sub _extend_alphabet {
     $self->add_transition($trash, $trash, $self->alphabet);
 }
 
-############
+############ Formatted output
 
+
+# Graph Description Language, aiSee, etc
+sub as_gdl {
+    my $self = shift;
+    
+    my @states = map {
+        sprintf qq{node: { title:"%s" shape:circle borderstyle: %s}\n},
+            $_,
+            ($self->is_accepting($_) ? "double bordercolor: red" : "solid")
+    } $self->get_states;
+    
+    my @trans;
+    for my $s1 ($self->get_states) {
+    for my $s2 ($self->get_states) {
+        my $t = $self->get_transition($s1, $s2);
+        
+        if (defined $t) {
+            push @trans, sprintf qq[edge: { source: "%s" target: "%s" label: "%s" arrowstyle: line }\n],
+                $s1, $s2, $t->as_string;
+        }
+    }}
+    
+    return sprintf "graph: {\ndisplay_edge_labels: yes\n\n%s\n%s}\n",
+        join("", @states),
+        join("", @trans);
+}
+
+# Graphviz: dot, etc
 sub as_graphviz {
     my $self = shift;
     

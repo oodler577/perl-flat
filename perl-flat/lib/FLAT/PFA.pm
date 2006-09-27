@@ -193,8 +193,9 @@ sub reverse {
 #  }
 
 #1. make sure psuedo code is correct
-#2. implement it, including any require initializations
-#3. refine, refactor
+#2  translate using the current PFA data structure
+#3. implement it, including any require initializations
+#4. refine, refactor
 
 sub as_nfa { 
     my $self = shift;
@@ -202,7 +203,7 @@ sub as_nfa {
     my %Dtran =(); # hash of serialized state names that have been searched
     # New NFA object reference
     my $result = FLAT::NFA->new();    
-
+    
     return $result;
  }
 
