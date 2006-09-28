@@ -64,16 +64,36 @@ sub shuffle {
 	my @accepting = $result->get_accepting();
 	$result->unset_starting(@starting);
 	$result->unset_accepting(@accepting);
-        my ($newstart, $newfinal) = $result->add_states(2);
-	$result->set_starting($newstart);
-	$result->set_accepting($newfinal);
-	$result->set_tied(@starting,$newstart,@accepting,$newfinal);
+
+        my ($newstart) = $result->add_states(1);
 	foreach my $s (@starting) {
-          $result->set_transition($newstart,$s,LAMBDA);
+	  if ($result->is_tied($s)) {
+	     $result->delete_states($newstart);
+	     $newstart = $s;
+          }	
 	}
+	$result->set_starting($newstart);
+	foreach my $s (@starting) {
+          if ($s != $newstart) { 
+	    $result->set_transition($newstart,$s,LAMBDA);
+	  }
+	}
+
+        my ($newfinal) = $result->add_states(1);
 	foreach my $d (@accepting) {
-          $result->set_transition($d,$newfinal,LAMBDA);
+	  if ($result->is_tied($d)) {
+            $result->delete_states($newfinal);
+            $newfinal = $d;
+          }
 	}	
+	$result->set_accepting($newfinal);	
+	foreach my $d (@accepting) {
+           if ($d != $newfinal) {
+            $result->set_transition($d,$newfinal,LAMBDA);
+           }
+	}	
+
+	$result->set_tied(@starting,$newstart,@accepting,$newfinal);
     }
     return $result;
 }
@@ -104,12 +124,11 @@ sub get_tied {
 
 # joins two PFAs in a union (or) - no change from NFA
 sub union {
-    my @pfas = map { $_->as_pfa } @_;
-    my $result = $pfas[0]->clone;
+    my @pfas = map { $_->as_pfa } @_;    
+    my $result = $pfas[0]->clone;    
     $result->_swallow($_) for @pfas[1 .. $#pfas];
-    my ($newstart, $newfinal) = $result->add_states(2);
-    
-    }
+    $result;
+}
 
 # joins two PFAs via concatenation  - no change from NFA
 sub concat {

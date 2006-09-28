@@ -34,26 +34,9 @@ sub singleton {
 sub as_nfa { $_[0]->clone }
 
 sub union {
-    my @nfas = map { $_->as_nfa } @_;
-    
-    my $result = $nfas[0]->clone;
-    
+    my @nfas = map { $_->as_nfa } @_;    
+    my $result = $nfas[0]->clone;    
     $result->_swallow($_) for @nfas[1 .. $#nfas];
-
-#    my @newstate = ([ $result->get_states ]);
-#    for (1 .. $#nfas) {
-#        push @newstate, [ $result->_swallow( $nfas[$_] ) ];
-#    }
-
-#    my $newstart = $result->add_states(1);
-#    $result->unset_starting($result->get_states);
-#    $result->set_starting($newstart);
-    
-#    for my $nfa_id (0 .. $#nfas) {
-#        $result->set_transition( $newstart, $newstate[$nfa_id][$_], "" )
-#            for $nfas[$nfa_id]->get_starting;
-#    }
-
     $result;
 }
 
@@ -232,7 +215,7 @@ sub as_gdl {
     my @states = map {
         sprintf qq{node: { title:"%s" shape:circle borderstyle: %s}\n},
             $_,
-            ($self->is_accepting($_) ? "double bordercolor: red" : "solid")
+            ($self->is_accepting($_) ? "double bordercolor: green" : "solid")
     } $self->get_states;
     
     my @trans;
@@ -279,6 +262,8 @@ sub as_graphviz {
 }
 
 sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
+
+######## transformations
 
 sub as_dfa {
     my $self = shift;

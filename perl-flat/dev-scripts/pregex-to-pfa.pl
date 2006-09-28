@@ -18,20 +18,8 @@ my $summary = $PFA->as_summary;
 my %TIED_BY_SRC = ();
 my %TIED_BY_SNK = ();
 
-foreach my $src ($PFA->get_states()) {
-  foreach my $snk ($PFA->successors($src,'#lambda')) {
-     print STDERR "$src -> $snk";   
-  }
-  foreach my $snk ($PFA->predecessors($src,'#lambda')) {
-     print STDERR "$snk <- $src";   
-  }
-}
-
-#print Dumper(%TIED_BY_SRC);
-#print Dumper(%TIED_BY_SNK);
-$PFA->reverse;
 print STDOUT $PFA->as_gdl,"\n";
-#print STDERR Dumper($PFA->get_tied());
+print STDERR Dumper($PFA->get_tied());
 
 #open my $fh, "|-", "dot -Tpng -o output.png"
 #   or die "Couldn't run graphviz: $!\n";
