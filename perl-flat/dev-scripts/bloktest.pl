@@ -18,4 +18,4 @@ my $dfa2 = foo("a*");
 
 my $result = $dfa1->intersect($dfa2);
 
-print $result->as_graphviz;
+print $result->as_gdl;

@@ -5,6 +5,7 @@ use Carp;
 
 use FLAT::Transition;
 
+use constant LAMBDA => '#lambda';
 
 # Note: in a PFA, states are made up of active nodes.  In this implementation, we have
 # decided to retain the functionality of the state functions in FA.pm, although the entities
@@ -20,7 +21,6 @@ use FLAT::Transition;
 sub new {
     my $pkg = shift;
     my $self = $pkg->SUPER::new(@_); # <-- SUPER is FLAT::NFA
-    $self->{LAMBDA} = '#lambda';     # special lambda symbol - used internally
     return $self;
 }
 
@@ -47,27 +47,19 @@ sub singleton {
 # attack of the clones
 sub as_pfa { $_[0]->clone() }
 
-# set lambda symbol - temp fix for larger problem of special symbols
-# like epsilon and lambda
-sub set_lambda {
-  my $self = shift;
-  $self->{LAMBDA} = $_[0];
+sub set_starting {
+    my ($self, @states) = @_;
+    $self->_assert_states(@states);
+    $self->{STATES}[$_]{starting} = 1 for @states;
 }
 
-# get lamnda symbol
-sub get_lambda {
-  my $self = shift;
-  return $self->{LAMBDA};
-}
-
-# will implement the joining of two PFAs with lambda transitions
-# need to fix <-- still broken?  need to check!!
+# implement the joining of two PFAs with lambda transitions
 sub shuffle {
     my @pfas = map { $_->as_pfa } @_;
     my $result = $pfas[0]->clone;
     # iteratively add lambda pinch to all PFAs
-    for (1 .. $#pfas) {
-        $result->_swallow( $pfas[$_] );
+    for my $pfa_index (1 .. $#pfas) {
+        $result->_swallow( $pfas[$pfa_index] );
 	my @starting = $result->get_starting();
 	my @accepting = $result->get_accepting();
 	$result->unset_starting(@starting);
@@ -75,15 +67,40 @@ sub shuffle {
         my ($newstart, $newfinal) = $result->add_states(2);
 	$result->set_starting($newstart);
 	$result->set_accepting($newfinal);
-	foreach (@starting) {
-          $result->set_transition($newstart,$_,'#lambda');
+	$result->set_tied(@starting,$newstart,@accepting,$newfinal);
+	foreach my $s (@starting) {
+          $result->set_transition($newstart,$s,LAMBDA);
 	}
-	foreach (@accepting) {
-          $result->set_transition($_,$newfinal,'#lambda');
+	foreach my $d (@accepting) {
+          $result->set_transition($d,$newfinal,LAMBDA);
 	}	
     }
     return $result;
 }
+
+##############
+
+sub is_tied {
+    my ($self, $state) = @_;
+    $self->_assert_states($state);
+    return $self->{STATES}[$state]{tied};
+}
+sub set_tied {
+    my ($self, @states) = @_;
+    $self->_assert_states(@states);
+    $self->{STATES}[$_]{tied} = 1 for @states;
+}
+sub unset_tied {
+    my ($self, @states) = @_;
+    $self->_assert_states(@states);
+    $self->{STATES}[$_]{tied} = 0 for @states;
+}
+sub get_tied {
+    my $self = shift;
+    return grep { $self->is_tied($_) } $self->get_states;
+}
+
+##############
 
 # joins two PFAs in a union (or) - no change from NFA
 sub union {
@@ -147,24 +164,6 @@ sub kleene {
     $result;
 }
 
-
-# reverse  - no change from NFA
-sub reverse {
-    my $self = $_[0]->clone;
-    $self->_transpose;
-    
-    my @start = $self->get_starting;
-    my @final = $self->get_accepting;
-    
-    $self->unset_accepting( $self->get_states );
-    $self->unset_starting( $self->get_states );
-    
-    $self->set_accepting( @start );
-    $self->set_starting( @final );
-    
-    $self;
-}
-
 # stretching my legs after a few months being gone ... see if the legacy conversion
 # can be modified to work
 
@@ -194,6 +193,8 @@ sub reverse {
 
 #1. make sure psuedo code is correct
 #2  translate using the current PFA data structure
+# - figure out tied nodes!!
+#
 #3. implement it, including any require initializations
 #4. refine, refactor
 

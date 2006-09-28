@@ -43,7 +43,6 @@ sub _assert_non_states {
     }
 }
 
-
 sub delete_states {
     my ($self, @states) = @_;
 
@@ -180,6 +179,8 @@ sub remove_transition {
     $self->{TRANS}[$state1][$state2] = undef;
 }
 
+# given a state and a symbol, it tells you 
+# what the next state(s) are
 sub successors {
     my ($self, $state, $symb) = @_;
     
@@ -200,6 +201,29 @@ sub successors {
     return keys %succ;
 }
 
+sub predecessors {
+    shift->clone->reverse->successors(@_);
+}
+
+# reverse  - no change from NFA
+sub reverse {
+    my $self = $_[0]->clone;
+    $self->_transpose;
+    
+    my @start = $self->get_starting;
+    my @final = $self->get_accepting;
+    
+    $self->unset_accepting( $self->get_states );
+    $self->unset_starting( $self->get_states );
+    
+    $self->set_accepting( @start );
+    $self->set_starting( @final );
+    
+    $self;
+}
+
+
+# get an array of all symbols
 sub alphabet {
     my $self = shift;
     grep length, keys %{ $self->{ALPHA} };

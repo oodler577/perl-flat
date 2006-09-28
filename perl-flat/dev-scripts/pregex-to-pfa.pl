@@ -4,6 +4,7 @@ use strict;
 use lib qw(../lib);
 use FLAT::Regex::WithExtraOps;
 use FLAT::PFA;
+use Data::Dumper;
 
 # This is mainly my test script for FLAT::FA::PFA.pm
 
@@ -11,16 +12,32 @@ my $PRE = FLAT::Regex::WithExtraOps->new($ARGV[0]);
 
 my $PFA = $PRE->as_pfa();
 
-my $gdl = $PFA->as_gdl;
 my $graphviz = $PFA->as_graphviz;
 my $summary = $PFA->as_summary;
 
-print "$gdl\n";
+my %TIED_BY_SRC = ();
+my %TIED_BY_SNK = ();
 
-open my $fh, "|-", "circo -Tpng -o output.png"
-   or die "Couldn't run graphviz: $!\n";
+foreach my $src ($PFA->get_states()) {
+  foreach my $snk ($PFA->successors($src,'#lambda')) {
+     print STDERR "$src -> $snk";   
+  }
+  foreach my $snk ($PFA->predecessors($src,'#lambda')) {
+     print STDERR "$snk <- $src";   
+  }
+}
 
-print $fh $graphviz;
-close $fh;
+#print Dumper(%TIED_BY_SRC);
+#print Dumper(%TIED_BY_SNK);
+$PFA->reverse;
+print STDOUT $PFA->as_gdl,"\n";
+#print STDERR Dumper($PFA->get_tied());
+
+#open my $fh, "|-", "dot -Tpng -o output.png"
+#   or die "Couldn't run graphviz: $!\n";
+#
+#print $fh $graphviz;
+#close $fh;
 
 my $NFA = $PFA->as_nfa();
+
