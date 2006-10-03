@@ -180,7 +180,10 @@ sub remove_transition {
 }
 
 # given a state and a symbol, it tells you 
-# what the next state(s) are
+# what the next state(s) are; do get successors 
+# for find the successors for a set of symbols, 
+# use array refs.  For example:
+# @NEXT=$self->successors([@nodes],[@symbols]);
 sub successors {
     my ($self, $state, $symb) = @_;
     
@@ -222,12 +225,18 @@ sub reverse {
     $self;
 }
 
-
 # get an array of all symbols
 sub alphabet {
     my $self = shift;
     grep length, keys %{ $self->{ALPHA} };
 }
+
+# give an array of symbols, return the symbols that
+# are in the alphabet
+#sub is_in_alphabet {
+#  my $self = shift;
+#  my $
+#}
 
 ############
 sub prune {
@@ -264,6 +273,85 @@ sub _transpose {
             [ map { $_->[$row] } @{$self->{TRANS}} ]
         } 0 .. $N
     ];
+}
+
+# tests to see if set1 is a subset of set2
+sub array_is_subset {
+  my $self = shift;
+  my $set1 = shift;
+  my $set2 = shift;
+  my $ok = 1;
+  my %setcount = ();
+  foreach ($self->array_unique(@{$set1}),$self->array_unique(@{$set2})) {
+    $setcount{$_}++;
+  }
+  foreach ($self->array_unique(@{$set1})) {
+    if ($setcount{$_} != 2) {
+      $ok = 0;
+      last;
+    }
+  }
+  return $ok;
+}
+
+sub array_unique {
+  my $self = shift;
+  my %ret = ();
+  foreach (@_) {
+    $ret{$_}++;
+  }
+  return keys(%ret);
+}
+
+sub  array_complement {
+  my $self = shift;
+  my $set1 = shift;
+  my $set2 = shift;
+  my @ret = ();
+  # convert set1 to a hash
+  my %set1hash = map {$_ => 1} @{$set1};
+  # iterate of set2 and test if $set1
+  foreach (@{$set2}) {
+    if (!defined $set1hash{$_}) {
+      push(@ret,$_);
+    }
+  }
+  ## Now do the same using $set2
+  # convert set2 to a hash
+  my %set2hash = map {$_ => 1} @{$set2};
+  # iterate of set1 and test if $set1
+  foreach (@{$set1}) {
+    if (!defined $set2hash{$_}) {
+      push(@ret,$_);
+    }
+  }
+  # now @ret contains all items in $set1 not in $set 2 and all
+  # items in $set2 not in $set1
+  return @ret;  
+}
+
+# returns all items that 2 arrays have in common
+sub array_intersect {
+  my $self = shift;
+  my $set1 = shift;
+  my $set2 = shift;
+  my %setcount = ();
+  my @ret = ();
+  foreach ($self->array_unique(@{$set1})) {
+    $setcount{$_}++;
+  }
+  foreach ($self->array_unique(@{$set2})) {
+    $setcount{$_}++;
+    push(@ret,$_) if ($setcount{$_} > 1); 
+  }
+  return @ret;
+}
+
+# given a set of symbols, returns only the valid ones
+sub get_valid_symbols {
+  my $self = shift;
+  my $symbols = shift;
+  return $self->array_intersect([$self->alphabet()],[@{$symbols}])
 }
 
 ## add an FA's states & transitions to this FA (as disjoint union)

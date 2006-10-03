@@ -215,7 +215,7 @@ sub as_gdl {
     my @states = map {
         sprintf qq{node: { title:"%s" shape:circle borderstyle: %s}\n},
             $_,
-            ($self->is_accepting($_) ? "double bordercolor: green" : "solid")
+            ($self->is_accepting($_) ? "double bordercolor: red" : "solid")
     } $self->get_states;
     
     my @trans;
