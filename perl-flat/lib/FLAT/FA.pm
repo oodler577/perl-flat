@@ -45,7 +45,7 @@ sub _assert_non_states {
 
 sub delete_states {
     my ($self, @states) = @_;
-
+    
     $self->_assert_states(@states);
 
     for my $s ( sort { $b <=> $a } @states ) {

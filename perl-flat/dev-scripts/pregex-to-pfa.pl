@@ -19,3 +19,13 @@ my $NFA = $PFA->as_nfa();
 open(GDL,">nfa.gdl");
   print GDL $NFA->as_gdl,"\n";
 close(GDL);
+
+my $DFA = $NFA->as_dfa();
+
+open(GDL,">dfa.gdl");
+  print GDL $DFA->as_gdl,"\n";
+close(GDL);
+
+open(GDL,">mindfa.gdl");
+  print GDL $DFA->as_min_dfa->trim_sinks->as_gdl,"\n";
+close(GDL);

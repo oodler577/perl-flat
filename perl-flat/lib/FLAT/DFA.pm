@@ -79,6 +79,20 @@ sub unset_starting {
         if $num != 1;
 }
 
+sub trim_sinks {
+  my $self = shift;
+  my $result = $self->clone();
+  foreach my $state ($self->array_complement([$self->get_states()],[$self->get_accepting()])) {
+    my @ret = $self->successors($state,[$self->alphabet]);
+    if (@ret) {
+      if ($ret[0] == $state) {
+        $result->delete_states($state);    
+      }
+    }
+  }
+  return $result;
+}
+
 sub as_min_dfa {
     my $self     = shift()->clone;
     my $N        = $self->num_states;
