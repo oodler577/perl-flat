@@ -4,6 +4,7 @@ use strict;
 use lib qw(../lib);
 use FLAT;
 use FLAT::Regex::WithExtraOps;
+use FLAT::PFA;
 use Data::Dumper;
 use Getopt::Long;  # used to process commandline options
 $|++;
@@ -18,7 +19,6 @@ $CMDLINEOPTS{LENGTH} = 5;
 $CMDLINEOPTS{AND} = 10;
 $CMDLINEOPTS{OR} = 6;
 $CMDLINEOPTS{STAR} = 10;
-$CMDLINEOPTS{NEGATE} = 0;
 $CMDLINEOPTS{OPEN} = 5;
 $CMDLINEOPTS{CLOSE} = 0;
 $CMDLINEOPTS{n} = 100;
@@ -49,16 +49,14 @@ sub getRandomRE {
     $str .= getRandomChar();  
     # % chance of an "or"
     if (int(rand 100) < $CMDLINEOPTS{OR}) {
-      $str .= "|[]";
+      $str .= "|1";
     } elsif (int(rand 100) < $CMDLINEOPTS{AND}) {
-      $str .= "&[]";
+      $str .= "&0";
     } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
-      $str .= "*";    
-    } elsif (int(rand 100) < $CMDLINEOPTS{NEGATE}) {
-      $str .= "~".getRandomChar();    
+      $str .= "*1";     
     } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
       $str .= "(";
-      push(@closeparens,'[])');
+      push(@closeparens,'0101)');
     } elsif (int(rand 100) < $CMDLINEOPTS{CLOSE} && @closeparens) {
       $str .= pop(@closeparens);
     }
@@ -72,6 +70,7 @@ sub getRandomRE {
 
 for (1..$CMDLINEOPTS{n}) {
   my $str = getRandomRE();  
-  my $RE = FLAT::Regex::WithExtraOps->new($str);
-  print "$str : ".$RE->as_string;
+  my $PRE = FLAT::Regex::WithExtraOps->new($str);
+  print $PRE->as_string;
+  my $minDFA = $PRE->as_pfa->as_nfa->as_min_dfa();
 }

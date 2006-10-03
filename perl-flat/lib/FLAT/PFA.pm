@@ -205,7 +205,6 @@ sub as_nfa {
               if (!exists($NEW{$currentid})) {$NEW{$currentid} = $result->add_states(1)};
               if (!exists($NEW{$nextid}))    {$NEW{$nextid} = $result->add_states(1)   };
 	      $result->add_transition($NEW{$currentid},$NEW{$nextid},'');  
-	      print STDERR "$currentid ($NEW{$currentid}) on '$symbol' -> $nextid ($NEW{$nextid})";
             }
 	  }
         } else {
@@ -221,7 +220,6 @@ sub as_nfa {
               if (!exists($NEW{$currentid})) {$NEW{$currentid} = $result->add_states(1)};
               if (!exists($NEW{$nextid}))    {$NEW{$nextid} = $result->add_states(1)   };
 	      $result->add_transition($NEW{$currentid},$NEW{$nextid},$symbol);	  
-	      print STDERR "$currentid ($NEW{$currentid}) on '$symbol' -> $nextid ($NEW{$nextid})";
 	    }
 	  }
 	}

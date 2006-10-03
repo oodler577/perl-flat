@@ -52,7 +52,7 @@ sub intersect {
             my @next = map { $dfas[$_]->successors( $tuple[$_], $char ) }
                         0 .. $#dfas;
             
-            warn "[@tuple] --> [@next] via $char\n";
+            #warn "[@tuple] --> [@next] via $char\n";
             
             if (not exists $newstates{ _TUPLE_ID(@next) }) {
                 my $s = $newstates{ _TUPLE_ID(@next) } = $return->add_states(1);
