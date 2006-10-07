@@ -30,7 +30,7 @@ open(GDL,">mindfa.gdl");
   print GDL $DFA->as_min_dfa->trim_sinks->as_gdl,"\n";
 close(GDL);
 
-my $dot = $DFA->as_min_dfa->as_graphviz;
+my $dot = $DFA->as_min_dfa->trim_sinks->as_graphviz;
 open my $fh, "|-", "circo -Tpng -o output.png"
    or die "Couldn't run dot: $!\n";
 

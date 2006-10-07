@@ -14,7 +14,11 @@ my $PFA2 = FLAT::Regex::WithExtraOps->new($ARGV[1])->as_pfa();
 my $DFA1 = $PFA1->as_nfa->as_min_dfa;
 my $DFA2 = $PFA2->as_nfa->as_min_dfa;
 
-print "Match!" if ($DFA1->equals($DFA2));
+if ($DFA1->equals($DFA2)) {
+  print "MATCH!";
+} else {
+  print "No Match";
+}
 
 __END__
 open(GDL,">pfa.gdl");

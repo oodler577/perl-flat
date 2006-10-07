@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 2;
 use FLAT;
 use FLAT::NFA;
 use FLAT::PFA;
