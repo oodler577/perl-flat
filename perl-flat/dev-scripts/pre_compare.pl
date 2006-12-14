@@ -19,31 +19,3 @@ if ($DFA1->equals($DFA2)) {
 } else {
   print "No Match";
 }
-
-__END__
-open(GDL,">pfa.gdl");
-  print GDL $PFA->as_gdl,"\n";
-close(GDL);
-
-my $NFA = $PFA->as_nfa();
-
-open(GDL,">nfa.gdl");
-  print GDL $NFA->as_gdl,"\n";
-close(GDL);
-
-my $DFA = $NFA->as_dfa();
-
-open(GDL,">dfa.gdl");
-  print GDL $DFA->as_gdl,"\n";
-close(GDL);
-
-open(GDL,">mindfa.gdl");
-  print GDL $DFA->as_min_dfa->trim_sinks->as_gdl,"\n";
-close(GDL);
-
-my $dot = $DFA->as_min_dfa->as_graphviz;
-open my $fh, "|-", "circo -Tpng -o output.png"
-   or die "Couldn't run dot: $!\n";
-
-print $fh $dot;
-close $fh;
