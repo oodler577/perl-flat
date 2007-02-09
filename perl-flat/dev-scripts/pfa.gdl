@@ -1,0 +1,29 @@
+graph: {
+display_edge_labels: yes
+
+node: { title:"0" shape:circle borderstyle: solid}
+node: { title:"1" shape:circle borderstyle: solid}
+node: { title:"2" shape:circle borderstyle: solid}
+node: { title:"3" shape:circle borderstyle: solid}
+node: { title:"4" shape:circle borderstyle: solid}
+node: { title:"5" shape:circle borderstyle: solid}
+node: { title:"6" shape:circle borderstyle: solid}
+node: { title:"7" shape:circle borderstyle: solid}
+node: { title:"8" shape:circle borderstyle: solid}
+node: { title:"9" shape:circle borderstyle: double bordercolor: red}
+
+edge: { source: "0" target: "1" label: "a" arrowstyle: line }
+edge: { source: "1" target: "9" label: "#lambda" arrowstyle: line }
+edge: { source: "2" target: "3" label: "b" arrowstyle: line }
+edge: { source: "3" target: "9" label: "#lambda" arrowstyle: line }
+edge: { source: "4" target: "5" label: "c" arrowstyle: line }
+edge: { source: "5" target: "9" label: "#lambda" arrowstyle: line }
+edge: { source: "6" target: "7" label: "d" arrowstyle: line }
+edge: { source: "7" target: "9" label: "#lambda" arrowstyle: line }
+edge: { source: "8" target: "0" label: "#lambda" arrowstyle: line }
+edge: { source: "8" target: "2" label: "#lambda" arrowstyle: line }
+edge: { source: "8" target: "4" label: "#lambda" arrowstyle: line }
+edge: { source: "8" target: "6" label: "#lambda" arrowstyle: line }
+}
+
+

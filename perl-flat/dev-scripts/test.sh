@@ -1,5 +1,1 @@
-perl pregex-to-pfa.pl "${1}"                         
-~/distfiles/aiSee/bin/aisee.bin -pngoutput pfa.png pfa.gdl 
-~/distfiles/aiSee/bin/aisee.bin -pngoutput nfa.png nfa.gdl 
-~/distfiles/aiSee/bin/aisee.bin -pngoutput dfa.png dfa.gdl 
-~/distfiles/aiSee/bin/aisee.bin -pngoutput mindfa.png mindfa.gdl 
+perl pre_compare.pl 'nop(abc)*hij&qrs(def)*klm' 'n(op(abc)*hij&qrs(def)*klm)+q(rs(def)*klm&nop(abc)*hij)'

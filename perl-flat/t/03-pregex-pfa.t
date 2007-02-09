@@ -11,29 +11,30 @@ use FLAT::Regex::WithExtraOps;
 
 diag("This test will take a while..");
 
+diag("w&v..");
 # w&w
 my $PFA1 = FLAT::Regex::WithExtraOps->new('abc&def')->as_pfa();
 my $PFA2 = FLAT::Regex::WithExtraOps->new('a(b(c&def)+d(ef&bc))+d(ef&abc)')->as_pfa();
-
 my $DFA1 = $PFA1->as_nfa->as_min_dfa;
 my $DFA2 = $PFA2->as_nfa->as_min_dfa;
 
 is( ($DFA1->equals($DFA2)), 1 );
 
-# w&w*
+diag("w&v*..");
+# w&v*
 $PFA1 = FLAT::Regex::WithExtraOps->new('abc&(def)*')->as_pfa();
 $PFA2 = FLAT::Regex::WithExtraOps->new('(def)*(
-                                               a(bc&(def)*)+
-                                               d((efd)*ef&(abc))+
-                                               d((efd)*&(abc))ef
-                                              )')->as_pfa();
+                                              a(bc&(def)*)+
+                                              d((efd)*ef&(abc))+
+                                              d((efd)*&(abc))ef
+                                             )')->as_pfa();
 
 $DFA1 = $PFA1->as_nfa->as_min_dfa;
 $DFA2 = $PFA2->as_nfa->as_min_dfa;
 
 is( ($DFA1->equals($DFA2)), 1);
 
-# w*&w*
+# w*&v*
 # throws some weird warning from FA.pm when mimimizing, but passes still
 #$PFA1 = FLAT::Regex::WithExtraOps->new('(abc)*&(def)*')->as_pfa();
 #$PFA2 = FLAT::Regex::WithExtraOps->new('((abc+def)*(
@@ -43,24 +44,28 @@ is( ($DFA1->equals($DFA2)), 1);
 #                                                    d((efd)*&(abc)*)ef
 #                                                    )*)*')->as_pfa();
 
-#$DFA1 = $PFA1->as_nfa->as_min_dfa;
-#$DFA2 = $PFA2->as_nfa->as_min_dfa;
-# is( ($DFA1->equals($DFA2)), 1);
+$DFA1 = $PFA1->as_nfa->as_min_dfa;
+$DFA2 = $PFA2->as_nfa->as_min_dfa;
+ is( ($DFA1->equals($DFA2)), 1);
 
-# w*x&w*y
-$PFA1 = FLAT::Regex::WithExtraOps->new('(abc)*dx&(efg)*hy')->as_pfa(); #<--!
-$PFA2 = FLAT::Regex::WithExtraOps->new('(abc+efg)*(
-                                                   dx&(efg)*hy+
-                                                   hy&(abc)*dx+
-                                                   a(((bca)*bcdx)&((efg)*hy))+
-                                                   a(((bca)*)&((efg)*hy))bcdx+
-                                                   e(((fge)*fghy)&((abc)*dx))+
-                                                   e(((fge)*)&((abc)*dx))fghy
-                                                   )')->as_pfa();
+diag("w*x&v*y..");
+# w*x&v*y
+$PFA1 = FLAT::Regex::WithExtraOps->new('(abc)*dx&(efg)*hy')->as_pfa(); 
+$PFA2 = FLAT::Regex::WithExtraOps->new('(abc+efg)*( dx&(efg)*hy+
+                                                  hy&(abc)*dx+
+                                                  a(((bca)*bcdx)&((efg)*hy))+
+                                                  a(((bca)*)&((efg)*hy))bcdx+
+                                                  e(((fge)*fghy)&((abc)*dx))+
+                                                  e(((fge)*)&((abc)*dx))fghy
+                                                  )')->as_pfa();
 
 $DFA1 = $PFA1->as_nfa->as_min_dfa;
 $DFA2 = $PFA2->as_nfa->as_min_dfa;
-
 is( ($DFA1->equals($DFA2)), 1);
 
-__END__
+$PFA1 = FLAT::Regex::WithExtraOps->new('nop(abc)*hij&qrs(def)*klm')->as_pfa();
+$PFA2 = FLAT::Regex::WithExtraOps->new('n(op(abc)*hij&qrs(def)*klm)+q(rs(def)*klm&nop(abc)*hij)')->as_pfa();
+
+$DFA1 = $PFA1->as_nfa->as_min_dfa;
+$DFA2 = $PFA2->as_nfa->as_min_dfa;
+is( ($DFA1->equals($DFA2)), 1);

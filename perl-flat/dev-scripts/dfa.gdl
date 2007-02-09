@@ -1,0 +1,72 @@
+graph: {
+display_edge_labels: yes
+
+node: { title:"0" shape:circle borderstyle: solid}
+node: { title:"1" shape:circle borderstyle: solid}
+node: { title:"2" shape:circle borderstyle: solid}
+node: { title:"3" shape:circle borderstyle: solid}
+node: { title:"4" shape:circle borderstyle: solid}
+node: { title:"5" shape:circle borderstyle: solid}
+node: { title:"6" shape:circle borderstyle: solid}
+node: { title:"7" shape:circle borderstyle: solid}
+node: { title:"8" shape:circle borderstyle: solid}
+node: { title:"9" shape:circle borderstyle: solid}
+node: { title:"10" shape:circle borderstyle: solid}
+node: { title:"11" shape:circle borderstyle: solid}
+node: { title:"12" shape:circle borderstyle: solid}
+node: { title:"13" shape:circle borderstyle: solid}
+node: { title:"14" shape:circle borderstyle: solid}
+node: { title:"15" shape:circle borderstyle: solid}
+node: { title:"16" shape:circle borderstyle: double bordercolor: red}
+
+edge: { source: "0" target: "1" label: "c" arrowstyle: line }
+edge: { source: "0" target: "2" label: "a" arrowstyle: line }
+edge: { source: "0" target: "3" label: "b" arrowstyle: line }
+edge: { source: "0" target: "4" label: "d" arrowstyle: line }
+edge: { source: "1" target: "5" label: "c" arrowstyle: line }
+edge: { source: "1" target: "6" label: "a" arrowstyle: line }
+edge: { source: "1" target: "7" label: "b" arrowstyle: line }
+edge: { source: "1" target: "8" label: "d" arrowstyle: line }
+edge: { source: "2" target: "5" label: "a" arrowstyle: line }
+edge: { source: "2" target: "6" label: "c" arrowstyle: line }
+edge: { source: "2" target: "9" label: "b" arrowstyle: line }
+edge: { source: "2" target: "10" label: "d" arrowstyle: line }
+edge: { source: "3" target: "5" label: "b" arrowstyle: line }
+edge: { source: "3" target: "7" label: "c" arrowstyle: line }
+edge: { source: "3" target: "9" label: "a" arrowstyle: line }
+edge: { source: "3" target: "11" label: "d" arrowstyle: line }
+edge: { source: "4" target: "5" label: "d" arrowstyle: line }
+edge: { source: "4" target: "8" label: "c" arrowstyle: line }
+edge: { source: "4" target: "10" label: "a" arrowstyle: line }
+edge: { source: "4" target: "11" label: "b" arrowstyle: line }
+edge: { source: "5" target: "5" label: "a,b,c,d" arrowstyle: line }
+edge: { source: "6" target: "5" label: "a,c" arrowstyle: line }
+edge: { source: "6" target: "12" label: "b" arrowstyle: line }
+edge: { source: "6" target: "13" label: "d" arrowstyle: line }
+edge: { source: "7" target: "5" label: "b,c" arrowstyle: line }
+edge: { source: "7" target: "12" label: "a" arrowstyle: line }
+edge: { source: "7" target: "14" label: "d" arrowstyle: line }
+edge: { source: "8" target: "5" label: "c,d" arrowstyle: line }
+edge: { source: "8" target: "13" label: "a" arrowstyle: line }
+edge: { source: "8" target: "14" label: "b" arrowstyle: line }
+edge: { source: "9" target: "5" label: "a,b" arrowstyle: line }
+edge: { source: "9" target: "12" label: "c" arrowstyle: line }
+edge: { source: "9" target: "15" label: "d" arrowstyle: line }
+edge: { source: "10" target: "5" label: "a,d" arrowstyle: line }
+edge: { source: "10" target: "13" label: "c" arrowstyle: line }
+edge: { source: "10" target: "15" label: "b" arrowstyle: line }
+edge: { source: "11" target: "5" label: "b,d" arrowstyle: line }
+edge: { source: "11" target: "14" label: "c" arrowstyle: line }
+edge: { source: "11" target: "15" label: "a" arrowstyle: line }
+edge: { source: "12" target: "5" label: "a,b,c" arrowstyle: line }
+edge: { source: "12" target: "16" label: "d" arrowstyle: line }
+edge: { source: "13" target: "5" label: "a,c,d" arrowstyle: line }
+edge: { source: "13" target: "16" label: "b" arrowstyle: line }
+edge: { source: "14" target: "5" label: "b,c,d" arrowstyle: line }
+edge: { source: "14" target: "16" label: "a" arrowstyle: line }
+edge: { source: "15" target: "5" label: "a,b,d" arrowstyle: line }
+edge: { source: "15" target: "16" label: "c" arrowstyle: line }
+edge: { source: "16" target: "5" label: "a,b,c,d" arrowstyle: line }
+}
+
+
