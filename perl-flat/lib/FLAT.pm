@@ -58,9 +58,8 @@ BEGIN {
     }
 }
 
-# Support for perl one liners - like what CPAN.pm uses
-use Exporter ();
-@ISA = 'Exporter';
+# Support for perl one liners - like what CPAN.pm uses #<- should move all to another file
+use base 'Exporter'; #instead of: use Exporter (); @ISA = 'Exporter';
 use vars qw(@EXPORT $AUTOLOAD);
 
 @EXPORT = qw(compare 
@@ -69,7 +68,8 @@ use vars qw(@EXPORT $AUTOLOAD);
 	     nfa2dot 
 	     pfa2dot 
 	     random_pre 
-	     random_re 
+	     random_re
+	     help
 	     );
 
 # Todo: validate, test (string against re), validate (re), 
@@ -86,6 +86,23 @@ sub AUTOLOAD {
 }
 
 package FLAT::OneLiners;
+
+sub help {
+print <<END
+%perl -MFLAT -e
+		"compare  're1','re2'"
+		"dump     're1'" 
+		"dfa2dot  're1'" 
+		"nfa2dot  're1'" 
+		"pfa2dot  're1'" 
+		random_pre 
+		random_re
+		help
+	To Do:
+	        "getstrings 're1' [opts...]" # given regex, pump strings based on options
+		"variations 're1' [opts...]" # given regex will provide equivalents
+END
+}
 
 # dumps parse tree
 # Usage:
@@ -135,7 +152,7 @@ sub pfa2dot {
 # Usage:
 # perl -MFLAT -e "compare('a','a&b&c&d*e*')" #<-- no match, btw
 sub compare {
-  shift;  
+  shift;
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
   use FLAT::PFA;
