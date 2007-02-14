@@ -122,7 +122,9 @@ sub dfa2dot {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
-  my $DFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_nfa()->as_dfa->as_min_dfa();
+  use FLAT::NFA;
+  use FLAT::PFA;  
+  my $DFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
   print $DFA1->as_graphviz;
 }
 
@@ -132,8 +134,10 @@ sub dfa2dot {
 sub nfa2dot {
   shift;  
   use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
   use FLAT::NFA;
-  my $NFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_nfa();
+  use FLAT::PFA;  
+  my $NFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa()->as_nfa();
   print $NFA1->as_graphviz;
 }
 
