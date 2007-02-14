@@ -9,7 +9,7 @@ use FLAT::NFA;
 use FLAT::PFA;
 use FLAT::Regex::WithExtraOps;
 
-diag("This test will take a while..");
+diag("This test might take a while..");
 
 diag("w&v..");
 # w&w
@@ -20,8 +20,14 @@ my $DFA2 = $PFA2->as_nfa->as_min_dfa;
 
 is( ($DFA1->equals($DFA2)), 1 );
 
+<<<<<<< .mine
+__END__ #<-- comment out if you wish to conduct the time consuming tests
+_
+# w&w*
+=======
 diag("w&v*..");
 # w&v*
+>>>>>>> .r86
 $PFA1 = FLAT::Regex::WithExtraOps->new('abc&(def)*')->as_pfa();
 $PFA2 = FLAT::Regex::WithExtraOps->new('(def)*(
                                               a(bc&(def)*)+

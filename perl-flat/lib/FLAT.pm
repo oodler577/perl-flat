@@ -58,6 +58,214 @@ BEGIN {
     }
 }
 
+# Support for perl one liners - like what CPAN.pm uses
+use Exporter ();
+@ISA = 'Exporter';
+use vars qw(@EXPORT $AUTOLOAD);
+
+@EXPORT = qw(compare 
+             dump  
+	     dfa2dot 
+	     nfa2dot 
+	     pfa2dot 
+	     random_pre 
+	     random_re 
+	     );
+
+# Todo: validate, test (string against re), validate (re), 
+#       alternate (give re, list some alternates), getstrings (gen strings give re)	     
+
+sub AUTOLOAD {
+    my($l) = $AUTOLOAD;
+    $l =~ s/.*:://;
+    my(%EXPORT);
+    @EXPORT{@EXPORT} = '';
+    if (exists $EXPORT{$l}){
+	FLAT::OneLiners->$l(@_);
+    }
+}
+
+package FLAT::OneLiners;
+
+# dumps parse tree
+# Usage:
+# perl -MFLAT -e "dump('a&b&c&d*e*')"
+sub dump {
+  shift;
+  use FLAT::Regex::WithExtraOps;
+  use Data::Dumper;
+  my $PRE = FLAT::Regex::WithExtraOps->new(shift);
+  print Dumper($PRE);
+}
+
+# dumps graphviz notation
+# Usage:
+# perl -MFLAT -e "dfa2dot('a&b&c&d*e*')"
+sub dfa2dot {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  my $DFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_nfa()->as_dfa->as_min_dfa();
+  print $DFA1->as_graphviz;
+}
+
+# dumps graphviz notation
+# Usage:
+# perl -MFLAT -e "nfa2dot('a&b&c&d*e*')"
+sub nfa2dot {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::NFA;
+  my $NFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_nfa();
+  print $NFA1->as_graphviz;
+}
+
+# dumps graphviz notation
+# Usage:
+# perl -MFLAT -e "pfa2dot('a&b&c&d*e*')"
+sub pfa2dot {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::PFA;
+  my $PFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa();
+  print $PFA1->as_graphviz;
+}
+
+# compares 2 give PREs
+# Usage:
+# perl -MFLAT -e "compare('a','a&b&c&d*e*')" #<-- no match, btw
+sub compare {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  use FLAT::PFA;
+  my $PFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa();
+  my $PFA2 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa();
+  my $DFA1 = $PFA1->as_nfa->as_min_dfa;
+  my $DFA2 = $PFA2->as_nfa->as_min_dfa;
+  if ($DFA1->equals($DFA2)) {
+    print "Yes\n";
+  } else {
+    print "No\n";
+  }
+}
+
+# prints random PRE
+# Usage:
+# perl -MFLAT -e random_pre
+sub random_pre {
+  shift;
+  # skirt around deep recursion warning annoyance
+  local $SIG{__WARN__} = sub { $_[0] =~ /^Deep recursion/ or warn $_[0] };
+  srand $$;
+  my %CMDLINEOPTS = ();
+  # Percent chance of each operator occuring
+  $CMDLINEOPTS{LENGTH} = 32;
+  $CMDLINEOPTS{AND} = 10;
+  $CMDLINEOPTS{OR} = 6;
+  $CMDLINEOPTS{STAR} = 10;
+  $CMDLINEOPTS{OPEN} = 5;
+  $CMDLINEOPTS{CLOSE} = 0;
+  $CMDLINEOPTS{n} = 1;
+
+  my $getRandomChar = sub {
+    my $ch = '';
+    # Get a random character between 0 and 127.
+    do {
+      $ch = int(rand 2);
+    } while ($ch !~ m/[a-zA-Z0-9]/);  
+    return $ch;
+  };
+
+  my $getRandomRE = sub {
+    my $str = '';
+    my @closeparens = ();
+    for (1..$CMDLINEOPTS{LENGTH}) {
+      $str .= $getRandomChar->();  
+      # % chance of an "or"
+      if (int(rand 100) < $CMDLINEOPTS{OR}) {
+	$str .= "|1";
+      } elsif (int(rand 100) < $CMDLINEOPTS{AND}) {
+	$str .= "&0";
+      } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
+	$str .= "*1";     
+      } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
+	$str .= "(";
+	push(@closeparens,'0101)');
+      } elsif (int(rand 100) < $CMDLINEOPTS{CLOSE} && @closeparens) {
+	$str .= pop(@closeparens);
+      }
+    }
+    # empty out @closeparens if there are still some left
+    if (@closeparens) {
+      $str .= join('',@closeparens);  
+    }
+    return $str;
+  };
+
+  for (1..$CMDLINEOPTS{n}) {
+    print $getRandomRE->(),"\n";  
+  } 
+}
+
+# prints random RE (no & operator)
+# Usage:
+# perl -MFLAT -e random_re
+sub random_re {
+  shift;
+  # skirt around deep recursion warning annoyance
+  local $SIG{__WARN__} = sub { $_[0] =~ /^Deep recursion/ or warn $_[0] };
+  srand $$;
+  my %CMDLINEOPTS = ();
+  # Percent chance of each operator occuring
+  $CMDLINEOPTS{LENGTH} = 32;
+  $CMDLINEOPTS{AND} = 0;   #<-- turns off & operator
+  $CMDLINEOPTS{OR} = 6;
+  $CMDLINEOPTS{STAR} = 10;
+  $CMDLINEOPTS{OPEN} = 5;
+  $CMDLINEOPTS{CLOSE} = 0;
+  $CMDLINEOPTS{n} = 1;
+
+  my $getRandomChar = sub {
+    my $ch = '';
+    # Get a random character between 0 and 127.
+    do {
+      $ch = int(rand 2);
+    } while ($ch !~ m/[a-zA-Z0-9]/);  
+    return $ch;
+  };
+
+  my $getRandomRE = sub {
+    my $str = '';
+    my @closeparens = ();
+    for (1..$CMDLINEOPTS{LENGTH}) {
+      $str .= $getRandomChar->();  
+      # % chance of an "or"
+      if (int(rand 100) < $CMDLINEOPTS{OR}) {
+	$str .= "|1";
+      } elsif (int(rand 100) < $CMDLINEOPTS{AND}) {
+	$str .= "&0";
+      } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
+	$str .= "*1";     
+      } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
+	$str .= "(";
+	push(@closeparens,'0101)');
+      } elsif (int(rand 100) < $CMDLINEOPTS{CLOSE} && @closeparens) {
+	$str .= pop(@closeparens);
+      }
+    }
+    # empty out @closeparens if there are still some left
+    if (@closeparens) {
+      $str .= join('',@closeparens);  
+    }
+    return $str;
+  };
+
+  for (1..$CMDLINEOPTS{n}) {
+    print $getRandomRE->(),"\n";  
+  } 
+}
+
 1;
 
 __END__
