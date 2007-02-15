@@ -81,5 +81,3 @@ FLAT::Symbol - Base class for transition symbol
 A super class that is intended to provide a simple mechanism for storing a symbol that might be 
 in conflict with another symbol in string form.  TYPE is used to distinguish.  Currenly this neither 
 this, nor its current sub classes, Regular and Special, are used.
-
-=back

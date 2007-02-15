@@ -14,5 +14,7 @@ lib/FLAT/NFA.pm
 lib/FLAT/DFA.pm
 lib/FLAT/Transition.pm
 lib/FLAT.pm
+bin/util-put.pl
+bin/fash
 Makefile.PL
 META.yml                                 Module meta-data (added by MakeMaker)
