@@ -89,30 +89,81 @@ package FLAT::OneLiners;
 
 sub help {
 print <<END
+__________             .__    ___________.____         ___________
+\______   \ ___________|  |   \_   _____/|    |   _____\__    ___/
+ |     ___// __ \_  __ \  |    |    __)  |    |   \__  \ |    |   
+ |    |   \  ___/|  | \/  |__  |     \   |    |___ / __ \|    |   
+ |____|    \___  >__|  |____/  \___  /   |_______ (____  /____|   
+               \/                  \/            \/    \/    
+	       
+  NB:   Everything is wrt parallel regular expressions, i.e., 
+  NB: with the addtional shuffle operator, "&".  All this 
+  NB: means is that you can use the ambersand (&) as a symbol
+  NB: in the regular expressions you submit because it will be 
+  NB: detected as an operator.
+
+COMMANDS: 
 %perl -MFLAT -e
-		"compare  're1','re2'"
-		"dump     're1'" 
-		"dfa2dot  're1'" 
-		"nfa2dot  're1'" 
-		"pfa2dot  're1'" 
-		random_pre 
-		random_re
-		help
-	To Do:
-	        "getstrings 're1' [opts...]" # given regex, pump strings based on options
-		"variations 're1' [opts...]" # given regex will provide equivalents
+    "compare  're1','re2'"  # comares 2 regexs | see note [2] 
+    "dump     're1'"        # dumps parse trees | see note[1]	   
+    "dfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
+    "nfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
+    "pfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
+    random_pre 
+    random_re
+    help
+
+NOTES:
+[1] This means you could presumably do something like the following:
+    %perl -MFLAT -e command < text_file_with_1_regex_per_line.txt
+                    ^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2] This command compares the minimal DFAs of each regular expression;
+    if there exists a exact 1-1 mapping of symbols, states, and 
+    transitions then the DFAs are considered equal.  This means that 
+    "abc" will be equal to "def"  To make matters more confusing, "ab+ac" 
+    would be equivalent to "xy+xz"; or worse yet, "z(x+y)". So to the 
+    'compare' command, "ab+ac" == "xy+xz" == "z(x+y)". This however 
+    does not translate into the situation where "ab+ac" will accept 
+    the same LITERAL strings as "z(x+y)" because the symbols are obviously
+    different.  Once we implement the "test" command, used to test strings 
+    against a regular expression, a concrete example will be provided.   		    
+		   
+TO DO:
+   "getstrings 're1' [opts...]" # given regex, pump strings based on options
+   "variations 're1' [opts...]" # given regex will provide equivalents
+
+CREDITS:
+Blockhead, CPAN.pm (for the example of how to implement these one liners), 
+and #perl on irc.freenode.net for pointing out something I missed when 
+trying to copy CPAN's majik.
+
+Perl FLAT and all included modules are released under the same terms as Perl
+itself.  Cheers.
+
+SEE:
+http://perl-flat.sourceforge.net
+
 END
 }
 
 # dumps parse tree
 # Usage:
-# perl -MFLAT -e "dump('a&b&c&d*e*')"
+# perl -MFLAT -e "dump('re1','re2',...,'reN')"
+# perl -MFLAT -e dump < list_of_regexes.dat
 sub dump {
   shift;
   use FLAT::Regex::WithExtraOps;
   use Data::Dumper;
-  my $PRE = FLAT::Regex::WithExtraOps->new(shift);
-  print Dumper($PRE);
+  if (@_) 
+  { foreach (@_)
+    { my $PRE = FLAT::Regex::WithExtraOps->new($_);
+      print Dumper($PRE); }} 
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $PRE = FLAT::Regex::WithExtraOps->new($_);
+       print Dumper($PRE); }
+  }
 }
 
 # dumps graphviz notation
@@ -124,8 +175,16 @@ sub dfa2dot {
   use FLAT::DFA;
   use FLAT::NFA;
   use FLAT::PFA;  
-  my $DFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
-  print $DFA1->as_graphviz;
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
+      print $FA->as_graphviz;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
+       print $FA->as_graphviz;} 
+  }
 }
 
 # dumps graphviz notation
@@ -137,8 +196,16 @@ sub nfa2dot {
   use FLAT::DFA;
   use FLAT::NFA;
   use FLAT::PFA;  
-  my $NFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa()->as_nfa();
-  print $NFA1->as_graphviz;
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
+      print $FA->as_graphviz;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
+       print $FA->as_graphviz;} 
+  }
 }
 
 # dumps graphviz notation
@@ -148,8 +215,16 @@ sub pfa2dot {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::PFA;
-  my $PFA1 = FLAT::Regex::WithExtraOps->new(shift)->as_pfa();
-  print $PFA1->as_graphviz;
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
+      print $FA->as_graphviz;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
+       print $FA->as_graphviz;} 
+  }
 }
 
 # compares 2 give PREs
@@ -176,18 +251,21 @@ sub compare {
 # perl -MFLAT -e random_pre
 sub random_pre {
   shift;
+  my $and_chance = shift;
   # skirt around deep recursion warning annoyance
   local $SIG{__WARN__} = sub { $_[0] =~ /^Deep recursion/ or warn $_[0] };
   srand $$;
   my %CMDLINEOPTS = ();
   # Percent chance of each operator occuring
   $CMDLINEOPTS{LENGTH} = 32;
-  $CMDLINEOPTS{AND} = 10;
   $CMDLINEOPTS{OR} = 6;
   $CMDLINEOPTS{STAR} = 10;
   $CMDLINEOPTS{OPEN} = 5;
   $CMDLINEOPTS{CLOSE} = 0;
   $CMDLINEOPTS{n} = 1;
+  $CMDLINEOPTS{AND} = 10; #<-- default    
+  $CMDLINEOPTS{AND} = $and_chance if ($and_chance == 0); #<-- to make it just an re (no shuffle)
+  
 
   my $getRandomChar = sub {
     my $ch = '';
@@ -233,58 +311,7 @@ sub random_pre {
 # Usage:
 # perl -MFLAT -e random_re
 sub random_re {
-  shift;
-  # skirt around deep recursion warning annoyance
-  local $SIG{__WARN__} = sub { $_[0] =~ /^Deep recursion/ or warn $_[0] };
-  srand $$;
-  my %CMDLINEOPTS = ();
-  # Percent chance of each operator occuring
-  $CMDLINEOPTS{LENGTH} = 32;
-  $CMDLINEOPTS{AND} = 0;   #<-- turns off & operator
-  $CMDLINEOPTS{OR} = 6;
-  $CMDLINEOPTS{STAR} = 10;
-  $CMDLINEOPTS{OPEN} = 5;
-  $CMDLINEOPTS{CLOSE} = 0;
-  $CMDLINEOPTS{n} = 1;
-
-  my $getRandomChar = sub {
-    my $ch = '';
-    # Get a random character between 0 and 127.
-    do {
-      $ch = int(rand 2);
-    } while ($ch !~ m/[a-zA-Z0-9]/);  
-    return $ch;
-  };
-
-  my $getRandomRE = sub {
-    my $str = '';
-    my @closeparens = ();
-    for (1..$CMDLINEOPTS{LENGTH}) {
-      $str .= $getRandomChar->();  
-      # % chance of an "or"
-      if (int(rand 100) < $CMDLINEOPTS{OR}) {
-	$str .= "|1";
-      } elsif (int(rand 100) < $CMDLINEOPTS{AND}) {
-	$str .= "&0";
-      } elsif (int(rand 100) < $CMDLINEOPTS{STAR}) {
-	$str .= "*1";     
-      } elsif (int(rand 100) < $CMDLINEOPTS{OPEN}) {
-	$str .= "(";
-	push(@closeparens,'0101)');
-      } elsif (int(rand 100) < $CMDLINEOPTS{CLOSE} && @closeparens) {
-	$str .= pop(@closeparens);
-      }
-    }
-    # empty out @closeparens if there are still some left
-    if (@closeparens) {
-      $str .= join('',@closeparens);  
-    }
-    return $str;
-  };
-
-  for (1..$CMDLINEOPTS{n}) {
-    print $getRandomRE->(),"\n";  
-  } 
+  shift->random_pre(0);
 }
 
 1;
