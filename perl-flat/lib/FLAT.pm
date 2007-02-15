@@ -129,8 +129,16 @@ NOTES:
     against a regular expression, a concrete example will be provided.   		    
 		   
 TO DO:
-   "getstrings 're1' [opts...]" # given regex, pump strings based on options
-   "variations 're1' [opts...]" # given regex will provide equivalents
+1   Implement "getstrings 're1' [opts...]" # given regex, pump strings 
+    based on options
+   
+2   Implement "variations 're1' [opts...]" # given regex will provide 
+    equivalents
+
+3   Allow random_pre and random_re to accept the number of regexes, the
+    number of characters, and the character set;  eventually it might be 
+    useful to allow modification of the chances of the different operators
+    occuring...
 
 CREDITS:
 Blockhead, CPAN.pm (for the example of how to implement these one liners), 
