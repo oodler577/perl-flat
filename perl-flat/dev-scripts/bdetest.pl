@@ -2,8 +2,6 @@
 use strict;
 
 use lib qw(../lib);
-use FLAT::Regex::Transform;
-use Data::Dumper;
+use FLAT::Regex::WithExtraOps;
 
-my $trans = FLAT::Regex::Transform->new('abc&efg+hi'); 
-print Dumper($trans);
+print FLAT::Regex->new('a')->as_nfa->as_dfa->as_min_dfa->as_undirected; 

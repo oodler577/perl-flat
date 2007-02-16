@@ -207,6 +207,53 @@ sub _extend_alphabet {
 
 ############ Formatted output
 
+# Format that Dr. Sukhamay KUNDU likes to use in his assignments :)
+# This format is just a undirected graph - so transition and state info is lost
+
+sub as_undirected {
+    my $self = shift;
+    my @symbols = $self->alphabet();
+    my @states = $self->get_states(); 
+    my @lines = ();
+    foreach (@states)  {
+      my $s = $_;
+      my @conns = ();
+      foreach (@symbols) {
+        my $a = $_;
+	# foreach state, get all nodes connected to it; ignore symbols and
+	# treat transitions simply as directed
+	push(@conns,$self->successors($s,$a));
+	push(@conns,$self->predecessors($s,$a)); #<-- something terribly wrong is going on here
+      }
+      @conns = $self->array_unique(@conns);
+      push(@lines,sprintf("%s (%s) %s",$s,($#conns+1),join(' ',@conns)));
+    }
+    return sprintf("%s\n%s",($#states+1),join("\n",@lines));
+}
+
+# Format that Dr. Sukhamay KUNDU likes to use in his assignments :)
+# This format is just a directed graph - so transition and state info is lost
+
+sub as_directed {
+    my $self = shift;
+    my @symbols = $self->alphabet();
+    my @states = $self->get_states(); 
+    my @lines = ();
+    foreach (@states)  {
+      my $s = $_;
+      my @conns = ();
+      foreach (@symbols) {
+        my $a = $_;
+	# foreach state, get all nodes connected to it; ignore symbols and
+	# treat transitions simply as directed
+	push(@conns,$self->successors($s,$a));
+      }
+      @conns = $self->array_unique(@conns);
+      push(@lines,sprintf("%s (%s) %s",$s,($#conns+1),join(' ',@conns)));
+    }
+    return sprintf("%s\n%s",($#states+1),join("\n",@lines));
+}
+
 
 # Graph Description Language, aiSee, etc
 sub as_gdl {

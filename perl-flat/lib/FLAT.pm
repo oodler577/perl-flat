@@ -64,9 +64,12 @@ use vars qw(@EXPORT $AUTOLOAD);
 
 @EXPORT = qw(compare 
              dump  
-	     dfa2dot 
-	     nfa2dot 
-	     pfa2dot 
+	     dfa2gv 
+	     nfa2gv 
+	     pfa2gv 
+	     dfa2directed
+	     nfa2directed
+	     pfa2directed
 	     random_pre 
 	     random_re
 	     help
@@ -106,9 +109,15 @@ COMMANDS:
 %perl -MFLAT -e
     "compare  're1','re2'"  # comares 2 regexs | see note [2] 
     "dump     're1'"        # dumps parse trees | see note[1]	   
-    "dfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
-    "nfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
-    "pfa2dot  're1'"        # dumps graphviz graph desc | see note[1]  
+    "dfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
+    "nfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
+    "pfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
+    dfa2directed
+    nfa2directed
+    pfa2directed
+    dfa2undirected
+    nfa2undirected
+    pfa2undirected
     random_pre 
     random_re
     help
@@ -176,8 +185,8 @@ sub dump {
 
 # dumps graphviz notation
 # Usage:
-# perl -MFLAT -e "dfa2dot('a&b&c&d*e*')"
-sub dfa2dot {
+# perl -MFLAT -e "dfa2gv('a&b&c&d*e*')"
+sub dfa2gv {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
@@ -197,8 +206,8 @@ sub dfa2dot {
 
 # dumps graphviz notation
 # Usage:
-# perl -MFLAT -e "nfa2dot('a&b&c&d*e*')"
-sub nfa2dot {
+# perl -MFLAT -e "nfa2gv('a&b&c&d*e*')"
+sub nfa2gv {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
@@ -218,8 +227,8 @@ sub nfa2dot {
 
 # dumps graphviz notation
 # Usage:
-# perl -MFLAT -e "pfa2dot('a&b&c&d*e*')"
-sub pfa2dot {
+# perl -MFLAT -e "pfa2gv('a&b&c&d*e*')"
+sub pfa2gv {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::PFA;
