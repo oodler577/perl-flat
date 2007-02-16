@@ -205,7 +205,9 @@ sub successors {
 }
 
 sub predecessors {
-    shift->clone->reverse->successors(@_);
+    my $self = shift;
+    #$self->clone->reverse->successors(@_);
+    $self->clone->successors(@_);
 }
 
 # reverse  - no change from NFA

@@ -107,17 +107,17 @@ __________             .__    ___________.____         ___________
 
 COMMANDS: 
 %perl -MFLAT -e
-    "compare  're1','re2'"  # comares 2 regexs | see note [2] 
-    "dump     're1'"        # dumps parse trees | see note[1]	   
+    "compare  're1','re2'" # comares 2 regexs | see note [2] 
+    "dump     're1'"       # dumps parse trees | see note[1]	   
     "dfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
     "nfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
     "pfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
-    dfa2directed
-    nfa2directed
-    pfa2directed
-    dfa2undirected
-    nfa2undirected
-    pfa2undirected
+    dfa2directed           # dumps directed graph without transitions
+    nfa2directed           # dumps directed graph without transitions
+    pfa2directed           # dumps directed graph without transitions
+    dfa2undirected #broken # dumps undirected graph without transitions
+    nfa2undirected #broken # dumps undirected graph without transitions
+    pfa2undirected #broken # dumps undirected graph without transitions
     random_pre 
     random_re
     help
@@ -242,6 +242,136 @@ sub pfa2gv {
        my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
        print $FA->as_graphviz;} 
   }
+}
+
+# dumps directed graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "dfa2directed('a&b&c&d*e*')"
+sub dfa2directed {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  use FLAT::NFA;
+  use FLAT::PFA;  
+  # trims sink states from min-dfa since transitions are gone 
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks(); 
+       print $FA->as_directed;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks();
+       print $FA->as_directed;} 
+  }
+  print "\n";
+}
+
+# dumps directed graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "nfa2directed('a&b&c&d*e*')"
+sub nfa2directed {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  use FLAT::NFA;
+  use FLAT::PFA;  
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa(); 
+       print $FA->as_directed;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
+       print $FA->as_directed;} 
+  }
+  print "\n";
+}
+
+# dumps directed graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "pfa2directed('a&b&c&d*e*')"
+sub pfa2directed {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::PFA;
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa(); 
+       print $FA->as_directed;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
+       print $FA->as_directed;} 
+  }
+  print "\n";
+}
+
+# dumps undirected graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "dfa2undirected('a&b&c&d*e*')"
+sub dfa2undirected {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  use FLAT::NFA;
+  use FLAT::PFA;  
+  # trims sink states from min-dfa since transitions are gone 
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks(); 
+       print $FA->as_undirected;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks();
+       print $FA->as_undirected;} 
+  }
+  print "\n";
+}
+
+# dumps undirected graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "nfa2undirected('a&b&c&d*e*')"
+sub nfa2undirected {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::DFA;
+  use FLAT::NFA;
+  use FLAT::PFA;  
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa(); 
+       print $FA->as_undirected;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
+       print $FA->as_undirected;} 
+  }
+  print "\n";
+}
+
+# dumps undirected graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "pfa2undirected('a&b&c&d*e*')"
+sub pfa2undirected {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::PFA;
+  if (@_) 
+  { foreach (@_)
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa(); 
+       print $FA->as_undirected;} }
+  else    
+  { while (<STDIN>) 
+     { chomp;
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
+       print $FA->as_undirected;} 
+  }
+  print "\n";
 }
 
 # compares 2 give PREs
