@@ -67,9 +67,9 @@ use vars qw(@EXPORT $AUTOLOAD);
 	     dfa2gv 
 	     nfa2gv 
 	     pfa2gv 
-	     dfa2directed
-	     nfa2directed
-	     pfa2directed
+	     dfa2digraph
+	     nfa2digraph
+	     pfa2digraph
 	     dfa2undirected
 	     nfa2undirected
 	     pfa2undirected
@@ -115,12 +115,12 @@ COMMANDS:
     "dfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
     "nfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
     "pfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
-    dfa2directed           # dumps directed graph without transitions
-    nfa2directed           # dumps directed graph without transitions
-    pfa2directed           # dumps directed graph without transitions
-    dfa2undirected #broken # dumps undirected graph without transitions
-    nfa2undirected #broken # dumps undirected graph without transitions
-    pfa2undirected #broken # dumps undirected graph without transitions
+    dfa2digraph            # dumps directed graph without transitions
+    nfa2digraph            # dumps directed graph without transitions
+    pfa2digraph            # dumps directed graph without transitions
+    dfa2undirected         # dumps undirected graph without transitions
+    nfa2undirected         # dumps undirected graph without transitions
+    pfa2undirected         # dumps undirected graph without transitions
     random_pre 
     random_re
     help
@@ -250,7 +250,7 @@ sub pfa2gv {
 # dumps directed graph using Kundu notation
 # Usage:
 # perl -MFLAT -e "dfa2directed('a&b&c&d*e*')"
-sub dfa2directed {
+sub dfa2digraph {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
@@ -260,12 +260,12 @@ sub dfa2directed {
   if (@_) 
   { foreach (@_)
     { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks(); 
-       print $FA->as_directed;} }
+       print $FA->as_digraph;} }
   else    
   { while (<STDIN>) 
      { chomp;
        my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa->trim_sinks();
-       print $FA->as_directed;} 
+       print $FA->as_digraph;} 
   }
   print "\n";
 }
@@ -273,7 +273,7 @@ sub dfa2directed {
 # dumps directed graph using Kundu notation
 # Usage:
 # perl -MFLAT -e "nfa2directed('a&b&c&d*e*')"
-sub nfa2directed {
+sub nfa2digraph {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::DFA;
@@ -282,12 +282,12 @@ sub nfa2directed {
   if (@_) 
   { foreach (@_)
     { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa(); 
-       print $FA->as_directed;} }
+       print $FA->as_digraph;} }
   else    
   { while (<STDIN>) 
      { chomp;
        my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
-       print $FA->as_directed;} 
+       print $FA->as_digraph;} 
   }
   print "\n";
 }
@@ -295,19 +295,19 @@ sub nfa2directed {
 # dumps directed graph using Kundu notation
 # Usage:
 # perl -MFLAT -e "pfa2directed('a&b&c&d*e*')"
-sub pfa2directed {
+sub pfa2digraph {
   shift;  
   use FLAT::Regex::WithExtraOps;
   use FLAT::PFA;
   if (@_) 
   { foreach (@_)
     { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa(); 
-       print $FA->as_directed;} }
+       print $FA->as_digraph;} }
   else    
   { while (<STDIN>) 
      { chomp;
        my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa();
-       print $FA->as_directed;} 
+       print $FA->as_digraph;} 
   }
   print "\n";
 }

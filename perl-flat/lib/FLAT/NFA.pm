@@ -211,46 +211,49 @@ sub _extend_alphabet {
 # This format is just a undirected graph - so transition and state info is lost
 
 sub as_undirected {
-#    return "This function is not implemented yet because of weird problem...";
     my $self = shift;
     my @symbols = $self->alphabet();
     my @states = $self->get_states(); 
-    my @lines = ();
+    my %edges = ();
     foreach (@states)  {
       my $s = $_;
-      my @conns = ();
       foreach (@symbols) {
         my $a = $_;
 	# foreach state, get all nodes connected to it; ignore symbols and
 	# treat transitions simply as directed
-	push(@conns,$self->successors($s,$a));
-	push(@conns,$self->predecessors($s,$a)); #<-- something terribly wrong is going on here
+	push(@{$edges{$s}},$self->successors($s,$a));
+	foreach ($self->successors($s,$a)) {
+  	  push(@{$edges{$_}},$s);	
+	}
       }
-      @conns = $self->array_unique(@conns);
-      push(@lines,sprintf("%s (%s) %s",$s,($#conns+1),join(' ',@conns)));
     }
-    return sprintf("%s\n%s",($#states+1),join("\n",@lines));
-}
+    my @lines = (($#states+1));
+    foreach (sort{$a <=> $b;}(keys(%edges))) { #<-- iterate over numerically sorted list of keys
+      @{$edges{$_}} = sort {$a <=> $b;} $self->array_unique(@{$edges{$_}}); #<- make items unique and sort numerically
+      push(@lines,sprintf("%s (%s) %s",$_,($#{$edges{$_}}+1),join(' ',@{$edges{$_}})));
+    }
+    return join("\n",@lines);
+ }
 
 # Format that Dr. Sukhamay KUNDU likes to use in his assignments :)
 # This format is just a directed graph - so transition and state info is lost
 
-sub as_directed {
+sub as_digraph {
     my $self = shift;
     my @symbols = $self->alphabet();
     my @states = $self->get_states(); 
     my @lines = ();
     foreach (@states)  {
       my $s = $_;
-      my @conns = ();
+      my @edges = ();
       foreach (@symbols) {
         my $a = $_;
 	# foreach state, get all nodes connected to it; ignore symbols and
 	# treat transitions simply as directed
-	push(@conns,$self->successors($s,$a));
+	push(@edges,$self->successors($s,$a));
       }
-      @conns = $self->array_unique(@conns);
-      push(@lines,sprintf("%s (%s) %s",$s,($#conns+1),join(' ',@conns)));
+      @edges = sort {$a <=> $b;} $self->array_unique(@edges); #<- make items unique and sort numerically
+      push(@lines,sprintf("%s (%s) %s",$s,($#edges+1),join(' ',@edges)));
     }
     return sprintf("%s\n%s",($#states+1),join("\n",@lines));
 }

@@ -72,13 +72,13 @@ sub intersect {
 
 # this is meant to enforce 1 starting state for a DFA, but it is getting us into trouble
 # when a DFA object calls unset_starting
-#sub unset_starting {
-#    my $self = shift;    
-#    $self->SUPER::unset_starting(@_);    
-#    my $num = () = $self->unset_starting;
-#    croak "DFA must have exactly one starting state"
-#        if $num != 1;
-#}
+sub unset_starting {
+    my $self = shift;    
+    $self->SUPER::unset_starting(@_);    
+    my $num = () = $self->unset_starting;
+    croak "DFA must have exactly one starting state"
+        if $num != 1;
+}
 
 sub trim_sinks {
   my $self = shift;
