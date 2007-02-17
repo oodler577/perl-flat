@@ -22,6 +22,7 @@ my $DFA2 = $PFA2->as_nfa->as_min_dfa;
 is( ($DFA1->equals($DFA2)), 1 );
 
 # w&w*
+diag("");
 diag("w&v*..");
 # w&v*
 $PFA1 = FLAT::Regex::WithExtraOps->new('abc&(def)*')->as_pfa();
@@ -30,6 +31,8 @@ $PFA2 = FLAT::Regex::WithExtraOps->new('(def)*(
                                               d((efd)*ef&(abc))+
                                               d((efd)*&(abc))ef
                                              )')->as_pfa();
+
+__END__ #<-- uncomment for more intensive and time consuming tests
 
 $DFA1 = $PFA1->as_nfa->as_min_dfa;
 $DFA2 = $PFA2->as_nfa->as_min_dfa;

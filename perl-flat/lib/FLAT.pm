@@ -70,6 +70,9 @@ use vars qw(@EXPORT $AUTOLOAD);
 	     dfa2directed
 	     nfa2directed
 	     pfa2directed
+	     dfa2undirected
+	     nfa2undirected
+	     pfa2undirected
 	     random_pre 
 	     random_re
 	     help
@@ -194,12 +197,12 @@ sub dfa2gv {
   use FLAT::PFA;  
   if (@_) 
   { foreach (@_)
-    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
+    { my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa()->as_min_dfa()->trim_sinks();
       print $FA->as_graphviz;} }
   else    
   { while (<STDIN>) 
      { chomp;
-       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa();
+       my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa()->as_dfa->as_min_dfa()->trim_sinks();
        print $FA->as_graphviz;} 
   }
 }
