@@ -7,4 +7,9 @@ use FLAT::NFA;
 use FLAT::PFA;
 use FLAT::Regex::WithExtraOps;
 
-print FLAT::Regex->new($ARGV[0])->as_nfa->as_dfa->as_min_dfa->trim_sinks->as_undirected;
+my $dfa = FLAT::Regex->new($ARGV[0])->as_nfa->as_dfa;
+if ($dfa->is_valid($ARGV[1])) {
+  print "valid" 
+} else {
+  print "not valid" 
+}

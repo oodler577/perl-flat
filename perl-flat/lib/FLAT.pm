@@ -75,6 +75,7 @@ use vars qw(@EXPORT $AUTOLOAD);
 	     pfa2undirected
 	     random_pre 
 	     random_re
+	     test
 	     help
 	     );
 
@@ -110,19 +111,20 @@ __________             .__    ___________.____         ___________
 
 COMMANDS: 
 %perl -MFLAT -e
-    "compare  're1','re2'" # comares 2 regexs | see note [2] 
-    "dump     're1'"       # dumps parse trees | see note[1]	   
-    "dfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
-    "nfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
-    "pfa2gv  're1'"        # dumps graphviz graph desc | see note[1]  
-    dfa2digraph            # dumps directed graph without transitions
-    nfa2digraph            # dumps directed graph without transitions
-    pfa2digraph            # dumps directed graph without transitions
-    dfa2undirected         # dumps undirected graph without transitions
-    nfa2undirected         # dumps undirected graph without transitions
-    pfa2undirected         # dumps undirected graph without transitions
+    "compare  're1','re2'"   # comares 2 regexs | see note [2] 
+    "dump     're1'"         # dumps parse trees | see note[1]	   
+    "dfa2gv  're1'"          # dumps graphviz graph desc | see note[1]  
+    "nfa2gv  're1'"          # dumps graphviz graph desc | see note[1]  
+    "pfa2gv  're1'"          # dumps graphviz graph desc | see note[1]  
+    dfa2digraph              # dumps directed graph without transitions
+    nfa2digraph              # dumps directed graph without transitions
+    pfa2digraph              # dumps directed graph without transitions
+    dfa2undirected           # dumps undirected graph without transitions
+    nfa2undirected           # dumps undirected graph without transitions
+    pfa2undirected           # dumps undirected graph without transitions
     random_pre 
     random_re
+    "test 'regex' 'string1'" # give a regex, reports if subsequent strings are valid
     help
 
 NOTES:
@@ -164,6 +166,42 @@ SEE:
 http://perl-flat.sourceforge.net
 
 END
+}
+
+# dumps directed graph using Kundu notation
+# Usage:
+# perl -MFLAT -e "pfa2directed('a&b&c&d*e*')"
+sub test {
+  shift;  
+  use FLAT::Regex::WithExtraOps;
+  use FLAT::PFA;
+  use FLAT::NFA;
+  use FLAT::DFA;
+  # handles multiple strings; first is considered the regex
+  if (@_) 
+  { my $FA = FLAT::Regex::WithExtraOps->new(shift @_)->as_pfa()->as_nfa->as_dfa(); 
+    foreach (@_)
+    { if ($FA->is_valid($_)) {
+        print "(+): $_\n";
+      } else {
+        print "(-): $_\n";
+      }     
+    } 
+  } else {
+    my $FA;
+    while (<STDIN>) {
+      chomp;
+      if ($. == 1) { #<-- uses first line as regex!
+        $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa->as_dfa();
+      } else {
+	if ($FA->is_valid($_)) {
+	  print "(+): $_\n";
+        } else {
+	  print "(-): $_\n";
+	}      
+      }
+    }
+  }
 }
 
 # dumps parse tree

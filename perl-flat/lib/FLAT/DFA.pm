@@ -157,6 +157,29 @@ sub as_min_dfa {
 
 }
 
+# creates table used by a FLAT::DFA::Validator object to assess
+# the validity of a given string
+
+sub is_valid {
+  my $self = shift;
+  my $string = shift;
+  chomp $string;
+  my $OK = undef;
+  my @stack = split('',$string);
+  # this is confusing all funcs return arrays
+  my @current = $self->get_starting();
+  my $current = pop @current;
+  foreach (@stack) {
+    my @next = $self->successors($current,$_);    
+    if (!@next) {
+      return $OK; #<--returns undef bc no transition found
+    }
+    $current = $next[0];
+  }
+  $OK++ if ($self->is_accepting($current));
+  return $OK;
+}
+
 1;
 
 __END__
