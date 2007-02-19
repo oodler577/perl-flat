@@ -80,6 +80,8 @@ sub unset_starting {
         if $num != 1;
 }
 
+#### transformations
+
 sub trim_sinks {
   my $self = shift;
   my $result = $self->clone();
@@ -157,10 +159,49 @@ sub as_min_dfa {
 
 }
 
-# creates table used by a FLAT::DFA::Validator object to assess
-# the validity of a given string
+# DFT stuff in preparation for DFA pump stuff;
+sub as_node_list {
+    my $self = shift;
+    my %node = ();
+    for my $s1 ($self->get_states) {
+      for my $s2 ($self->get_states) {
+         my $t = $self->get_transition($s1, $s2);
+         if (defined $t) {
+           # array of symbols that $s1 will go to $s2 on...
+	   push(@{$node{$s1}{edges}{$s2}},split(',',$t->as_string)); 
+         }
+      }
+    }
+  return %node;
+}
 
-sub is_valid {
+# returns a tree stucture resulting from a dft of the DFA;
+sub as_depth_first_tree {
+  my $self = shift;
+  # data structure to do dft over
+  my %nodes = $self->as_node_list();
+  my %dflabels = (); # "global" lookup table for dflable
+  my %parents  = (); # "global" lookup table for parents
+  my $recurse_level = 0; # tracks recurse level
+  my $search = sub {
+    $recurse_level++;
+    
+    # leave
+    $recurse_level--;
+  };
+  
+  # start the recursive dft search
+  my $tree = $search->($self->get_starting());
+  # return tree
+  return $tree;
+}
+
+# creates table used by a FLAT::DFA::Validator object to assess
+# the validity of a given string <-- executes symbols over DFA
+# if there is not transition for given state and symbol, it fails immediately
+# if the current state we're in is not final when symbols are exhausted, then it fails
+
+sub is_valid_string {
   my $self = shift;
   my $string = shift;
   chomp $string;

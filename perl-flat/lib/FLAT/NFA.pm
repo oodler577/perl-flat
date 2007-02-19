@@ -316,16 +316,6 @@ sub _SET_ID { join "\0", sort { $a <=> $b } @_; }
 
 ######## transformations
 
-# returns a tree stucture resulting from a dft of the FA;
-sub as_depth_first_tree {
-  my $search = 
-  sub {
-    # anonymous sub called by $search->(..)
-  };
-  
-  
-}
-
 # subset construction
 sub as_dfa {
     my $self = shift;

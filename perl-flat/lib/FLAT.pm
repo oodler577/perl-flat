@@ -181,7 +181,7 @@ sub test {
   if (@_) 
   { my $FA = FLAT::Regex::WithExtraOps->new(shift @_)->as_pfa()->as_nfa->as_dfa(); 
     foreach (@_)
-    { if ($FA->is_valid($_)) {
+    { if ($FA->is_valid_string($_)) {
         print "(+): $_\n";
       } else {
         print "(-): $_\n";
@@ -194,7 +194,7 @@ sub test {
       if ($. == 1) { #<-- uses first line as regex!
         $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa->as_dfa();
       } else {
-	if ($FA->is_valid($_)) {
+	if ($FA->is_valid_string($_)) {
 	  print "(+): $_\n";
         } else {
 	  print "(-): $_\n";
