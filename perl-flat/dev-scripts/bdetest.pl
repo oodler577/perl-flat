@@ -10,4 +10,6 @@ use FLAT::Regex::WithExtraOps;
 my $dfa = FLAT::Regex->new($ARGV[0])->as_nfa->as_dfa;
 
 use Data::Dumper;
-print Dumper($dfa->as_node_list);
+#print Dumper($dfa->as_node_list);
+
+$dfa->as_depth_first_tree();
