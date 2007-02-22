@@ -185,52 +185,55 @@ sub as_depth_first_tree {
   my %low         = (); # "global" lookup table for low
   my $lastDFLabel = 0;
   my $recurse_level = 0; # tracks recurse level
-  my $search = sub {
+  my $search = sub { };
+  $search = sub {
     my $startNode = shift;
-    my %treeNode = undef; # initialize
+    my %treeNode; # initialize
     $recurse_level++; # <- tracker
     if (!exists($dflabel{$startNode})) {
       $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
       $low{$startNode} = $lastDFLabel;
       $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
       # tree node "struct" - really a hash..
-      %treeNode = {
+      %treeNode = (
 	node       => $startNode,
 	parent     => undef,
-	leftchild  => undef,
-	rightchild => undef,
+	left       => undef,
+	right      => undef,
 	first      => undef,
 	last       => undef,
-      };
+      );
       foreach my $adjacent (keys(%{$nodes{$startNode}})) {
 	if (!exists($dflabel{$adjacent})) {      # initial tree edge
-          print "tree edge! $startNode -> $adjacent\n"; # for testing only
+#          print "tree edge! $startNode -> $adjacent\n"; # for testing only
 	} elsif (-1 == ($dflabel{$adjacent} - $dflabel{$startNode})){ # detects child visiting a parent
-          print "tree edge, 2nd visit! $startNode is child of $adjacent!\n"; # for testing only
+#          print "tree edge, 2nd visit! $startNode is child of $adjacent!\n"; # for testing only
 	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-          print "back edge!";      
+#          print "back edge!";      
 	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-          print "back edge, 2nd visit!\n";      
+#          print "back edge, 2nd visit!\n";      
 	}
-        my $child = $search->($adjacentNode);
+        my $child = $search->($adjacent);
 	if (defined($child)) {
 	  $child->{right} = undef;
 	  $child->{left}  = undef;
-	  $child->{parent} => \%treeNode;
-	  if (!defined($treeNode->{first})) {
-	    $treeNode->{first} = $child;
-	    $treeNode->{last} = $child;
+	  $child->{parent} = \%treeNode;
+	  if (!defined($treeNode{first})) {
+	    $treeNode{first} = $child;
+	    $treeNode{last} = $child;
 	  } else {
-	    $child->{left} = $treeNode->{last};
-	    $treeNode->{last}->{right} = $child;
-	    $treeNode->{last} = $child;
+            $child->{left} = $treeNode{last};
+	    $treeNode{last}->{right} = $child;
+	    $treeNode{last} = $child;
 	  }
 	}	
       }
+      # leave
+      $recurse_level--; # <- tracker
+      return \%treeNode;
     }
-    # leave
     $recurse_level--; # <- tracker
-    return \%treeNode;
+    return undef;     
   };
   
   # start the recursive dft search
