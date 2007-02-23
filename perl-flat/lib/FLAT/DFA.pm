@@ -175,6 +175,53 @@ sub as_node_list {
   return %node;
 }
 
+# does a dft of digraph, but does not return a tree
+sub depth_first {
+  use Sub::Recursive;
+  my $self = shift;
+  # data structure to do dft over
+  my %nodes = $self->as_node_list();
+  my %dflabel  = ();    # "global" lookup table for dflable
+  my %backtracked = (); # "global" lookup table for backtracked edges
+  my %low         = (); # "global" lookup table for low
+  my $lastDFLabel = 0;
+  my $recurse_level = 0; # tracks recurse level
+  my $search = recursive {                            
+    my $startNode = shift;
+    $recurse_level++; # <- tracker
+    if (!exists($dflabel{$startNode})) {
+      $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
+      $low{$startNode} = $lastDFLabel;
+      $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
+      foreach my $adjacent (keys(%{$nodes{$startNode}})) {
+        printf("%s",$nodes{$startNode}{$adjacent}->[0]);
+	print "" if ($self->is_accepting($adjacent));
+	if (!exists($dflabel{$adjacent})) {      # initial tree edge
+#           print "tree edge! $startNode -> $adjacent"; # for testing only
+	} elsif (-1 == ($dflabel{$adjacent} - $dflabel{$startNode})){ # detects child visiting a parent
+#           print "tree edge, 2nd visit! $startNode is child of $adjacent!\n"; # for testing only
+	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
+#           print "back edge!";      
+	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
+#           print "back edge, 2nd visit!\n";      
+	}
+        $REC->($adjacent);
+        # on back tracking, do the following
+        $backtracked{$adjacent}++;  # <- track backtracked nodes
+        # update LOW of $startNode
+	if ($low{$startNode} > $low{$adjacent}) {
+	  $low{$startNode} = $low{$adjacent};
+	}	
+      } 
+    }
+    $recurse_level--; # <- tracker
+    return;     
+  };
+  # start the recursive dft search off
+  $search->($self->get_starting());
+  return;
+}
+
 # returns a tree stucture resulting from a dft of the DFA;
 sub as_depth_first_tree {
   use Sub::Recursive;
@@ -229,6 +276,7 @@ sub as_depth_first_tree {
 	  }
 	}	
       }
+      $backtracked{$startNode}++;  # <- track backtracked nodes
       # leave
       $recurse_level--; # <- tracker
       return \%treeNode;

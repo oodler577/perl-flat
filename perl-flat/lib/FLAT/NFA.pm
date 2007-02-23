@@ -279,7 +279,7 @@ sub as_gdl {
                 $s1, $s2, $t->as_string;
         }
     }}
-    
+  
     return sprintf "graph: {\ndisplay_edge_labels: yes\n\n%s\n%s}\n",
         join("", @states),
         join("", @trans);
@@ -292,7 +292,7 @@ sub as_graphviz {
     my @states = map {
         sprintf qq{%s [label="%s",shape=%s]\n},
             $_,
-            ($self->is_starting($_) ? "start" : ""),
+            ($self->is_starting($_) ? "start ($_)" : "$_"),
             ($self->is_accepting($_) ? "doublecircle" : "circle")
     } $self->get_states;
     
