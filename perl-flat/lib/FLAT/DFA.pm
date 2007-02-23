@@ -194,8 +194,8 @@ sub depth_first {
       $low{$startNode} = $lastDFLabel;
       $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
       foreach my $adjacent (keys(%{$nodes{$startNode}})) {
-        printf("%s",$nodes{$startNode}{$adjacent}->[0]);
-	print "" if ($self->is_accepting($adjacent));
+        #printf("%s",$nodes{$startNode}{$adjacent}->[0]);
+	#print "" if ($self->is_accepting($adjacent));
 	if (!exists($dflabel{$adjacent})) {      # initial tree edge
 #           print "tree edge! $startNode -> $adjacent"; # for testing only
 	} elsif (-1 == ($dflabel{$adjacent} - $dflabel{$startNode})){ # detects child visiting a parent
@@ -208,6 +208,7 @@ sub depth_first {
         $REC->($adjacent);
         # on back tracking, do the following
         $backtracked{$adjacent}++;  # <- track backtracked nodes
+	print "$backtracked{$adjacent}";
         # update LOW of $startNode
 	if ($low{$startNode} > $low{$adjacent}) {
 	  $low{$startNode} = $low{$adjacent};
