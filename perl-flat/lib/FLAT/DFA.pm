@@ -177,6 +177,7 @@ sub as_node_list {
 
 # returns a tree stucture resulting from a dft of the DFA;
 sub as_depth_first_tree {
+  use Sub::Recursive;
   my $self = shift;
   # data structure to do dft over
   my %nodes = $self->as_node_list();
@@ -185,12 +186,12 @@ sub as_depth_first_tree {
   my %low         = (); # "global" lookup table for low
   my $lastDFLabel = 0;
   my $recurse_level = 0; # tracks recurse level
-  my $search = sub { };
-  $search = sub {
+  my $search = recursive {                            
     my $startNode = shift;
     my %treeNode; # initialize
     $recurse_level++; # <- tracker
     if (!exists($dflabel{$startNode})) {
+      print "Accepting Node $startNode Found" if ($self->is_accepting($startNode));
       $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
       $low{$startNode} = $lastDFLabel;
       $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
@@ -213,7 +214,7 @@ sub as_depth_first_tree {
 	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
 #          print "back edge, 2nd visit!\n";      
 	}
-        my $child = $search->($adjacent);
+        my $child = $REC->($adjacent);
 	if (defined($child)) {
 	  $child->{right} = undef;
 	  $child->{left}  = undef;

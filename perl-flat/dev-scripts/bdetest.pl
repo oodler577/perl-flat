@@ -15,4 +15,4 @@ $Data::Dumper::Deepcopy = 1;
 #print Dumper($dfa->as_node_list);
 
 my $tree = $dfa->as_depth_first_tree();
-print Dumper($tree);
+#print Dumper($tree);
