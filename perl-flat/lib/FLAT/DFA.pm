@@ -2,7 +2,7 @@ package FLAT::DFA;
 use strict;
 use base 'FLAT::NFA';
 use Carp;
-
+$|++;
 
 sub set_starting {
     my $self = shift;
@@ -175,9 +175,8 @@ sub as_node_list {
   return %node;
 }
 
-# does a dft of digraph, but does not return a tree
-sub depth_first {
-  use Sub::Recursive;
+# finds all acyclic s->f paths (f \in F)
+sub acyclic {
   my $self = shift;
   # data structure to do dft over
   my %nodes = $self->as_node_list();
@@ -186,35 +185,33 @@ sub depth_first {
   my %low         = (); # "global" lookup table for low
   my $lastDFLabel = 0;
   my $recurse_level = 0; # tracks recurse level
+  my @string = ();
+  # anonymous, recursive function
+  use Sub::Recursive;  
   my $search = recursive {                            
     my $startNode = shift;
     $recurse_level++; # <- tracker
+# tree edge detection
     if (!exists($dflabel{$startNode})) {
       $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
       $low{$startNode} = $lastDFLabel;
       $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
       foreach my $adjacent (keys(%{$nodes{$startNode}})) {
-        #printf("%s",$nodes{$startNode}{$adjacent}->[0]);
-	#print "" if ($self->is_accepting($adjacent));
 	if (!exists($dflabel{$adjacent})) {      # initial tree edge
-#           print "tree edge! $startNode -> $adjacent"; # for testing only
-	} elsif (-1 == ($dflabel{$adjacent} - $dflabel{$startNode})){ # detects child visiting a parent
-#           print "tree edge, 2nd visit! $startNode is child of $adjacent!\n"; # for testing only
-	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-#           print "back edge!";      
-	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-#           print "back edge, 2nd visit!\n";      
+	  push(@string,$nodes{$startNode}{$adjacent}->[0]);
+          $REC->($adjacent);
+          $backtracked{$adjacent}++;  # <- track backtracked nodes
+	  if ($low{$startNode} > $low{$adjacent}) {
+	    $low{$startNode} = $low{$adjacent};
+	  }	
 	}
-        $REC->($adjacent);
-        # on back tracking, do the following
-        $backtracked{$adjacent}++;  # <- track backtracked nodes
-	print "$backtracked{$adjacent}";
-        # update LOW of $startNode
-	if ($low{$startNode} > $low{$adjacent}) {
-	  $low{$startNode} = $low{$adjacent};
-	}	
+	print join('',@string) if ($self->is_accepting($adjacent));
+        pop(@string);
       } 
     }
+    # remove startNode entry to facilitate acyclic path determination
+    delete($dflabel{$startNode});
+    $lastDFLabel--;
     $recurse_level--; # <- tracker
     return;     
   };
@@ -223,9 +220,11 @@ sub depth_first {
   return;
 }
 
-# returns a tree stucture resulting from a dft of the DFA;
-sub as_depth_first_tree {
-  use Sub::Recursive;
+# does a dft of digraph, but does not return a tree
+# incorporates strong component detection, which I
+# think might yield some interesting methods for 
+# generating valid strings
+sub depth_first {
   my $self = shift;
   # data structure to do dft over
   my %nodes = $self->as_node_list();
@@ -234,62 +233,53 @@ sub as_depth_first_tree {
   my %low         = (); # "global" lookup table for low
   my $lastDFLabel = 0;
   my $recurse_level = 0; # tracks recurse level
+  # anonymous, recursive function
+  use Sub::Recursive;  
   my $search = recursive {                            
     my $startNode = shift;
-    my %treeNode; # initialize
     $recurse_level++; # <- tracker
+# tree edge detection
     if (!exists($dflabel{$startNode})) {
-      print "Accepting Node $startNode Found" if ($self->is_accepting($startNode));
       $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
       $low{$startNode} = $lastDFLabel;
       $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
-      # tree node "struct" - really a hash..
-      %treeNode = (
-	node       => $startNode,
-	parent     => undef,
-	left       => undef,
-	right      => undef,
-	first      => undef,
-	last       => undef,
-      );
       foreach my $adjacent (keys(%{$nodes{$startNode}})) {
+        #printf("%s",$nodes{$startNode}{$adjacent}->[0]);
+	#print "" if ($self->is_accepting($adjacent));
 	if (!exists($dflabel{$adjacent})) {      # initial tree edge
-#          print "tree edge! $startNode -> $adjacent\n"; # for testing only
-	} elsif (-1 == ($dflabel{$adjacent} - $dflabel{$startNode})){ # detects child visiting a parent
-#          print "tree edge, 2nd visit! $startNode is child of $adjacent!\n"; # for testing only
-	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-#          print "back edge!";      
-	} elsif ($dflabel{$adjacent} < $dflabel{$startNode}) { # back edge
-#          print "back edge, 2nd visit!\n";      
-	}
-        my $child = $REC->($adjacent);
-	if (defined($child)) {
-	  $child->{right} = undef;
-	  $child->{left}  = undef;
-	  $child->{parent} = \%treeNode;
-	  if (!defined($treeNode{first})) {
-	    $treeNode{first} = $child;
-	    $treeNode{last} = $child;
-	  } else {
-            $child->{left} = $treeNode{last};
-	    $treeNode{last}->{right} = $child;
-	    $treeNode{last} = $child;
+          print "tree edge! $startNode -> $adjacent"; # for testing only
+          $REC->($adjacent);
+	  print "Backtracking $adjacent -> $startNode";
+          # on back tracking, do the following
+          $backtracked{$adjacent}++;  # <- track backtracked nodes
+#	  print "$startNode -> $adjacent : $backtracked{$adjacent}";
+          # update LOW of $startNode
+	  if ($low{$startNode} > $low{$adjacent}) {
+	    $low{$startNode} = $low{$adjacent};
+	  }	
+	  # detect strong component 
+	  if ($low{$adjacent} == $dflabel{$adjacent}) { 
+	    print "STRONG COMPONENT";
 	  }
-	}	
-      }
-      $backtracked{$startNode}++;  # <- track backtracked nodes
-      # leave
-      $recurse_level--; # <- tracker
-      return \%treeNode;
+# back edge detection
+	} elsif ($dflabel{$adjacent} < $dflabel{$startNode} && !exists($backtracked{$adjacent})) { # back edge
+           print "back edge! $startNode -> $adjacent";      
+# cross edge detection
+	} elsif ($backtracked{$adjacent}) {
+	    print "cross edge! $startNode -> $adjacent";
+	    # update low(startNode) with dflabel(adjacent) if low is greater than dflabel
+            if ($dflabel{$adjacent} < $low{$startNode}) {
+	      $low{$startNode} = $dflabel{$adjacent};
+	    }
+	}
+      } 
     }
     $recurse_level--; # <- tracker
-    return undef;     
+    return;     
   };
-  
-  # start the recursive dft search
-  my $tree = $search->($self->get_starting());
-  # return tree
-  return $tree;
+  # start the recursive dft search off
+  $search->($self->get_starting());
+  return;
 }
 
 # creates table used by a FLAT::DFA::Validator object to assess
