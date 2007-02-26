@@ -159,6 +159,34 @@ sub as_min_dfa {
 
 }
 
+# the validity of a given string <-- executes symbols over DFA
+# if there is not transition for given state and symbol, it fails immediately
+# if the current state we're in is not final when symbols are exhausted, then it fails
+
+sub is_valid_string {
+  my $self = shift;
+  my $string = shift;
+  chomp $string;
+  my $OK = undef;
+  my @stack = split('',$string);
+  # this is confusing all funcs return arrays
+  my @current = $self->get_starting();
+  my $current = pop @current;
+  foreach (@stack) {
+    my @next = $self->successors($current,$_);    
+    if (!@next) {
+      return $OK; #<--returns undef bc no transition found
+    }
+    $current = $next[0];
+  }
+  $OK++ if ($self->is_accepting($current));
+  return $OK;
+}
+
+#
+# Experimental!!
+#
+
 # DFT stuff in preparation for DFA pump stuff;
 sub as_node_list {
     my $self = shift;
@@ -280,31 +308,6 @@ sub depth_first {
   # start the recursive dft search off
   $search->($self->get_starting());
   return;
-}
-
-# creates table used by a FLAT::DFA::Validator object to assess
-# the validity of a given string <-- executes symbols over DFA
-# if there is not transition for given state and symbol, it fails immediately
-# if the current state we're in is not final when symbols are exhausted, then it fails
-
-sub is_valid_string {
-  my $self = shift;
-  my $string = shift;
-  chomp $string;
-  my $OK = undef;
-  my @stack = split('',$string);
-  # this is confusing all funcs return arrays
-  my @current = $self->get_starting();
-  my $current = pop @current;
-  foreach (@stack) {
-    my @next = $self->successors($current,$_);    
-    if (!@next) {
-      return $OK; #<--returns undef bc no transition found
-    }
-    $current = $next[0];
-  }
-  $OK++ if ($self->is_accepting($current));
-  return $OK;
 }
 
 1;
