@@ -1,4 +1,15 @@
 #!/usr/bin/env perl -l
+
+#
+# To be implemented in the main module code soon 
+# (minus not the store/retrieve stuff); that is here for the convenience of testing
+#
+
+#
+# employs a recursive DFS based determination of all acyclic paths, which is 
+# pretty darn efficient
+#
+
 use strict;
 
 use lib qw(../lib);
@@ -49,18 +60,14 @@ my @string        = ();
 # this function finds all acyclic paths in the dfa for each symbol!!
 sub acyclic {                            
   my $startNode = shift;
-  $recurse_level++; # <- tracker
 # tree edge detection
   if (!exists($dflabel{$startNode})) {
     $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
-    $low{$startNode} = $lastDFLabel;
-    $backtracked{$startNode} = 0;           # marks this node as visited before - for cross edge detection
     foreach my $adjacent (keys(%{$nodes{$startNode}})) {
       if (!exists($dflabel{$adjacent})) {      # initial tree edge
         foreach my $symbol (@{$nodes{$startNode}{$adjacent}}) {
 	  push(@string,$symbol);
           acyclic($adjacent);
-          $backtracked{$adjacent}++;  # <- track backtracked nodes
 	  if ($low{$startNode} > $low{$adjacent}) {
 	    $low{$startNode} = $low{$adjacent};
 	  }	
@@ -75,6 +82,5 @@ sub acyclic {
   # remove startNode entry to facilitate acyclic path determination
   delete($dflabel{$startNode});
   $lastDFLabel--;
-  $recurse_level--; # <- tracker
   return;     
 };
