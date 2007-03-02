@@ -103,7 +103,7 @@ __________             .__    ___________.____         ___________
  |____|    \___  >__|  |____/  \___  /   |_______ (____  /____|   
                \/                  \/            \/    \/    
 	       
-  NB:   Everything is wrt parallel regular expressions, i.e., 
+  NB: Everything is wrt parallel regular expressions, i.e., 
   NB: with the addtional shuffle operator, "&".  All this 
   NB: means is that you can use the ambersand (&) as a symbol
   NB: in the regular expressions you submit because it will be 
