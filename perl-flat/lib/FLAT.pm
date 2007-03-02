@@ -107,7 +107,9 @@ __________             .__    ___________.____         ___________
   NB: with the addtional shuffle operator, "&".  All this 
   NB: means is that you can use the ambersand (&) as a symbol
   NB: in the regular expressions you submit because it will be 
-  NB: detected as an operator.
+  NB: detected as an operator.That said, if you avoid using
+  NB: the "&" operator, you can forget about all that shuffle
+  NB: business.
 
 COMMANDS: 
 %perl -MFLAT -e
