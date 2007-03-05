@@ -68,10 +68,7 @@ sub acyclic {
         foreach my $symbol (@{$nodes{$startNode}{$adjacent}}) {
 	  push(@string,$symbol);
           acyclic($adjacent);
-	  if ($low{$startNode} > $low{$adjacent}) {
-	    $low{$startNode} = $low{$adjacent};
-	  }	
-	  if ($dfa->is_accepting($adjacent)) {
+	  if ($dfa->array_is_subset([$adjacent],[$dfa->get_accepting()])) { #< proof of concept
             printf("%s\n",join('',@string));
 	  }
 	  pop(@string);

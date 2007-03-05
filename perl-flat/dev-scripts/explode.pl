@@ -16,21 +16,6 @@ use lib qw(../lib);
 use FLAT::DFA;
 use FLAT::Regex::WithExtraOps;
 
-# fucking A!
-# perl bdetest.pl "a&b&c&d" will give you all permutations ... once the transformations are done.
-# because it takes so darn long to do transformations, it it might be useful to have a native
-# interface to dumping a "frozen" DFA object to file...time to investigate 
-
-print STDERR <<END;
-
-  This example includes the serialization of the DFA object, 
-  so if the file exists, it will not go through the transformation again;
-  In a basic sense, this is an example of compressing data - compare the 
-  size of the serialized object with a text file containing all strings stored
-  in the DFA.  The "compression" is even more extreme if you compare the size 
-  of the output'd text with the size of the actual regular expression.
-END
-
 my $dfa;
 #example:
 use Storable;
@@ -55,11 +40,12 @@ my $recurse_level = 0; # tracks recurse level
 my @string        = ();
 # anonymous, recursive function
 
-&acyclic($dfa->get_starting());
+&acyclic($dfa->get_starting(),$dfa->get_accepting()); #<-- accepts start node and set of possible goals
 
 # this function finds all acyclic paths in the dfa for each symbol!!
 sub acyclic {                            
   my $startNode = shift;
+  my @goalNodes = @_;
 # tree edge detection
   if (!exists($dflabel{$startNode})) {
     $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
@@ -67,11 +53,8 @@ sub acyclic {
       if (!exists($dflabel{$adjacent})) {      # initial tree edge
         foreach my $symbol (@{$nodes{$startNode}{$adjacent}}) {
 	  push(@string,$symbol);
-          acyclic($adjacent);
-	  if ($low{$startNode} > $low{$adjacent}) {
-	    $low{$startNode} = $low{$adjacent};
-	  }	
-	  if ($dfa->is_accepting($adjacent)) {
+          acyclic($adjacent,@goalNodes);
+	  if ($dfa->array_is_subset([$adjacent],[@goalNodes])) { #< proof of concept
             printf("%s\n",join('',@string));
 	  }
 	  pop(@string);
