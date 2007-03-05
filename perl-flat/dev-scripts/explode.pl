@@ -42,7 +42,12 @@ my @string        = ();
 
 &acyclic($dfa->get_starting(),$dfa->get_accepting()); #<-- accepts start node and set of possible goals
 
-# this function finds all acyclic paths in the dfa for each symbol!!
+
+# Given a start node and a set of valid @goal nodes, we can find an acyclic path;  based
+# how one composes the @goal set determines its behavior.  What matters first and foremost 
+# is that we return to a node on the parent acyclic that is assumed to at some point to get a final node
+
+
 sub acyclic {                            
   my $startNode = shift;
   my @goalNodes = @_;
