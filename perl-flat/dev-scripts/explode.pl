@@ -32,33 +32,40 @@ if (!-e "dat/$ARGV[0].dat") {
 
 my %nodes = $dfa->as_node_list();
 
-my %dflabel       = ();    # "global" lookup table for dflable
+my %dflabel       = (); # "global" lookup table for dflable
 my %backtracked   = (); # "global" lookup table for backtracked edges
 my %low           = (); # "global" lookup table for low
 my $lastDFLabel   = 0;
-my $recurse_level = 0; # tracks recurse level
-my @string        = ();
+my $recurse_level = 0;  # tracks recurse level
+my @string        = (); # stores latest string
+my @path          = (); # stores latest path
 # anonymous, recursive function
 
-&acyclic($dfa->get_starting(),$dfa->get_accepting()); #<-- accepts start node and set of possible goals
+# accepts start node and set of possible goals
+&acyclic($dfa->get_starting(),$dfa->get_accepting()); 
 
-# Given a start node and a set of valid @goal nodes, we can find an acyclic path;  based
-# how one composes the @goal set determines its behavior.  What matters first and foremost 
-# is that we return to a node on the parent acyclic that is assumed to at some point to get a final node
+# Given a start node and a set of valid @goal nodes, we can find an acyclic path;  
+# based
+# how one composes the @goal set determines its behavior.  What matters first and 
+# foremost 
+# is that we return to a node on the parent acyclic that is assumed to at some point 
+# to get a final node
 
 sub acyclic {                            
   my $startNode = shift;
   my @goalNodes = @_;
-# tree edge detection
+  # tree edge detection
   if (!exists($dflabel{$startNode})) {
     $dflabel{$startNode} = ++$lastDFLabel;  # the order inwhich this link was explored
     foreach my $adjacent (keys(%{$nodes{$startNode}})) {
-      if (!exists($dflabel{$adjacent})) {      # initial tree edge
+      if (!exists($dflabel{$adjacent})) {   # initial tree edge
         foreach my $symbol (@{$nodes{$startNode}{$adjacent}}) {
 	  push(@string,$symbol);
           acyclic($adjacent,@goalNodes);
 	  if ($dfa->array_is_subset([$adjacent],[@goalNodes])) { #< proof of concept
             printf("%s\n",join('',@string));
+	    # at this point, an acyclic path has been found
+            # &explode(...)
 	  }
 	  pop(@string);
         }
