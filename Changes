@@ -1,3 +1,13 @@
+Development (unreleased)
+              - repair FA finiteness checks and DFA closure operations
+              - use combined alphabets for difference and complete partial
+                DFAs before complement/intersection
+              - fix starting-state recursion and sink-state renumbering
+              - preserve epsilon and zero words in bounded iterators; use
+                definedness to detect exhaustion
+              - isolate acyclic traversal state per path
+              - add deterministic semantic regressions and development notes
+
 Changes for FLAT
 
 1.0.0         2021-04-22 14:30:51-04:00 America/New_York 

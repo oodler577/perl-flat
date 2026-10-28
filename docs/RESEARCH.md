@@ -117,3 +117,16 @@ execution strategy realizes it on available resources. Preserve this distinction
 in the architecture and in the comparison with simple worker throttling.
 MCE is an initial Perl execution-backend candidate. An OpenMP-oriented backend
 or template exporter is a possible later application, not an initial commitment.
+
+## Follow-up literature tasks
+
+- Andrew Badr's own account: https://www.andrewbadr.com/
+  Trace forward citations from the 2008/2009 papers, including faster
+  hyper-minimization and error-minimizing variants. Separate P/K structural
+  analysis from approximate language transformations.
+- Trace papers that compare algorithms against Estrade et al. (2006).
+  A candidate starting point is the 2013 Maejo paper:
+  https://mijst.mju.ac.th/vol7/396-407.pdf
+  Its indexed text includes an explicit comparison table. This does not
+  establish that its authors are the researcher Brett remembers corresponding
+  with in India; identify that connection before making a historical claim.

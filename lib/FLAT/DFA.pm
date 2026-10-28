@@ -18,6 +18,7 @@ sub set_starting {
 
 sub complement {
     my $self = $_[0]->clone;
+    $self->_extend_alphabet($self->alphabet);
 
     for my $s ( $self->get_states ) {
         $self->is_accepting($s)
@@ -26,6 +27,25 @@ sub complement {
     }
 
     return $self;
+}
+
+# Perform epsilon/multiple-start constructions as NFAs, then determinize.
+sub union {
+    my $self = shift;
+    return $self->as_nfa->union(@_)->as_dfa;
+}
+
+sub concat {
+    my $self = shift;
+    return $self->as_nfa->concat(@_)->as_dfa;
+}
+
+sub kleene {
+    return $_[0]->as_nfa->kleene->as_dfa;
+}
+
+sub reverse {
+    return $_[0]->as_nfa->reverse->as_dfa;
 }
 
 sub _TUPLE_ID { join "\0", @_ }
@@ -74,29 +94,32 @@ sub intersect {
     return $return;
 }
 
-# this is meant to enforce 1 starting state for a DFA, but it is getting us into trouble
-# when a DFA object calls unset_starting
+# Permit a temporary zero-start state while replacing the starting state.
 sub unset_starting {
     my $self = shift;
-    $self->SUPER::unset_starting(@_);
-    my $num = () = $self->unset_starting;
-    croak "DFA must have exactly one starting state"
-      if $num != 1;
+    return $self->SUPER::unset_starting(@_);
 }
 
 #### transformations
 
 sub trim_sinks {
-    my $self   = shift;
-    my $result = $self->clone();
-    foreach my $state ( $self->array_complement( [ $self->get_states() ], [ $self->get_accepting() ] ) ) {
-        my @ret = $self->successors( $state, [ $self->alphabet ] );
-        if (@ret) {
-            if ( $ret[0] == $state ) {
-                $result->delete_states($state) if ( $result->is_state($state) );
-            }
-        }
+    my $self = shift;
+    my $result = $self->clone;
+    my @pred;
+    for my $s ($self->get_states) {
+        push @{$pred[$_]}, $s for $self->successors($s);
     }
+    my @queue = $self->get_accepting;
+    my %useful = map { $_ => 1 } @queue;
+    while (@queue) {
+        my $s = shift @queue;
+        push @queue, grep { !$useful{$_}++ } @{$pred[$s] || []};
+    }
+    # Retain the start even for the empty language. delete_states sorts IDs
+    # descending, so delete the whole batch before IDs can be reused.
+    my @dead = grep { !$useful{$_} && !$self->is_starting($_) }
+               $self->get_states;
+    $result->delete_states(@dead);
     return $result;
 }
 
@@ -196,7 +219,7 @@ sub as_node_list {
             if ( defined $t ) {
 
                 # array of symbols that $s1 will go to $s2 on...
-                push( @{ $node{$s1}{$s2} }, split( ',', $t->as_string ) );
+                push( @{ $node{$s1}{$s2} }, $t->alphabet );
             }
         }
     }
@@ -307,13 +330,10 @@ sub get_acyclic_sub {
     foreach my $adjacent ( keys( %{ $nodelist_ref->{$start} } ) ) {
         $lastDFLabel++;
         if ( !exists( $dflabel_ref->{$adjacent} ) ) {
-            $dflabel_ref->{$adjacent} = $lastDFLabel;
             foreach my $symbol ( @{ $nodelist_ref->{$start}{$adjacent} } ) {
-                push( @{$string_ref}, $symbol );
-                my $string_clone  = dclone($string_ref);
-                my $dflabel_clone = dclone($dflabel_ref);
+                my $string_clone = [ @{$string_ref}, $symbol ];
+                my $dflabel_clone = { %{$dflabel_ref}, $adjacent => $lastDFLabel };
                 push( @ret, sub { return $self->get_acyclic_sub( $adjacent, $nodelist_ref, $dflabel_clone, $string_clone, $accepting_ref, $lastDFLabel, $delimiter ); });
-                pop @{$string_ref};
             }
         }
 
@@ -329,16 +349,16 @@ sub get_acyclic_sub {
 
 sub init_acyclic_iterator {
     my ($self, $delimiter) = @_;
-    my %dflabel        = ();
+    my ($start)       = $self->get_starting;
+    my %dflabel        = ($start => 1);
     my @string         = ();
     my $lastDFLabel    = 0;
     my %nodelist       = $self->as_node_list();
     my @accepting      = $self->get_accepting();
 
     # initialize
-    my @substack = ();
     my $r        = $self->get_acyclic_sub( $self->get_starting(), \%nodelist, \%dflabel, \@string, \@accepting, $lastDFLabel, $delimiter );
-    push( @substack, @{ $r->{substack} } );
+    my @substack = (sub { $r });
     return sub {
         while (1) {
             if ( !@substack ) {
@@ -347,7 +367,7 @@ sub init_acyclic_iterator {
             my $s = pop @substack;
             my $r = $s->();
             push( @substack, @{ $r->{substack} } );
-            if ( $r->{string} ) {
+            if ( defined $r->{string} ) {
                 return $r->{string};
             }
         }
@@ -406,9 +426,8 @@ sub init_deepdft_iterator {
     my @accepting = $self->get_accepting();
 
     # initialize
-    my @substack = ();
     my $r        = $self->get_deepdft_sub( $self->get_starting(), \%nodelist, \%dflabel, \@string, \@accepting, $lastDFLabel, $MAXLEVEL, $delimiter );
-    push( @substack, @{ $r->{substack} } );
+    my @substack = (sub { $r });
     return sub {
         while (1) {
             if ( !@substack ) {
@@ -417,7 +436,7 @@ sub init_deepdft_iterator {
             my $s = pop @substack;
             my $r = $s->();
             push( @substack, @{ $r->{substack} } );
-            if ( $r->{string} ) {
+            if ( defined $r->{string} ) {
                 return $r->{string};
             }
         }
@@ -457,21 +476,42 @@ the current start state so that a new one may be set.
 
 =item $dfa-E<gt>trim_sinks
 
-This method returns a FLAT::DFA (though in theory an NFA) that is lacking a transition for 
-all symbols from all states.  This method eliminates all transitions from all states that lead
-to a sink state; it also eliminates the sink state.
+Returns a copy with states that cannot reach acceptance removed, along with
+transitions to those states. The initial state is retained even for the empty
+language. The result may be a partial DFA (some transitions are absent).
 
 This has no affect on testing if a string is valid using C<FLAT::DFA::is_valid_string>, 
 discussed below.
 
 =item $dfa-E<gt>as_min_dfa
 
-This method minimizes the number of states and transitions in the given DFA. The modifies
-the current/calling DFA object.
+This method returns a minimized copy of a complete DFA. The calling object
+is not modified. Minimize before calling C<trim_sinks>.
 
 =item $dfa-E<gt>is_valid_string($string)
 
 This method tests if the given string is accepted by the DFA.
+
+=item $dfa-E<gt>new_acyclic_string_generator($delimiter)
+
+=item $dfa-E<gt>new_deepdft_string_generator($max_visits, $delimiter)
+
+Return iterators over accepted words. The acyclic iterator does not repeat
+a state within a path. The depth-first iterator permits at most C<$max_visits>
+visits per state (default 1). These are bounded path traversals, not exhaustive
+enumerators for arbitrary infinite languages. Output order is unspecified.
+
+The delimiter defaults to the empty string. An accepted empty word is returned
+as C<''>; the accepted word C<'0'> is also a valid result. Only C<undef> means
+that the iterator is exhausted. Callers must test definedness:
+
+  my $next = $dfa->new_acyclic_string_generator;
+  while (defined(my $word = $next->())) {
+      print "$word\n";
+  }
+
+Words from the two iterators may differ for equivalent automata with different
+graph structure, because the bounds are on states rather than word length.
 
 =back
 

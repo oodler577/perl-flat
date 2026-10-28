@@ -1,12 +1,11 @@
-# Confirmed gaps in the 1.0.4 baseline
+# Baseline defects and remaining gaps
 
-The ordinary suite passes, but does not cover all advertised behavior.
-t/08-known-gaps.t records seven reproduced failures as Test::More TODO checks.
-They remain visible in verbose test output without turning this preparation
-commit into a behavior-changing release. Remove TODO as each repair lands.
-Unexpected TODO passes must be investigated.
+The seven defects below were reproduced against CPAN 1.0.4 and are now repaired
+in the development checkout. t/08-known-gaps.t retains their regressions without
+TODO markers; t/09-core-semantics.t exercises related semantic edge cases.
+This does not imply that every advertised operation has been completed.
 
-| Gap | Reproducer / expected behavior | Entry point |
+| Repaired baseline defect | Reproducer / expected behavior | Entry point |
 | --- | --- | --- |
 | Finiteness | ab*c is infinite, including after conversion | NFA::is_finite |
 | Alphabet handling | {a} minus {b} accepts a | FLAT::difference, DFA::complement, NFA::_extend_alphabet |
@@ -16,7 +15,7 @@ Unexpected TODO passes must be investigated.
 | Zero word | A generator must emit the accepted word 0 | DFA iterator truth tests |
 | Epsilon | A generator must emit an accepted empty word | DFA iterator initialization/return |
 
-Additional review findings, not all represented as automated regressions yet:
+Remaining review findings, not all represented as automated regressions yet:
 
 - String acceptance splits characters even when labels are multi-character
   tokens; define token acceptance explicitly before extending this API.
@@ -40,3 +39,19 @@ symbol-count cleanup, PRE transformation iterators, hyper-minimization,
 P/K graph exploration, and cycle-to-word exploration in scripts.
 Abstract FLAT::Transition methods are intentional interfaces, not six separate
 missing features. PFA documentation saying "not implemented yet" is stale.
+
+## Compatibility notes
+
+Generators now return an accepted empty word and the word "0" correctly. Only
+undef denotes exhaustion: use while (defined(my $word = $next->())). Acyclic
+iteration no longer revisits the starting state, and sibling paths no longer
+share visited-state marks. Bounded traversal is graph-dependent; output order
+is unspecified.
+
+DFA union, concatenation, star and reversal now explicitly construct an NFA
+intermediate and determinize the result. as_nfa returns an actual FLAT::NFA.
+trim_sinks removes all states that cannot reach acceptance, while retaining
+the initial state even for an empty language. It can produce a partial DFA.
+Complement completes missing transitions over the current alphabet; difference
+uses the operands' combined alphabets. An independently declared alphabet
+universe remains future work.

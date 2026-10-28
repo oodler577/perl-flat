@@ -1,6 +1,6 @@
 # FLaT development roadmap
 
-Status: agreed direction, 2026-10-28. Production source baseline: CPAN FLAT
+Status: core cleanup underway, 2026-10-28. Production source baseline: CPAN FLAT
 1.0.4, restored in commit 0ebfc29.
 
 ## Purpose
@@ -78,3 +78,13 @@ Sub::Genius compatibility is an adapter goal, not the sole application.
 - bin/fash and lib/FLAT/CMD/: existing CLI, requiring review and consolidation.
 
 See DESIGN.md, RESEARCH.md, KNOWN_GAPS.md and DEVELOPMENT.md.
+
+## Initial cleanup checkpoint
+
+The seven baseline TODO regressions now pass as ordinary tests, with further
+deterministic coverage in t/09-core-semantics.t. Runtime fixes cover useful
+consuming cycles, combined-alphabet difference, partial-DFA completion, valid
+DFA composition results, starting-state replacement, batch sink deletion,
+and epsilon/zero-safe path iterators. This completes the initial repair batch,
+not all of milestone 1: transition coverage, general input validation and
+alphabet-universe APIs still require work.

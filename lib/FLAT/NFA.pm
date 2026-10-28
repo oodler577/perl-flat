@@ -48,7 +48,11 @@ sub singleton {
     return $nfa;
 }
 
-sub as_nfa { $_[0]->clone }
+sub as_nfa {
+    my $result = $_[0]->clone;
+    # A DFA's NFA operations may introduce epsilon edges or multiple starts.
+    return bless $result, __PACKAGE__;
+}
 
 sub union {
     my @nfas   = map { $_->as_nfa } @_;
@@ -137,27 +141,67 @@ sub is_empty {
 
 sub is_finite {
     my $self = shift;
-
-    my @alphabet = $self->alphabet;
-    return 1 if @alphabet == 0;
-
-    my @queue = $self->get_starting;
-    my %seen  = map { $_ => 1 } @queue;
-
-    while (@queue) {
-        @queue = grep { !$seen{$_}++ } $self->successors( \@queue );
-    }
-
-    for my $s ( grep { $self->is_accepting($_) } keys %seen ) {
-        @queue = $self->epsilon_closure($s);
-        %seen  = map { $_ => 1 } @queue;
-
-        while (@queue) {
-            my @next = $self->epsilon_closure( $self->successors( \@queue, \@alphabet ) );
-
-            return 0 if grep { $s eq $_ } @next;
-            @queue = grep { !$seen{$_}++ } @next;
+    my (@succ, @pred, @consuming);
+    for my $s ($self->get_states) {
+        for my $t ($self->get_states) {
+            my $edge = $self->get_transition($s, $t) or next;
+            my @labels = $edge->alphabet;
+            next unless @labels;
+            push @{$succ[$s]}, $t;
+            push @{$pred[$t]}, $s;
+            push @consuming, [$s, $t] if grep length, @labels;
         }
+    }
+    my $reachable = sub {
+        my ($edges, @queue) = @_;
+        my %seen = map { $_ => 1 } @queue;
+        while (@queue) {
+            my $s = shift @queue;
+            push @queue, grep { !$seen{$_}++ } @{$edges->[$s] || []};
+        }
+        return \%seen;
+    };
+    my $from_start = $reachable->(\@succ, $self->get_starting);
+    my $to_final = $reachable->(\@pred, $self->get_accepting);
+
+    # Tarjan SCCs distinguish consuming cycles from epsilon-only cycles.
+    my (%index, %low, %on_stack, %component, @stack);
+    my ($next_index, $next_component) = (0, 0);
+    my $visit;
+    $visit = sub {
+        my ($s) = @_;
+        $index{$s} = $low{$s} = $next_index++;
+        push @stack, $s;
+        $on_stack{$s} = 1;
+        for my $t (@{$succ[$s] || []}) {
+            next unless $from_start->{$t} && $to_final->{$t};
+            if (!exists $index{$t}) {
+                $visit->($t);
+                $low{$s} = $low{$t} if $low{$t} < $low{$s};
+            }
+            elsif ($on_stack{$t}) {
+                $low{$s} = $index{$t} if $index{$t} < $low{$s};
+            }
+        }
+        if ($low{$s} == $index{$s}) {
+            while (@stack) {
+                my $t = pop @stack;
+                $on_stack{$t} = 0;
+                $component{$t} = $next_component;
+                last if $t == $s;
+            }
+            $next_component++;
+        }
+    };
+    for my $s ($self->get_states) {
+        $visit->($s) if $from_start->{$s} && $to_final->{$s}
+                       && !exists $index{$s};
+    }
+    undef $visit; # break the recursive closure's reference cycle
+    for my $edge (@consuming) {
+        my ($s, $t) = @$edge;
+        return 0 if exists $component{$s} && exists $component{$t}
+                    && $component{$s} == $component{$t};
     }
     return 1;
 }
@@ -199,20 +243,18 @@ sub trace {
 
 sub _extend_alphabet {
     my ( $self, @alpha ) = @_;
-
-    my %alpha = map { $_ => 1 } @alpha;
-    delete $alpha{$_} for $self->alphabet;
-
-    return if not keys %alpha;
-
-    my $trash = $self->add_states(1);
-    for my $state ( $self->get_states ) {
-        next if $state eq $trash;
-        for my $char ( keys %alpha ) {
-            $self->add_transition( $state, $trash, $char );
+    my %alpha = map { $_ => 1 } ($self->alphabet, @alpha);
+    my @missing;
+    for my $state ($self->get_states) {
+        for my $char (keys %alpha) {
+            push @missing, [$state, $char]
+                unless $self->successors($state, $char);
         }
     }
-    $self->add_transition( $trash, $trash, $self->alphabet );
+    return unless @missing;
+    my $trash = $self->add_states(1);
+    $self->add_transition($_->[0], $trash, $_->[1]) for @missing;
+    $self->add_transition($trash, $trash, keys %alpha);
 }
 
 ######## transformations

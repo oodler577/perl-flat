@@ -126,8 +126,11 @@ sub star {
 }
 
 sub difference {
-    my @params = @_;
-    return $params[0]->intersect($params[1]->complement);
+    my ($self, $other) = @_;
+    # Complement must use the joint alphabet, not just the right operand's.
+    my $right = $other->as_dfa;
+    $right->_extend_alphabet($self->as_dfa->alphabet);
+    return $self->intersect($right->complement);
 }
 
 sub symdiff {

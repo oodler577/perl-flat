@@ -22,12 +22,12 @@ foreach my $evil (@EVIL) {
     ok(ref $DFA->get_equivalence_classes eq 'ARRAY', q{Equivalence class for minimal DFA is an array ref});
     # default depth
     my $next = $DFA->new_acyclic_string_generator();
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
     # deeper
     $next = $DFA->new_deepdft_string_generator(10);
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
 }
@@ -37,12 +37,12 @@ for (1 .. 100) {
     my $DFA = $PRE->as_pfa->as_nfa->as_dfa->as_min_dfa->trim_sinks;
     # default depth
     my $next = $DFA->new_acyclic_string_generator();
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
     # a little deeper
     $next = $DFA->new_deepdft_string_generator(2);
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
 }

@@ -248,7 +248,11 @@ sub successors {
 
 sub predecessors {
     my $self = shift;
-    $self->clone->reverse->successors(@_);
+    # Graph predecessors need the original state IDs, not determinization of
+    # a reversed DFA (which constructs a different state space).
+    my $reversed = $self->clone;
+    $reversed->_transpose;
+    return $reversed->successors(@_);
 }
 
 # reverse  - no change from NFA

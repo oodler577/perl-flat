@@ -23,12 +23,12 @@ for my $i (1 .. 20) {
     my $DFA = $PRE->as_pfa->as_nfa->as_dfa->as_min_dfa->trim_sinks;
     # default depth
     my $next = $DFA->new_acyclic_string_generator();
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
     # a little deeper
     $next = $DFA->new_deepdft_string_generator(2);
-    while (my $string = $next->()) {
+    while (defined(my $string = $next->())) {
         ok($DFA->is_valid_string($string), "string '$string'");
     }
 }

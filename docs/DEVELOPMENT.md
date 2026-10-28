@@ -21,13 +21,14 @@ Perl toolchain. The apt command is a VM setup example, not a portable installer.
 Run from the checkout root:
 
     prove -lr t
-    prove -lv t/07-release-104.t t/08-known-gaps.t
+    prove -lv t/07-release-104.t t/08-known-gaps.t t/09-core-semantics.t
     dzil build
     dzil test
 
-The known-gap file contains seven expected-failing TODO checks. A successful
-suite run does not mean those defects have been repaired. Remove the relevant
-TODO when a repair and its regression are ready.
+The historical known-gap file now contains ordinary passing regressions for
+seven repaired baseline defects. The semantic tests cover epsilon-only and
+consuming cycles, set operations, DFA invariants, partial transitions, sink
+removal, and bounded word enumeration.
 
 Existing generator tests are randomized and the total check count varies.
 New regressions should be deterministic. Long historical PFA tests are opt-in
@@ -38,6 +39,7 @@ upload a distribution unless performing an explicit release task.
 
 ## Validation baseline
 
-The preparation commit adds documentation and tests without changing runtime
-algorithms. Release-specific tests protect the recovered parser-character and
-generator-delimiter changes. See KNOWN_GAPS.md for behavior still needing repair.
+The preparation commit recorded the baseline; the subsequent cleanup repairs
+its seven reproduced defects. Release-specific tests protect the recovered
+parser-character and generator-delimiter changes. See KNOWN_GAPS.md for the
+remaining limitations and iterator compatibility notes.
