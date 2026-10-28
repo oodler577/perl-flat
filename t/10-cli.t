@@ -35,7 +35,7 @@ sub successful {
     return $out;
 }
 for my $case (
-    [['--help'], qr/Exit codes:/], [['help'], qr/Usage:/],
+    [['completion','bash'], qr/complete -F _fash fash/], [['--help'], qr/Exit codes:/], [['help'], qr/Usage:/],
     [['help','test'], qr/Usage: fash test/], [['--version'], qr/FLAT 1\.0\.4/],
     [['normalize','0'], qr/^0\n$/], [['perl-regex','ab*'], qr/\\A.*\\z/], [['dump','a'], qr/FLAT::Regex/],
     [['summary','a'], qr/States/], [['show','a','--format','json'], qr/"transitions"/],
@@ -91,7 +91,7 @@ for my $args (
 my ($quiet,$qout,$qerr)=cli('', 'compare','a','b','--quiet');
 is($quiet,1,'quiet retains false exit'); is($qout,'','quiet suppresses result'); is($qerr,'','quiet no error');
 for my $args (
-    [], ['unknown'], ['test'], ['test','a'], ['compare','a'], ['compare','a','b','c'],
+    [], ['unknown'], ['completion','fish'], ['completion'], ['test'], ['test','a'], ['compare','a'], ['compare','a','b','c'],
     ['normalize','('], ['normalize','~a'], ['perl-regex','a&b'], ['--bogus'], ['--form','json','show','a'],
     ['test','[foo]','foo'], ['test','a','--tokens','not-json'],
     ['strings','a','--depth','0'], ['strings','a','--limit','-1'],

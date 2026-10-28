@@ -9,3 +9,7 @@ docs/KNOWN_GAPS.md and docs/RESEARCH.md.
 
 The installed fash command is documented in docs/CLI.md, including JFLAP
 finite-automaton import/export, token input and command exit statuses.
+
+Installed manuals: perldoc perlflat (library overview) and perldoc perlfash
+(CLI guide and workbench proposals). Bash completion is installed by make
+install; use fash completion bash to generate it for the current shell.

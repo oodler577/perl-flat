@@ -8,6 +8,8 @@ provides `fash` on PATH. The distribution now includes the executable.
 ## Quick start
 
 ```sh
+perldoc perlflat
+perldoc perlfash
 fash --help
 fash help strings
 fash normalize '(a+b)c'
@@ -170,11 +172,46 @@ Perl string-generator adapters use the same iterator implementation, without
 an output cap. Existing applications should test definedness, not truthiness,
 when consuming iterator results.
 
+## Installed manuals and Bash completion
+
+`perldoc perlflat` is the library overview and `perldoc perlfash` is the CLI
+manual. The latter also explains each workbench proposal in plain language,
+with implemented and planned behavior clearly separated.
+
+```bash
+source <(fash completion bash)
+```
+
+This enables Tab completion immediately. The script completes commands,
+applicable options, enum values and file paths, including names with spaces.
+It neither compiles expressions nor invokes fash during completion. Its data
+comes from the same command and option registry used by validation.
+
+`make install` installs completion at
+`PREFIX/share/bash-completion/completions/fash`, deriving PREFIX from the chosen
+bin directory and respecting INSTALL_BASE, install type and DESTDIR. It is
+recorded in the packlist. Automatic loading requires a loader that searches
+that prefix (bash-completion 2.12+ supports executable prefixes). For older
+loaders use the explicit source command or, for example:
+
+```sh
+make install FASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+make install FASH_COMPLETION_DIR=none
+```
+
+An absolute override is staged inside DESTDIR. The installer does not edit
+shell startup files. Native Windows skips the Bash file. The generated script
+itself needs Bash 3.2+, without helper-function dependencies.
+
+Loader reference: https://github.com/scop/bash-completion
+
 ## Next UX improvements to consider
 
 - JSON Lines for acceptance results, traces and words, including token arrays.
 - Side-by-side conversion explanations and an interactive step/inspect REPL.
 - Equivalence/subset counterexample words once the library provides them.
-- Shell completions derived from the command registry.
 - Explicit compilation budgets and an optional conversion-progress display.
 - A layout tool for generated JFLAP diagrams, and broader GUI/version fixtures.
+
+See the PROPOSED WORKBENCH FEATURES section of `perldoc perlfash` for the six
+plain-language explanations, current status and suggested implementation order.

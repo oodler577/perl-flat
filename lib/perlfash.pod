@@ -1,0 +1,378 @@
+=encoding utf8
+
+=head1 NAME
+
+perlfash - command-line manual for the Perl FLaT automata workbench
+
+=head1 SYNOPSIS
+
+  fash --help
+  fash help test
+  perldoc perlflat
+  perldoc perlfash
+
+  fash test 'a*b' b aaab a
+  fash compare 'a&b' 'ab+ba'
+  fash show 'a&b' --type pfa --format dot > parallel.dot
+  fash dfa2jflap 'a&b' > model.jff
+  fash test --input-format jflap model.jff ab ba
+
+C<fash> passes arguments as data. It does not generate or evaluate Perl code
+from your expression. Quote expressions so the shell does not interpret
+C<&>, C<*>, parentheses or other operators.
+
+=head1 EXPRESSION LANGUAGE
+
+This is formal-language notation, not Perl's full pattern syntax:
+concatenation C<ab>, union C<a+b> or C<a|b>, closure C<a*>, grouping C<(ab)*>,
+epsilon C<[]>, empty language C<#>, and shuffle C<ab&cd>. Shuffle preserves
+C<a> before C<b> and C<c> before C<d> while permitting their interleavings.
+
+C<[foo]> is one symbol named C<foo>. Brackets can quote literal operators.
+General C<~> negation is unfinished. C<complement> operates on a DFA instead.
+Parentheses do not imply atomic execution. See L<perlflat> for the library.
+
+=head1 COMMANDS
+
+=head2 Expressions
+
+=over 4
+
+=item normalize EXPR
+
+Print the normalized formal expression.
+
+=item dump EXPR
+
+Print its parsed operator tree.
+
+=item union EXPR EXPR..., concat EXPR EXPR..., shuffle EXPR EXPR...
+
+Compose languages and print a formal expression.
+
+=item star EXPR
+
+Print the Kleene closure.
+
+=item perl-regex EXPR
+
+Print an anchored Perl-pattern representation of an ordinary RE. Shuffle is
+not supported by this direct conversion. This is distinct from FA-to-RE.
+
+=item random_re, random_pre
+
+Generate an ordinary or shuffle expression. C<--length N> sets the symbol
+count (default 8); C<--seed N> makes generation reproducible.
+
+=back
+
+=head2 Automata and language operations
+
+=over 4
+
+=item show EXPR, summary EXPR
+
+Inspect an automaton. The default is a minimized DFA summary.
+
+=item reverse EXPR, complement EXPR
+
+Reverse or complement the language; print an automaton in the selected format.
+Complement is relative to the expression's alphabet.
+
+=item intersect EXPR EXPR..., difference EXPR EXPR, symdiff EXPR EXPR
+
+Compute intersection, first-minus-second difference or symmetric difference;
+print an automaton. Binary operations reconcile the operands' alphabets.
+
+=item compare EXPR EXPR, subset EXPR EXPR
+
+Test language equivalence or first-language inclusion in the second.
+
+=item empty EXPR, finite EXPR
+
+Test whether the language is empty or finite.
+
+=item alphabet EXPR
+
+Print a JSON array of alphabet symbols.
+
+=item trace EXPR WORD
+
+Print a JSON array of the active NFA state sets before and after each token.
+This is an input-word trace, not a step-by-step construction explanation.
+
+=item savedfa EXPR
+
+Save a Storable DFA using C<--output FILE>. Without it, retain the historical
+expression-derived C<.dat> filename. C<--force> permits overwrite. There is no
+CLI loader for arbitrary Storable data; use JFLAP for interchange.
+
+=back
+
+=head2 Acceptance and words
+
+=over 4
+
+=item test EXPR WORD...
+
+Print C<(+)> or C<(-)> for each tested word. Without positional words, read
+words from stdin. C<--quiet> suppresses results without changing exit status.
+
+=item strings EXPR, somestrings EXPR
+
+Generate words by acyclic paths. Default output cap: 100 words.
+
+=item morestrings EXPR [DEPTH]
+
+Generate words by depth-bounded paths. The default maximum visits per state is
+1; use a positional depth or C<--depth N>, but not both.
+
+=back
+
+C<strings --mode depth --depth N> also selects depth-bounded traversal.
+C<--limit 0> removes the output cap. C<--delimiter TEXT> joins emitted symbols.
+Epsilon prints as a blank line; zero prints as C<0>. Output order is unspecified.
+
+These are bounded traversals, not complete enumeration of arbitrary infinite
+languages. Bounds depend on graph structure. The output cap does not bound
+compilation time, memory, or the search before the next accepted word.
+
+=head2 Help and completion
+
+=over 4
+
+=item help [COMMAND], --help, --version
+
+Print help or the installed FLAT version.
+
+=item completion bash
+
+Print a Bash completion script generated from the command and option registry.
+No expression is compiled, and the script does not run fash on each Tab press.
+
+=back
+
+=head1 REPRESENTATIONS AND FORMATS
+
+C<show --type> selects C<pfa>, C<nfa>, C<dfa> or C<min-dfa>.
+C<--format> selects C<summary>, C<dot>, C<undot>, C<gdl>, C<jflap>, C<digraph>,
+C<undirected> or C<json>. The JSON form describes an automaton, not JSON Lines
+records of test results or generated words.
+
+PFA output shows nodes and nodal edges. NFA expansion produces a different
+state space. C<--trim> removes dead states from DFA output and can leave a
+partial transition function. Minimize before trimming.
+
+Legacy aliases remain available:
+
+  dfa2gv nfa2gv pfa2gv
+  dfa2undgv nfa2undgv pfa2undgv
+  dfa2digraph nfa2digraph pfa2digraph
+  dfa2undirected nfa2undirected pfa2undirected
+  dfa2undirectedgraph nfa2undirectedgraph pfa2undirectedgraph
+  dfa2jflap nfa2jflap
+
+The dfa-prefixed aliases use minimized DFAs. Use C<show --type dfa> for an
+unminimized DFA. Export aliases do not accept C<--type> or C<--format> overrides.
+
+=head1 INPUT, TOKENS AND EXIT STATUS
+
+  printf 'a*b\nb\naaab\n' | fash -b test
+  printf '\n0\n' | fash test '[]+0'
+  printf 'a&b\n' | fash dfa2gv -
+  fash test '[foo][bar]' --tokens '["foo","bar"]'
+  fash trace '[foo][bar]' --tokens '["foo","bar"]'
+
+C<-b> or C<--batch> with C<test> takes the expression from the first stdin line
+and words from later lines. Empty lines represent empty words. CRLF is accepted;
+spaces and backslashes in words are retained. Other uses of EXPR C<-> read a
+whole expression from stdin. Use batch mode for expression and words in one
+stream. Use C<--> before positional arguments that start with a dash.
+
+Ordinary words consume individual characters. C<--tokens> interprets each WORD
+as a JSON array of literal symbols. An empty array is epsilon. Multi-character
+alphabet symbols require this explicit input mode. Text I/O is UTF-8 with no
+implicit normalization, case folding or grapheme processing.
+
+=over 4
+
+=item Exit 0
+
+Successful operation, true predicate, or every tested word accepted.
+
+=item Exit 1
+
+False predicate or at least one rejected word. This is not an error diagnostic.
+
+=item Exit 2
+
+Usage, option, expression, token-input or import-input error.
+
+=item Exit 3
+
+Operation, export or file-write failure.
+
+=back
+
+Results go to stdout. Errors use a C<fash:> prefix on stderr. Long-option
+abbreviations and inapplicable options are rejected.
+
+=head1 JFLAP INTERCHANGE
+
+  fash dfa2jflap 'a&b' > model.jff
+  fash show --input-format jflap model.jff --type nfa --format dot
+  fash test --input-format jflap model.jff ab ba
+  fash show --input-format jflap model.jff --type nfa --format jflap > copy.jff
+  fash compare --input-format jflap model.jff copy.jff
+
+C<--input-format jflap> treats all EXPR arguments as FA C<.jff> filenames; C<->
+reads XML from stdin. AST-only operations cannot take this mode while FA-to-RE
+is missing. Import supports legacy JFLAP 4 top-level and later nested layouts.
+Names, labels and positions survive direct import/export, but IDs are remapped;
+transformations can replace states and lose their layout metadata.
+
+Only FA files are supported. PDA, Turing, grammar and hierarchical building-block
+formats are not implemented. Inputs need exactly one initial state. Export
+normalizes multiple NFA starts using a synthetic initial state. Convert a PFA
+to an NFA first. Empty or omitted reads denote epsilon; a literal lambda is
+still a character. Unsupported semantic elements and DTD/entity declarations
+are rejected. Tests include a published example and language-equivalent round
+trips, not validation against every JFLAP GUI version.
+
+Multi-character reads in JFLAP mean character sequences. Import expands them.
+A FLAT token C<[foo]> instead means one atom. Use C<--expand-labels> on export
+only when you intentionally map that token to the three-character string:
+
+  fash dfa2jflap '[foo]' --expand-labels > foo.jff
+
+Payload references and token identity are not preserved by this interchange.
+
+=head1 BASH COMPLETION
+
+After installation, completion can suggest command names, applicable options,
+option values and input/output filenames. It does not guess expressions or
+compile your work. Quoting expressions is still your responsibility.
+
+To enable it immediately in the current Bash session:
+
+  source <(fash completion bash)
+
+Ordinary C<make install> installs the generated file at:
+
+  PREFIX/share/bash-completion/completions/fash
+
+PREFIX is derived from the selected installation bin directory. C<INSTALL_BASE>,
+Perl/site/vendor installation choices and C<DESTDIR> staging are respected.
+The completion file is recorded in the installation packlist. It does not add
+a runtime dependency on Dist::Zilla and never edits shell startup files.
+
+Automatic loading requires the bash-completion framework to search that
+prefix. Version 2.12+ supports the executable's installation prefix. Older
+loaders may need the explicit C<source> command or an installation override:
+
+  make install FASH_COMPLETION_DIR=/usr/share/bash-completion/completions
+
+For a per-user directory (with the appropriate local installation permissions):
+
+  make install FASH_COMPLETION_DIR="$HOME/.local/share/bash-completion/completions"
+
+An absolute override is interpreted inside C<DESTDIR> when staging. Disable
+completion installation with:
+
+  make install FASH_COMPLETION_DIR=none
+
+The generated script requires Bash 3.2+ but no bash-completion helper functions.
+No Bash script is installed automatically on native Windows.
+
+=head1 PROPOSED WORKBENCH FEATURES
+
+These are design proposals, except completion and the existing JSON outputs
+explicitly described above. The examples below describe intended behavior,
+not additional commands you can run today.
+
+=head2 1. JSON Lines: one result card per line
+
+Think of each accepted/rejected word or generated word as a separate little
+record. A program can read one record, act on it, and continue without waiting
+for the whole result set. Token arrays preserve boundaries: C<["foo","bar"]>
+is different from C<["f","o","o","b","a","r"]>.
+
+Proposed records would include a result kind, the input tokens, acceptance when
+applicable, and optional trace data. Empty words remain empty arrays. A versioned
+schema would make these useful in tests, pipelines and notebooks. Current
+C<--format json>, C<alphabet> and C<trace> provide JSON already; streaming
+acceptance/word JSON Lines and JSON token-array output are not implemented yet.
+
+=head2 2. Explanations and a REPL: inspect the machine while building it
+
+A REPL is a small interactive workbench that remembers named expressions and
+machines between commands. An explanation view would put the old representation
+beside the new one: for example, NFA states grouped into a new DFA state, or the
+equivalence classes merged by minimization. You could ask why a transition or
+state appeared rather than only seeing the final graph.
+
+A word trace exists today. Conversion-step explanations, synchronized old/new
+views and an interactive step/inspect REPL do not. The initial design should
+record algorithm events/provenance rather than trying to reconstruct an
+explanation from an already minimized machine.
+
+=head2 3. Counterexamples: show why two answers differ
+
+If two languages differ, the most useful answer is often an actual word:
+"the first accepts this, and the second does not." For subset checking, find a
+word in the first language but outside the second. A shortest witness can be
+found by breadth-first exploration of a product automaton with predecessor
+links, including epsilon as a possible witness.
+
+Current C<compare> and C<subset> return Yes/No. Counterexample-returning library
+APIs and their CLI output remain to be implemented. Token witnesses should be
+arrays so multi-character symbols remain unambiguous.
+
+=head2 4. Completion: finish the command without changing the work
+
+Bash Tab completion is implemented. It uses the same command/option definitions
+as validation, suggests only data such as filenames or known enum values, and
+does not evaluate the expression under the cursor. Other shells are future work.
+
+=head2 5. Budgets and progress: stop a large conversion predictably
+
+A small-looking shuffle expression can describe a very large machine. A budget
+would say "stop after this many states, this much time, or this much memory"
+and return an explicit incomplete/aborted result rather than a false language
+answer. A progress display would report observations such as states discovered,
+queue size and elapsed time, without inventing a percentage for unknown totals.
+
+The existing C<--limit> only caps emitted words; it is not a compilation budget.
+Compilation budgets and progress displays are not implemented. They require
+checks inside algorithms, cancellation semantics, and tests for clean aborts.
+Progress belongs on stderr so machine-readable stdout remains usable.
+
+=head2 6. Layout and fixtures: make exchanged diagrams readable and trustworthy
+
+A layout tool would arrange nodes so a generated machine is easier to read in
+JFLAP. Existing coordinates would remain unless relayout is requested. Layout
+must change positions only, not language semantics. An optional Graphviz-based
+layout backend is one candidate; it should not become a mandatory runtime.
+
+Default coordinates and imported positions are supported now. Automatic relayout,
+manual GUI smoke tests across more JFLAP releases, and a larger version fixture
+collection remain work to do. Tests should compare accepted behavior and useful
+metadata, not demand byte-identical XML or one exact drawing.
+
+=head1 SUGGESTED IMPLEMENTATION ORDER
+
+JSON Lines and token-array output first make the tool easier to automate.
+Counterexamples then make its answers more useful. Add algorithm provenance
+before the interactive/explanation layer. Introduce bounded/cancellable
+conversion before advertising large-scale exploration. Layout can remain an
+optional presentation tool. Completion and these manuals provide the starting
+point for navigating the workbench now.
+
+=head1 SEE ALSO
+
+L<perlflat>, L<FLAT::CLI>, L<FLAT::JFLAP>,
+L<https://github.com/oodler577/perl-flat>
+
+The repository's F<docs/CLI.md> contains the concise Markdown guide.
+
+=cut

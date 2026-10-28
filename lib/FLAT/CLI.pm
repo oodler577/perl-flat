@@ -9,7 +9,13 @@ use FLAT;
 use FLAT::PFA;
 use FLAT::Regex::WithExtraOps;
 
+my @OPTION_SPEC = (
+    'help|h', 'version', 'batch|b', 'type=s', 'format=s', 'trim',
+    'mode=s', 'depth=s', 'limit=s', 'delimiter=s', 'tokens', 'quiet|q',
+    'output=s', 'force', 'length=s', 'seed=s', 'input-format=s', 'expand-labels',
+);
 my %COMMAND = (
+    completion => ['bash', 'Print a Bash completion script'],
     show       => ['EXPR', 'Inspect an automaton (--type, --format, --trim)'],
     summary    => ['EXPR', 'Print a minimized DFA summary'],
     dump       => ['EXPR', 'Dump the parsed expression tree'],
@@ -53,6 +59,55 @@ $ALIAS{dfa2jflap} = ['dfa', 'jflap'];
 $ALIAS{nfa2jflap} = ['nfa', 'jflap'];
 
 sub commands { return sort(keys %COMMAND, keys %ALIAS, 'help') }
+sub _option_names {
+    my ($command) = @_;
+    $command = 'show' if $command eq 'summary' || exists $ALIAS{$command};
+    my %allowed;
+    $allowed{$_} = 1 for $command eq 'show' ? qw(type format trim)
+        : $command =~ /^(reverse|intersect|difference|symdiff|complement)$/ ? qw(format trim)
+        : $command =~ /^(strings|somestrings|morestrings)$/ ? qw(mode depth limit delimiter)
+        : $command eq 'test' ? qw(tokens batch quiet)
+        : $command eq 'trace' ? qw(tokens)
+        : $command =~ /^(compare|subset|empty|finite)$/ ? qw(quiet)
+        : $command eq 'savedfa' ? qw(output force)
+        : $command =~ /^random_/ ? qw(length seed) : ();
+    $allowed{'input-format'} = 1 unless $command =~ /\A(?:normalize|perl-regex|dump|union|concat|shuffle|star|random_re|random_pre)\z/;
+    $allowed{'expand-labels'} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
+    delete $allowed{'input-format'} if $command eq 'completion';
+    return sort keys %allowed;
+}
+
+sub completion_metadata {
+    my %options;
+    my %files;
+    for my $command (commands()) {
+        my @names = $command eq 'help' ? () : _option_names($command);
+        @names = grep { $_ ne 'type' && $_ ne 'format' } @names if exists $ALIAS{$command};
+        @names = grep { $_ ne 'expand-labels' } @names
+            if exists $ALIAS{$command} && $ALIAS{$command}[1] ne 'jflap';
+        my %allowed = map { $_ => 1 } (@names, 'help', 'version');
+        my @flags;
+        for my $spec (@OPTION_SPEC) {
+            (my $names = $spec) =~ s/=.*//;
+            my ($name, @aliases) = split /\|/, $names;
+            next unless $allowed{$name};
+            push @flags, '--' . $name, map { '-' . $_ } @aliases;
+        }
+        $options{$command} = [sort @flags];
+        my $usage = exists $COMMAND{$command} ? $COMMAND{$command}[0] : 'EXPR';
+        my @expressions = $usage =~ /EXPR/g;
+        $files{$command} = $usage =~ /EXPR\.\.\./ ? -1 : scalar @expressions;
+    }
+    return {
+        commands => [commands()], options => \%options, file_arguments => \%files,
+        values => {'--type'=>[qw(pfa nfa dfa min-dfa)],
+                   '--format'=>[sort(keys %FORMAT, 'json')],
+                   '--mode'=>[qw(acyclic depth)], '--input-format'=>[qw(pre jflap)]},
+        value_options => [map { '--' . ($_ =~ /\A([^=]+)/)[0] }
+                          grep { /=/ } @OPTION_SPEC],
+    };
+}
+
 sub _usage { die bless {message => $_[0], status => 2}, 'FLAT::CLI::Error' }
 sub _arity {
     my ($args, $min, $max) = @_;
@@ -114,6 +169,8 @@ Only undef ends a word iterator: epsilon prints as an empty line, 0 as '0'.
 Traversal bounds are per graph state, not a complete enumeration of infinite
 languages. --limit bounds output, not compilation time or memory use.
 FA-to-RE, general negation (~), and hyper-minimization are not implemented.
+Manuals: perldoc perlflat (library), perldoc perlfash (CLI).
+Bash completion: source <(fash completion bash)
 See docs/CLI.md for examples, compatibility changes, and remaining limitations.
 HELP
     return 0;
@@ -224,9 +281,7 @@ sub _main {
     {
         local $SIG{__WARN__} = sub { $option_error .= $_[0] };
         $ok = $parser->getoptionsfromarray($args, \%opt,
-            'help|h', 'version', 'batch|b', 'type=s', 'format=s', 'trim',
-            'mode=s', 'depth=s', 'limit=s', 'delimiter=s', 'tokens', 'quiet|q',
-            'output=s', 'force', 'length=s', 'seed=s', 'input-format=s', 'expand-labels');
+            @OPTION_SPEC);
     }
     _usage($option_error || 'invalid option') unless $ok;
     if ($opt{version}) { _arity($args, 0, 0); print "fash (FLAT $FLAT::VERSION)\n"; return 0 }
@@ -246,17 +301,7 @@ sub _main {
         $command = 'show';
     }
     $command = 'show' if $command eq 'summary';
-    my %allowed;
-    $allowed{$_} = 1 for $command eq 'show' ? qw(type format trim)
-        : $command =~ /^(reverse|intersect|difference|symdiff|complement)$/ ? qw(format trim)
-        : $command =~ /^(strings|somestrings|morestrings)$/ ? qw(mode depth limit delimiter)
-        : $command eq 'test' ? qw(tokens batch quiet)
-        : $command eq 'trace' ? qw(tokens)
-        : $command =~ /^(compare|subset|empty|finite)$/ ? qw(quiet)
-        : $command eq 'savedfa' ? qw(output force)
-        : $command =~ /^random_/ ? qw(length seed) : ();
-    $allowed{'input-format'} = 1 unless $command =~ /\A(?:normalize|perl-regex|dump|union|concat|shuffle|star|random_re|random_pre)\z/;
-    $allowed{'expand-labels'} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
+    my %allowed = map { $_ => 1 } _option_names($command);
     _usage('--input-format must be pre or jflap') if exists $opt{'input-format'} && $opt{'input-format'} !~ /\A(?:pre|jflap)\z/;
     _usage('--expand-labels requires --format jflap') if $opt{'expand-labels'} && ($opt{format} // '') ne 'jflap';
     for my $name (keys %opt) { _usage("--$name does not apply to $command") unless $allowed{$name} }
@@ -269,6 +314,13 @@ sub _main {
     _usage('unknown output format') if exists $opt{format} && !exists $FORMAT{$opt{format}} && $opt{format} ne 'json';
     _usage('unknown automaton type') if exists $opt{type} && $opt{type} !~ /\A(?:pfa|nfa|dfa|min-dfa)\z/;
 
+    if ($command eq 'completion') {
+        _arity($args, 1, 1);
+        _usage('supported completion shell: bash') unless $args->[0] eq 'bash';
+        require FLAT::CLI::Completion;
+        print FLAT::CLI::Completion->bash;
+        return 0;
+    }
     if ($command =~ /^random_/) {
         _arity($args, 0, 0);
         srand($opt{seed}) if exists $opt{seed};

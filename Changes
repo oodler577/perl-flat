@@ -1,4 +1,8 @@
 Development (unreleased)
+              - add installed perlflat/perlfash manuals and plain-language
+                workbench feature proposals
+              - generate Bash completion from the CLI registry and install it
+                with prefix, DESTDIR, opt-out and packlist support
               - replace fash shell interpolation with a Perl CLI, command
                 validation, consistent statuses and explicit stdin/token input
               - install fash, cover supported commands, and repair DOT export

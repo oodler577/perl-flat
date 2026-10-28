@@ -1,0 +1,244 @@
+=encoding utf8
+
+=head1 NAME
+
+perlflat - the Perl FLaT regular-language and finite-automata toolkit
+
+=head1 START HERE
+
+FLaT lets you describe a regular language, turn it into automata, inspect those
+machines, and perform language operations. It is intended for Perl developers,
+CS students and hobbyists exploring formal languages and concurrency.
+
+  perldoc perlflat       # this library overview
+  perldoc perlfash       # the installed fash command-line manual
+  fash --help
+
+This is a formal-language toolkit. A formal regular expression is a description
+of permitted words; it is not automatically a Perl pattern with captures,
+lookaround or backreferences.
+
+=head1 A SMALL EXAMPLE
+
+  use FLAT;
+  use FLAT::Regex::WithExtraOps;
+
+  my $pre = FLAT::Regex::WithExtraOps->new('ab&cd');
+  my $pfa = $pre->as_pfa;
+  my $nfa = $pfa->as_nfa;
+  my $dfa = $nfa->as_dfa;
+  my $min = $dfa->as_min_dfa;
+
+  print $min->contains('acbd') ? "accepted\n" : "rejected\n";
+
+C<ab&cd> allows interleavings of C<ab> and C<cd>, while keeping C<a> before C<b>
+and C<c> before C<d>. It describes orderings; it does not execute actions.
+
+=head1 EXPRESSION NOTATION
+
+=over 4
+
+=item C<a>, C<b>, C<0>
+
+Single alphabet symbols. The word C<0> is valid data, not an end marker.
+
+=item C<ab>
+
+Concatenation: C<a> followed by C<b>.
+
+=item C<a+b> or C<a|b>
+
+Union: either alternative is permitted.
+
+=item C<a*>
+
+Kleene closure: zero or more repetitions, including the empty word.
+
+=item C<[]>
+
+Epsilon: the language containing exactly the empty word.
+
+=item C<#>
+
+The empty language: no accepted words. This differs from epsilon.
+
+=item C<[foo]>
+
+One atomic symbol named C<foo>. It is not the three-symbol word C<f o o>.
+Brackets also quote literal operators, such as C<[&]> and C<[#]>.
+
+=item C<a&b>
+
+Shuffle, available through L<FLAT::Regex::WithExtraOps>: preserve each operand's
+internal order while allowing their interleavings.
+
+=back
+
+Parentheses group expressions; they do not create an atomic execution region.
+Ordinary whitespace outside bracketed symbols is ignored. Character classes,
+Perl pattern shortcuts, and arbitrary nested bracket escaping are not implied.
+General C<~> negation is unfinished; use the DFA complement operation instead.
+
+=head1 REPRESENTATIONS AND MODULES
+
+=over 4
+
+=item L<FLAT>
+
+Common language-operation interface. Some representation-specific methods are
+unfinished; a method's presence alone does not establish support.
+
+=item L<FLAT::Regex> and L<FLAT::Regex::WithExtraOps>
+
+Formal REs, and PREs with shuffle. Construct expressions, normalize their text,
+and apply union, concatenation, closure and supported conversions.
+
+=item L<FLAT::PFA>
+
+A compact description using active nodes and concurrent branches. A PFA's node
+IDs are not the same thing as the states of its expanded NFA.
+
+=item L<FLAT::NFA>
+
+Nondeterministic FA with epsilon transitions. Supports membership, epsilon
+closure, traces, construction, reversal and determinization.
+
+=item L<FLAT::DFA> and L<FLAT::DFA::Minimal>
+
+Deterministic and minimized representations. Provide intersection, complement,
+word generators and closure operations. Minimize before trimming dead states.
+
+=item L<FLAT::FA>, L<FLAT::Transition::Simple>, L<FLAT::Symbol::String>
+
+State/transition manipulation and literal alphabet-symbol bookkeeping.
+Reference-valued symbols preserving payload identity are a planned interface,
+not yet an implemented public contract.
+
+=item L<FLAT::JFLAP>
+
+JFLAP finite-automaton XML import/export. See the interchange section below.
+
+=item L<FLAT::CLI>
+
+The command dispatcher behind C<fash>. L<perlfash> is the user manual.
+
+=back
+
+=head1 LANGUAGE OPERATIONS
+
+On DFAs, union, concatenation, closure, reversal, intersection, complement,
+difference, symmetric difference, equivalence and subset testing are available.
+DFA closure constructions use an NFA intermediate and determinize the result.
+
+  my $left  = FLAT::Regex->new('a*')->as_dfa;
+  my $right = FLAT::Regex->new('b*')->as_dfa;
+  my $union = $left->union($right);
+  my $only_left = $left->difference($right);
+
+  print $union->is_finite ? "finite\n" : "infinite\n";
+  print $left->is_subset_of($union) ? "subset\n" : "not a subset\n";
+
+Complement is relative to the input alphabet. Binary difference uses the
+operands' combined alphabets. An independently declared alphabet universe is
+future work. C<trim_sinks> can produce a partial DFA; complement/intersection
+complete missing transitions as needed. State IDs can change during deletion
+or conversion.
+
+FA-to-formal-RE conversion is not implemented. Consequently, RE methods that
+need that conversion should not be treated as complete. Hyper-minimization is
+also unfinished. Preamble/kernel analysis and a larger algebra interface are
+planned work rather than present capabilities.
+
+=head1 ITERATORS AND INPUT WORDS
+
+  my $next = $union->as_min_dfa->trim_sinks
+                  ->new_deepdft_string_generator(3);
+  while (defined(my $word = $next->())) {
+      print "$word\n";
+  }
+
+Only C<undef> indicates exhaustion. An accepted empty word is C<''>; C<'0'> is
+also a real word. Testing truthiness instead of definedness would lose them.
+
+Acyclic iteration forbids repeated states within a path. Depth-bounded iteration
+limits visits per state. Neither is a complete enumeration of arbitrary
+infinite languages, and output order is unspecified. Limits depend on the
+chosen graph representation.
+
+The current library's string membership methods consume individual characters.
+For multi-character alphabet symbols, C<fash test --tokens> accepts explicit
+JSON token arrays. A general public library token/reference API is still being
+designed. Unicode labels use exact equality: no implicit normalization,
+case-folding, grapheme segmentation or visual-equivalence rules are provided.
+
+=head1 JFLAP INTERCHANGE
+
+  use FLAT::JFLAP;
+  my $nfa = FLAT::JFLAP->from_file('model.jff');
+  my $xml = $nfa->as_jflap;
+
+Write C<$xml> using a UTF-8 encoding layer. Imports accept the legacy top-level
+and later nested FA layouts. Direct round trips retain state names, labels and
+coordinates; conversions may replace states and their layout. IDs are remapped.
+
+Only finite automata are supported. Convert PFAs to NFAs before export. Empty
+or omitted reads mean epsilon. Multi-character JFLAP reads consume character
+strings. Exporting a multi-character FLAT atom therefore requires explicit
+C<expand_labels =E<gt> 1>, which changes the alphabet interpretation to character
+strings. Payload references and token identities do not travel through XML.
+See L<perlfash> and L<FLAT::JFLAP> for examples and restrictions.
+
+=head1 WHERE THIS PROJECT IS HEADING
+
+The practical aim is a reliable language library and an approachable workbench,
+with reproducible artifacts from research on concurrent specifications.
+Sub::Genius is an integration case, not the whole purpose.
+
+A PRE can serve as a schedule template: it says which orderings are allowed.
+A future workflow runtime could realize that template on available resources,
+partially serializing work when resources shrink. MCE is a candidate backend;
+no parallel workflow runner is implemented here yet.
+
+Planned work includes reference-preserving symbols, structured/named
+expressions, residual-language cursors, partial linearization, FA-to-RE
+conversion, preamble/kernel analysis, and a regular-language algebra toolkit.
+Trace inclusion alone is insufficient for a scheduler: progress, task effects,
+visibility and the handling of in-flight work also need defined contracts.
+
+These plans are tracked in F<docs/ROADMAP.md>, F<docs/DESIGN.md> and
+F<docs/RESEARCH.md> in the repository. L<perlfash/PROPOSED WORKBENCH FEATURES>
+explains the CLI proposals in plain language.
+
+=head1 DEVELOPMENT AND INSTALLATION
+
+The distribution uses Dist::Zilla; a built release uses ExtUtils::MakeMaker.
+Runtime dependencies include Parse::RecDescent and XML::LibXML.
+
+  dzil build
+  dzil test
+
+From a built distribution:
+
+  perl Makefile.PL
+  make
+  make test
+  make install
+
+C<make install> installs the library, the C<fash> executable, these POD manuals,
+and Bash completion under the executable prefix. L<perlfash/BASH COMPLETION>
+explains loader requirements and installation overrides. No shell startup file
+is edited. An upload/release is a separate action.
+
+=head1 AUTHORS AND ORIGINS
+
+FLaT was written by Mike Rosulek and Brett D. Estrade. The research background
+includes Estrade, Perkins and Harris, I<Explicitly Parallel Regular Expressions>
+(2006), DOI 10.1109/IMSCCS.2006.60.
+
+Repository: L<https://github.com/oodler577/perl-flat>
+
+=head1 LICENSE
+
+This toolkit is free software under the same terms as Perl itself.
+
+=cut
