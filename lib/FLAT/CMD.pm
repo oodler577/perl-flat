@@ -44,72 +44,8 @@ sub AUTOLOAD {
 }
 
 sub help {
-    print <<END;
-__________             .__    ___________.____         ___________
-\______   \ ___________|  |   \_   _____/|    |   _____\__    ___/
- |     ___// __ \_  __ \  |    |    __)  |    |   \__  \ |    |   
- |    |   \  ___/|  | \/  |__  |     \   |    |___ / __ \|    |   
- |____|    \___  >__|  |____/  \___  /   |_______ (____  /____|   
-               \/                  \/            \/    \/    
-	       
-  Everything is wrt parallel regular expressions, i.e., 
-  with the addtional shuffle operator, "&".  All this 
-  means is that you can use the ambersand (&) as a symbol
-  in the regular expressions you submit because it will be 
-  detected as an operator.That said, if you avoid using
-  the "&" operator, you can forget about all that shuffle
-  business.
-
-%perl -MFLAT::CMD -e
-    "somestrings" 're1'      # creates all valid strings via acyclic path, no cycles yet
-    "compare  're1','re2'"   # comares 2 regexs | see note [2] 
-    "dump     're1'"         # dumps parse trees | see note[1]	   
-    "dfa2jflap  're1'"       # dumps JFLAT XML desc | see note[1]
-    "nfa2jflap  're1'"       # dumps JFLAT XML desc | see note[1]  
-    "dfa2gv  're1'"          # dumps graphviz digraph desc | see note[1]  
-    "nfa2gv  're1'"          # dumps graphviz digraph desc | see note[1]  
-    "pfa2gv  're1'"          # dumps graphviz digraph desc | see note[1]  
-    "dfa2undgv  're1'"       # dumps graphviz undirected graph desc | see note[1]  
-    "nfa2undgv  're1'"       # dumps graphviz undirected graph desc | see note[1]  
-    "pfa2undgv  're1'"       # dumps graphviz undirected graph desc | see note[1]  
-    "dfa2digraph 're1'"      # dumps directed graph without transitions
-    "nfa2digraph 're1'"      # dumps directed graph without transitions
-    "pfa2digraph 're1'"      # dumps directed graph without transitions
-    "dfa2undirected 're1'"   # dumps undirected graph without transitions
-    "nfa2undirected 're1'"   # dumps undirected graph without transitions
-    "pfa2undirected 're1'"   # dumps undirected graph without transitions
-     random_pre 
-     random_re
-    "savedfa 're1'"          # converts PRE to min dfa, then serializes to disk
-    "test 'regex' 'string1'" # give a regex, reports if subsequent strings are valid
-     help
-
-NOTES:
-[1] This means you could presumably do something like the following:
-    %perl -MFLAT -e command < text_file_with_1_regex_per_line.txt
-                    ^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2] This command compares the minimal DFAs of each regular expression;
-    if there exists a exact 1-1 mapping of symbols, states, and 
-    transitions then the DFAs are considered equal.  This means that 
-    "abc" will be equal to "def"  To make matters more confusing, "ab+ac" 
-    would be equivalent to "xy+xz"; or worse yet, "z(x+y)". So to the 
-    'compare' command, "ab+ac" == "xy+xz" == "z(x+y)". This however 
-    does not translate into the situation where "ab+ac" will accept 
-    the same LITERAL strings as "z(x+y)" because the symbols are obviously
-    different.	    
-		   
-CREDITS:
-Blockhead, CPAN.pm (for the example of how to implement these one liners), 
-and #perl on irc.freenode.net for pointing out something I missed when 
-trying to copy CPAN one liner majik.
-
-Perl FLAT and all included modules are released under the same terms as Perl
-itself.  Cheers.
-
-SEE:
-http://www.0x743.com/flat
-
-END
+    require FLAT::CLI;
+    return FLAT::CLI->help;
 }
 
 # save to a dat file
@@ -247,22 +183,14 @@ sub nfa2jflap {
 # Usage:
 # perl -MFLAT -e "nfa2jflap('a&b&c&d*e*')"
 sub dfa2gv {
-    use FLAT::Regex::WithExtraOps;
-    use FLAT::DFA;
-    use FLAT::NFA;
-    use FLAT::PFA;
-    if (@_) {
-        foreach (@_) {
-            my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
-            print $FA->as_jflap;
-        }
+    my @expressions = @_;
+    if (!@expressions) {
+        while (<STDIN>) { chomp; push @expressions, $_ }
     }
-    else {
-        while (<STDIN>) {
-            chomp;
-            my $FA = FLAT::Regex::WithExtraOps->new($_)->as_pfa()->as_nfa();
-            print $FA->as_jflap;
-        }
+    for my $expression (@expressions) {
+        my $fa = FLAT::Regex::WithExtraOps->new($expression)
+            ->as_pfa->as_nfa->as_dfa->as_min_dfa->trim_sinks;
+        print $fa->as_graphviz;
     }
 }
 
@@ -561,7 +489,7 @@ sub random_pre {
     $CMDLINEOPTS{CLOSE}  = 0;
     $CMDLINEOPTS{n}      = 1;
     $CMDLINEOPTS{AND}    = 10;                                     #<-- default
-    $CMDLINEOPTS{AND}    = $and_chance if ( $and_chance == 0 );    #<-- to make it just an re (no shuffle)
+    $CMDLINEOPTS{AND}    = $and_chance if ( defined $and_chance && $and_chance == 0 );    #<-- to make it just an re (no shuffle)
 
     my $getRandomChar = sub {
         my $ch = '';
@@ -614,7 +542,7 @@ sub random_pre {
 # Usage:
 # perl -MFLAT -e random_re
 sub random_re {
-    shift->random_pre(0);
+    random_pre(0);
 }
 
 1;

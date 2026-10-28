@@ -6,3 +6,6 @@ Development roadmap and design notes are in docs/ROADMAP.md and
 docs/DESIGN.md. Build instructions are in docs/DEVELOPMENT.md.
 Known baseline defects and the research plan are recorded in
 docs/KNOWN_GAPS.md and docs/RESEARCH.md.
+
+The installed fash command is documented in docs/CLI.md, including JFLAP
+finite-automaton import/export, token input and command exit statuses.

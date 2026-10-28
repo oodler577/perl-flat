@@ -1,4 +1,9 @@
 Development (unreleased)
+              - replace fash shell interpolation with a Perl CLI, command
+                validation, consistent statuses and explicit stdin/token input
+              - install fash, cover supported commands, and repair DOT export
+              - add JFLAP FA import/export, layout metadata and round-trip tests
+              - treat automaton labels as literal symbols rather than regexes
               - repair FA finiteness checks and DFA closure operations
               - use combined alphabets for difference and complete partial
                 DFAs before complement/intersection

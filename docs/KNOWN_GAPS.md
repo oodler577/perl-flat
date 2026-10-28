@@ -28,9 +28,6 @@ Remaining review findings, not all represented as automated regressions yet:
   without checking that required words were emitted.
 - Regex::Util::get_random does not propagate symbol_len through its recursive
   calls; strengthen the purported multicharacter test cases.
-- CMD::dfa2gv currently follows an NFA/XML output path.
-- bin/fash interpolates arguments into Perl program text; move arguments
-  through data parameters when consolidating the CLI.
 - Basic state validation, partial/complete DFA behavior, exports and docs
   need systematic consistency checks.
 
@@ -55,3 +52,7 @@ the initial state even for an empty language. It can produce a partial DFA.
 Complement completes missing transitions over the current alphabet; difference
 uses the operands' combined alphabets. An independently declared alphabet
 universe remains future work.
+
+CLI cleanup replaces shell interpolation, fixes DFA/DOT dispatch, and routes
+legacy generator adapters through the bounded iterators. See CLI.md for JFLAP
+character/token mapping and remaining import/export restrictions.

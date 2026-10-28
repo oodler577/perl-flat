@@ -5,13 +5,13 @@ The source version remains FLAT 1.0.4. No release/upload is part of preparation.
 ## Dependencies
 
 - Perl, make and a C toolchain as needed by dependencies.
-- Parse::RecDescent (runtime).
+- Parse::RecDescent and XML::LibXML (runtime).
 - Test::More (tests).
 - Dist::Zilla with the plugins named in dist.ini (distribution builds).
 
 On the current Ubuntu VM:
 
-    apt-get install libdist-zilla-perl libparse-recdescent-perl
+    apt-get install libdist-zilla-perl libparse-recdescent-perl libxml-libxml-perl
 
 Other systems may install the equivalent dependencies through their normal
 Perl toolchain. The apt command is a VM setup example, not a portable installer.

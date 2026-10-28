@@ -1,0 +1,46 @@
+use strict;
+use warnings;
+use Test::More;
+use File::Temp qw(tempdir);
+use Cwd qw(getcwd);
+use FLAT::CMD ();
+use FLAT::CMD::AcyclicStrings ();
+use FLAT::CMD::DFTStrings ();
+
+sub capture {
+    my ($code) = @_;
+    my ($out,$err)=('','');
+    open my $stdout,'>',\$out or die $!;
+    open my $stderr,'>',\$err or die $!;
+    local *STDOUT = $stdout;
+    local *STDERR = $stderr;
+    my $status=$code->();
+    return ($status,$out,$err);
+}
+my (undef,$dot,$doterr)=capture(sub { FLAT::CMD::dfa2gv('a&b') });
+like($dot,qr/^digraph G/,'legacy DFA export emits DOT');
+unlike($dot,qr/<structure>/,'legacy DFA export does not emit XML');
+is($doterr,'','legacy DFA export is quiet');
+my (undef,$random,$randomerr)=capture(sub { FLAT::CMD::random_re() });
+my $valid=eval { FLAT::Regex->new($random); 1 };
+ok($valid,'legacy random_re returns a regular expression');
+unlike($random,qr/&/,'legacy random_re does not add shuffle');
+is($randomerr,'','legacy random_re has no uninitialized-value warning');
+my ($acyclic,$words,$worderr)=capture(sub { FLAT::CMD::AcyclicStrings::as_strings('[]+0') });
+is($acyclic,0,'legacy acyclic adapter status');
+is($words,"\n0\n",'legacy acyclic adapter preserves epsilon and zero');
+is($worderr,'','legacy acyclic adapter quiet');
+my ($depth,$deep,$deeperr)=capture(sub { FLAT::CMD::DFTStrings::as_strings('a*',3) });
+is($depth,0,'legacy depth adapter status');
+is($deep,"\na\naa\n",'legacy depth adapter uses bounded iterator');
+is($deeperr,'','legacy depth adapter quiet');
+my $cwd=getcwd();
+my $dir=tempdir(CLEANUP=>1);
+chdir $dir or die $!;
+open my $cache,'>','a.dat' or die $!; print $cache 'not a Storable cache'; close $cache;
+my ($status,$fresh,$fresherr)=capture(sub { FLAT::CMD::AcyclicStrings::as_strings('a') });
+chdir $cwd or die $!;
+is($status,0,'legacy adapter does not retrieve an implicit expression-named cache');
+is($fresh,"a\n",'fresh output ignores unrelated cache bytes');
+is($fresherr,'','ignoring an implicit cache has no diagnostic');
+done_testing;

@@ -5,7 +5,8 @@ use warnings;
 use parent qw(FLAT::FA);
 
 use FLAT::Transition::Simple;
-use FLAT::Symbol::Regex;
+# Transition labels are literal alphabet symbols, not expressions to reparse.
+use FLAT::Symbol::String;
 
 =head1 NAME
 
@@ -22,7 +23,7 @@ sub new {
     my $pkg  = shift;
     my $self = $pkg->SUPER::new(@_);
     $self->{TRANS_CLASS} = "FLAT::Transition::Simple";
-    $self->{ALPHA_CLASS} = "FLAT::Symbol::Regex";
+    $self->{ALPHA_CLASS} = "FLAT::Symbol::String";
     return $self;
 }
 
@@ -369,7 +370,7 @@ sub as_gdl {
             my $t = $self->get_transition( $s1, $s2 );
 
             if ( defined $t ) {
-                push @trans, sprintf qq[edge: { source: "%s" target: "%s" label: "%s" arrowstyle: line }\n], $s1, $s2, $t->as_string;
+                push @trans, sprintf qq[edge: { source: "%s" target: "%s" label: "%s" arrowstyle: line }\n], $s1, $s2, _dot_label($t->as_string);
             }
         }
     }
@@ -379,31 +380,18 @@ sub as_gdl {
 
 # JFLAP, for importing into it
 sub as_jflap {
-    my $self     = shift;
-    my $XMLstart = <<END;
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with Perl-FLAT-->
-<structure>
-  <type>fa</type>
-  <automaton>
-END
-    my $XMLend = <<END;
-  </automaton>
-</structure>
-END
-    my @states = map { sprintf( qq{\n     <state id="%s" name="%s">\n%s%s    </state>\n}, $_, $_, ( $self->is_starting($_) ? "      <initial/>\n" : '' ), ( $self->is_accepting($_) ? "      <final/>\n" : '' ) ) } $self->get_states;
-    my @trans;
-    for my $s1 ( $self->get_states ) {
-        for my $s2 ( $self->get_states ) {
-            my $t = $self->get_transition( $s1, $s2 );
-            if ( defined $t ) {
-                my $label = $t->as_string;
-                $label = ( $label eq 'epsilon' ) ? '<read/>' : sprintf( "<read>%s</read>", $label );
-                push @trans, sprintf( "\n    <transition>\n      <from>%s</from>\n      <to>%s</to>\n      %s\n    </transition>\n", $s1, $s2, $label );
-            }
-        }
-    }
+    my ($self, %options) = @_;
+    require FLAT::JFLAP;
+    return FLAT::JFLAP->to_string($self, %options);
+}
 
-    return sprintf( "%s\n\n%s\n%s%s\n", $XMLstart, join( "", @states ), join( "", @trans ), $XMLend );
+sub _dot_label {
+    my ($label) = @_;
+    $label =~ s/\\/\\\\/g;
+    $label =~ s/"/\\"/g;
+    $label =~ s/\n/\\n/g;
+    $label =~ s/\r/\\r/g;
+    return $label;
 }
 
 # Graphviz: dot, etc
@@ -419,7 +407,7 @@ sub as_graphviz {
             my $t = $self->get_transition( $s1, $s2 );
 
             if ( defined $t ) {
-                push @trans, sprintf qq[%s -> %s [label="%s"]\n], $s1, $s2, $t->as_string;
+                push @trans, sprintf qq[%s -> %s [label="%s"]\n], $s1, $s2, _dot_label($t->as_string);
             }
         }
     }
@@ -438,7 +426,7 @@ sub as_undirected_graphviz {
             my $t = $self->get_transition( $s1, $s2 );
 
             if ( defined $t ) {
-                push @trans, sprintf qq[%s -- %s\n], $s1, $s2, $t->as_string;
+                push @trans, sprintf qq[%s -- %s\n], $s1, $s2;
             }
         }
     }
@@ -482,7 +470,7 @@ sub as_summary {
         for my $s2 ( $self->get_states ) {
             my $t = $self->get_transition( $s1, $s2 );
             if ( defined $t ) {
-                push @trans, sprintf qq[%s -> %s on "%s"\n], $s1, $s2, $t->as_string;
+                push @trans, sprintf qq[%s -> %s on "%s"\n], $s1, $s2, _dot_label($t->as_string);
             }
         }
     }
