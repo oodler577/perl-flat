@@ -111,6 +111,8 @@ sub from_string {
 }
 sub to_string {
     my ($class, $fa, %options) = @_;
+    my $layout = $options{layout} // 'preserve';
+    _error('layout must be preserve or layered') unless $layout =~ /\A(?:preserve|layered)\z/;
     _error('convert a PFA to an NFA before export') if $fa->isa('FLAT::PFA');
     my @start = $fa->get_starting;
     _error('an initial state is required') unless @start;
@@ -168,6 +170,33 @@ sub to_string {
         $transition->appendTextChild('read', $edge->[2]);
         $automaton->appendChild($transition);
     }
+    if ($layout eq 'layered') {
+        # Work on the complete exported graph, including synthetic states.
+        my @nodes = $automaton->findnodes('./state');
+        my %adj;
+        push @{$adj{$_->[0]}}, $_->[1] for @edges;
+        my @queue = map { $_->getAttribute('id') } grep { $_->findnodes('./initial') } @nodes;
+        my %level = map { $_ => 0 } @queue;
+        for (my $i = 0; $i < @queue; ++$i) {
+            my $id = $queue[$i];
+            for my $to (@{$adj{$id} || []}) {
+                next if exists $level{$to};
+                $level{$to} = $level{$id} + 1;
+                push @queue, $to;
+            }
+        }
+        my $last = 0;
+        for (values %level) { $last = $_ if $_ > $last }
+        my %row;
+        for my $state (@nodes) {
+            my $id = $state->getAttribute('id');
+            my $column = exists $level{$id} ? $level{$id} : $last + 1;
+            ($state->findnodes('./x'))[0]->removeChildNodes;
+            ($state->findnodes('./x'))[0]->appendText(100 + 160 * $column);
+            ($state->findnodes('./y'))[0]->removeChildNodes;
+            ($state->findnodes('./y'))[0]->appendText(100 + 100 * $row{$column}++);
+        }
+    }
     return decode('UTF-8', $doc->toString(1));
 }
 1;
@@ -196,5 +225,16 @@ Multi-character FLAT tokens require C<expand_labels =E<gt> 1>, which maps the
 token alphabet to character strings explicitly. Convert PFAs to NFAs before
 exporting. Other machine types, DTDs, and unsupported semantic elements fail
 with an exception. See docs/CLI.md for scope and examples.
+
+=cut
+
+=head1 LAYOUT
+
+C<layout =E<gt> 'preserve'> is the default. C<layout =E<gt> 'layered'>
+replaces exported positions with deterministic columns by shortest graph
+ distance from the initial state, including epsilon edges. Unreachable states
+occupy a final column. Names, labels, transitions and input objects stay intact.
+No external layout program is required. This simple layout does not route
+edges or guarantee crossing-free diagrams.
 
 =cut

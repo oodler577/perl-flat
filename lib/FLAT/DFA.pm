@@ -16,6 +16,42 @@ sub set_starting {
       if $num != 1;
 }
 
+# Breadth-first search of the product, with implicit rejecting sink states.
+# Parent links retain token boundaries without copying each prefix per state.
+sub _counterexample {
+    my ($self, $other, $subset) = @_;
+    my ($left, $right) = ($self->as_dfa, $other->as_dfa);
+    my @alphabet = sort { $a cmp $b } _uniq($left->alphabet, $right->alphabet);
+    my ($a) = $left->get_starting;
+    my ($b) = $right->get_starting;
+    my @queue = ([$a, $b, undef, undef]);
+    my %seen = (_TUPLE_ID($a, $b) => 1);
+    for (my $head = 0; $head < @queue; ++$head) {
+        my ($x, $y) = @{$queue[$head]};
+        my $la = defined($x) && $left->is_accepting($x) ? 1 : 0;
+        my $ra = defined($y) && $right->is_accepting($y) ? 1 : 0;
+        if ($subset ? ($la && !$ra) : ($la != $ra)) {
+            my @tokens;
+            my $i = $head;
+            while (defined $queue[$i][2]) {
+                unshift @tokens, $queue[$i][3];
+                $i = $queue[$i][2];
+            }
+            return {tokens => \@tokens, left_accepts => $la, right_accepts => $ra};
+        }
+        for my $symbol (@alphabet) {
+            my ($nx) = defined($x) ? $left->successors($x, $symbol) : ();
+            my ($ny) = defined($y) ? $right->successors($y, $symbol) : ();
+            my $key = _TUPLE_ID(defined($nx) ? $nx : '-', defined($ny) ? $ny : '-');
+            next if $seen{$key}++;
+            push @queue, [$nx, $ny, $head, $symbol];
+        }
+    }
+    return undef;
+}
+sub equivalence_counterexample { return $_[0]->_counterexample($_[1], 0) }
+sub subset_counterexample { return $_[0]->_counterexample($_[1], 1) }
+
 sub complement {
     my $self = $_[0]->clone;
     $self->_extend_alphabet($self->alphabet);
@@ -524,3 +560,16 @@ B. Estarde E<lt>estradb at gmail dot comE<gt>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+=head1 COUNTEREXAMPLES
+
+C<equivalence_counterexample($other)> and C<subset_counterexample($other)>
+return undef when the relation holds, otherwise a hash with C<tokens>
+(an array reference), C<left_accepts>, and C<right_accepts>. An empty array
+is the empty word, not absence of a witness. The witness has minimum token
+length; ties follow Perl string sort order. Missing transitions reject.
+Inputs are not changed. The search visits the reachable product of the two
+DFAs and may require their product number of states in memory. Token strings
+are compared exactly; there is no Unicode normalization or reference alphabet.
+
+=cut

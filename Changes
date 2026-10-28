@@ -1,4 +1,6 @@
 Development (unreleased)
+    - Add shortest equivalence/subset witnesses with token boundaries and CLI --witness.
+    - Add optional deterministic JFLAP layered layout and synthetic format fixtures.
               - add installed perlflat/perlfash manuals and plain-language
                 workbench feature proposals
               - generate Bash completion from the CLI registry and install it

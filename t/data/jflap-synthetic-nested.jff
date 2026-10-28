@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic format-contract fixture, not saved by a JFLAP GUI -->
+<structure><type>fa</type><automaton><state id="7" name="entry"><x>-10.5</x><y>20</y><initial/></state>
+<state id="42" name="finish"><x>100</x><y>20</y><final/><label>accept</label></state>
+<state id="99" name="unreachable"><x>100</x><y>200</y></state>
+<transition><from>7</from><to>7</to><read/></transition>
+<transition><from>7</from><to>42</to><read>ab</read></transition>
+<transition><from>42</from><to>42</to><read>猫</read></transition></automaton></structure>

@@ -318,15 +318,20 @@ explanation from an already minimized machine.
 
 =head2 3. Counterexamples: show why two answers differ
 
-If two languages differ, the most useful answer is often an actual word:
-"the first accepts this, and the second does not." For subset checking, find a
-word in the first language but outside the second. A shortest witness can be
-found by breadth-first exploration of a product automaton with predecessor
-links, including epsilon as a possible witness.
+  fash compare 'a+b' 'a' --witness
+  fash subset '[]+a' 'a' --witness
 
-Current C<compare> and C<subset> return Yes/No. Counterexample-returning library
-APIs and their CLI output remain to be implemented. Token witnesses should be
-arrays so multi-character symbols remain unambiguous.
+A failed check prints No followed by a Counterexample JSON object containing
+C<tokens>, C<left_accepts>, and C<right_accepts>. An empty token array is the
+empty word. Tokens stay separate, including Unicode and multi-character tokens.
+The witness is shortest by token count, with ties in Perl string sort order.
+C<--quiet> suppresses all output; true/false exit statuses remain 0/1.
+Without C<--witness>, existing Yes/No output is unchanged.
+
+The library provides C<FLAT::DFA::equivalence_counterexample> and
+C<FLAT::DFA::subset_counterexample>. These return undef when the relation
+holds, or the witness hash when it fails. The search can require the product
+number of DFA states in memory.
 
 =head2 4. Completion: finish the command without changing the work
 
@@ -349,24 +354,24 @@ Progress belongs on stderr so machine-readable stdout remains usable.
 
 =head2 6. Layout and fixtures: make exchanged diagrams readable and trustworthy
 
-A layout tool would arrange nodes so a generated machine is easier to read in
-JFLAP. Existing coordinates would remain unless relayout is requested. Layout
-must change positions only, not language semantics. An optional Graphviz-based
-layout backend is one candidate; it should not become a mandatory runtime.
+Use C<--layout layered> with JFLAP output to arrange states in columns by
+shortest graph distance from the initial state. Unreachable states occupy a
+final column. It includes synthetic states introduced during export.
+C<--layout preserve> is the default and retains imported positions.
 
-Default coordinates and imported positions are supported now. Automatic relayout,
-manual GUI smoke tests across more JFLAP releases, and a larger version fixture
-collection remain work to do. Tests should compare accepted behavior and useful
-metadata, not demand byte-identical XML or one exact drawing.
+  fash show 'ab+ba' --type nfa --format jflap --layout layered > example.jff
+  fash show example.jff --input-format jflap --type nfa --format jflap --layout layered
+
+The layout requires no external program and changes coordinates only. It does
+not route edges or guarantee that crossings disappear. Tests include an official
+legacy JFLAP example and synthetic legacy/nested fixtures; synthetic fixtures
+are not evidence of GUI compatibility with a particular release. Broader GUI
+smoke testing remains future work.
 
 =head1 SUGGESTED IMPLEMENTATION ORDER
 
-JSON Lines and token-array output first make the tool easier to automate.
-Counterexamples then make its answers more useful. Add algorithm provenance
-before the interactive/explanation layer. Introduce bounded/cancellable
-conversion before advertising large-scale exploration. Layout can remain an
-optional presentation tool. Completion and these manuals provide the starting
-point for navigating the workbench now.
+Current priorities are counterexamples, completion, and JFLAP interchange.
+JSON Lines, an interactive REPL, and compilation budgets are deferred.
 
 =head1 SEE ALSO
 

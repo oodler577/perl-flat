@@ -12,7 +12,7 @@ use FLAT::Regex::WithExtraOps;
 my @OPTION_SPEC = (
     'help|h', 'version', 'batch|b', 'type=s', 'format=s', 'trim',
     'mode=s', 'depth=s', 'limit=s', 'delimiter=s', 'tokens', 'quiet|q',
-    'output=s', 'force', 'length=s', 'seed=s', 'input-format=s', 'expand-labels',
+    'output=s', 'force', 'length=s', 'seed=s', 'input-format=s', 'expand-labels', 'witness', 'layout=s',
 );
 my %COMMAND = (
     completion => ['bash', 'Print a Bash completion script'],
@@ -68,10 +68,12 @@ sub _option_names {
         : $command =~ /^(strings|somestrings|morestrings)$/ ? qw(mode depth limit delimiter)
         : $command eq 'test' ? qw(tokens batch quiet)
         : $command eq 'trace' ? qw(tokens)
-        : $command =~ /^(compare|subset|empty|finite)$/ ? qw(quiet)
+        : $command =~ /^(compare|subset)$/ ? qw(quiet witness)
+        : $command =~ /^(empty|finite)$/ ? qw(quiet)
         : $command eq 'savedfa' ? qw(output force)
         : $command =~ /^random_/ ? qw(length seed) : ();
     $allowed{'input-format'} = 1 unless $command =~ /\A(?:normalize|perl-regex|dump|union|concat|shuffle|star|random_re|random_pre)\z/;
+    $allowed{layout} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
     $allowed{'expand-labels'} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
     delete $allowed{'input-format'} if $command eq 'completion';
     return sort keys %allowed;
@@ -83,7 +85,7 @@ sub completion_metadata {
     for my $command (commands()) {
         my @names = $command eq 'help' ? () : _option_names($command);
         @names = grep { $_ ne 'type' && $_ ne 'format' } @names if exists $ALIAS{$command};
-        @names = grep { $_ ne 'expand-labels' } @names
+        @names = grep { $_ ne 'expand-labels' && $_ ne 'layout' } @names
             if exists $ALIAS{$command} && $ALIAS{$command}[1] ne 'jflap';
         my %allowed = map { $_ => 1 } (@names, 'help', 'version');
         my @flags;
@@ -102,7 +104,7 @@ sub completion_metadata {
         commands => [commands()], options => \%options, file_arguments => \%files,
         values => {'--type'=>[qw(pfa nfa dfa min-dfa)],
                    '--format'=>[sort(keys %FORMAT, 'json')],
-                   '--mode'=>[qw(acyclic depth)], '--input-format'=>[qw(pre jflap)]},
+                   '--layout'=>[qw(preserve layered)], '--mode'=>[qw(acyclic depth)], '--input-format'=>[qw(pre jflap)]},
         value_options => [map { '--' . ($_ =~ /\A([^=]+)/)[0] }
                           grep { /=/ } @OPTION_SPEC],
     };
@@ -147,6 +149,8 @@ Options (only where applicable):
   --version                  Print FLAT version
   -b, --batch                test: first stdin line is EXPR, remaining lines WORDs
   --input-format pre|jflap    Interpret EXPR arguments as PREs or .jff file paths
+  --witness                  Compare/subset: show a shortest counterexample
+  --layout preserve|layered  JFLAP export: retain positions or arrange by distance
   --expand-labels            JFLAP export: map multi-character tokens to strings
   --type pfa|nfa|dfa|min-dfa  show: representation (default min-dfa)
   --format summary|dot|undot|gdl|jflap|digraph|undirected|json
@@ -218,7 +222,7 @@ sub _automaton {
     return $type eq 'min-dfa' ? $dfa->as_min_dfa : $dfa;
 }
 sub _show {
-    my ($fa, $format, $expand) = @_;
+    my ($fa, $format, $expand, $layout) = @_;
     if ($format eq 'json') {
         my @transitions;
         for my $from ($fa->get_states) {
@@ -233,7 +237,7 @@ sub _show {
     }
     else {
         my $method = $FORMAT{$format};
-        print $format eq 'jflap' ? $fa->as_jflap(expand_labels=>$expand) : $fa->$method();
+        print $format eq 'jflap' ? $fa->as_jflap(expand_labels=>$expand, layout=>$layout // 'preserve') : $fa->$method();
     }
 }
 sub _symbols {
@@ -304,6 +308,8 @@ sub _main {
     my %allowed = map { $_ => 1 } _option_names($command);
     _usage('--input-format must be pre or jflap') if exists $opt{'input-format'} && $opt{'input-format'} !~ /\A(?:pre|jflap)\z/;
     _usage('--expand-labels requires --format jflap') if $opt{'expand-labels'} && ($opt{format} // '') ne 'jflap';
+    _usage('--layout requires --format jflap') if exists $opt{layout} && ($opt{format} // '') ne 'jflap';
+    _usage('--layout must be preserve or layered') if exists $opt{layout} && $opt{layout} !~ /\A(?:preserve|layered)\z/;
     for my $name (keys %opt) { _usage("--$name does not apply to $command") unless $allowed{$name} }
     for my $name (qw(depth length limit)) {
         next unless exists $opt{$name};
@@ -372,7 +378,7 @@ sub _main {
         _usage('--trim requires a DFA') if $opt{trim} && $type !~ /dfa/;
         my $fa = _automaton($expression, $type);
         $fa = $fa->trim_sinks if $opt{trim};
-        _show($fa, $opt{format} // 'summary', $opt{'expand-labels'}); return 0;
+        _show($fa, $opt{format} // 'summary', $opt{'expand-labels'}, $opt{layout}); return 0;
     }
     if ($command =~ /strings\z/) {
         if (@$args) {
@@ -415,6 +421,16 @@ sub _main {
         Storable::nstore($dfa, $file); return 0;
     }
     if ($command =~ /\A(?:compare|subset|empty|finite)\z/) {
+        if ($opt{witness}) {
+            my $other = _automaton(_parse($args->[0], $opt{'input-format'}), 'dfa');
+            my $method = $command eq 'compare' ? 'equivalence_counterexample' : 'subset_counterexample';
+            my $witness = $dfa->$method($other);
+            unless ($opt{quiet}) {
+                print defined($witness) ? "No\n" : "Yes\n";
+                print "Counterexample: ", _json($witness), "\n" if defined $witness;
+            }
+            return defined($witness) ? 1 : 0;
+        }
         my $answer = $command eq 'empty' ? $dfa->is_empty
             : $command eq 'finite' ? $dfa->is_finite
             : $command eq 'compare' ? $dfa->equals(_automaton(_parse($args->[0], $opt{'input-format'}), 'dfa'))
@@ -425,7 +441,7 @@ sub _main {
     my @others = map { _automaton(_parse($_, $opt{'input-format'}), 'dfa') } @$args;
     my $result = $dfa->$command(@others);
     $result = $result->trim_sinks if $opt{trim};
-    _show($result, $opt{format} // 'summary', $opt{'expand-labels'});
+    _show($result, $opt{format} // 'summary', $opt{'expand-labels'}, $opt{layout});
     return 0;
 }
 1;

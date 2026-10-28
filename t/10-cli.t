@@ -34,6 +34,12 @@ sub successful {
     is($err, '', "$name: no stderr");
     return $out;
 }
+my ($ws,$wo,$we)=cli(undef,'compare','[]','a','--witness');
+is($ws,1,'witness keeps false status'); like($wo,qr/Counterexample: .*"tokens":\[\]/,'CLI shows empty-word token array'); is($we,'','witness no stderr');
+($ws,$wo,$we)=cli(undef,'subset','b','a','--witness','--quiet');
+is($ws,1,'quiet witness false status'); is($wo,'','quiet witness is silent');
+successful(undef,['show','ab','--format','jflap','--layout','layered'],qr/<structure>/,'layered CLI export');
+($ws,$wo,$we)=cli(undef,'show','a','--layout','layered'); is($ws,2,'layout requires JFLAP');
 for my $case (
     [['completion','bash'], qr/complete -F _fash fash/], [['--help'], qr/Exit codes:/], [['help'], qr/Usage:/],
     [['help','test'], qr/Usage: fash test/], [['--version'], qr/FLAT 1\.0\.4/],

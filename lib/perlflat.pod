@@ -242,3 +242,10 @@ Repository: L<https://github.com/oodler577/perl-flat>
 This toolkit is free software under the same terms as Perl itself.
 
 =cut
+
+=head1 WITNESSES AND DIAGRAM LAYOUT
+
+See L<perlfash> for C<compare --witness>, C<subset --witness>, and JFLAP
+C<--layout layered>. See L<FLAT::DFA> for the token-preserving witness API.
+
+=cut

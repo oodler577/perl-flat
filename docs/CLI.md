@@ -215,3 +215,7 @@ Loader reference: https://github.com/scop/bash-completion
 
 See the PROPOSED WORKBENCH FEATURES section of `perldoc perlfash` for the six
 plain-language explanations, current status and suggested implementation order.
+
+Counterexamples: `fash compare EXPR EXPR --witness` and `fash subset EXPR EXPR --witness` print a shortest token-array witness with left/right acceptance. Empty arrays denote epsilon. `--quiet` remains silent.
+
+JFLAP layout: add `--layout layered` to JFLAP export to rearrange coordinates without changing semantics. Default `--layout preserve` retains imported positions. The built-in column layout needs no Graphviz and does not route edges. GUI validation across JFLAP versions remains pending.
