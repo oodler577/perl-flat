@@ -1,0 +1,105 @@
+{
+  "description": "Selected historical/paper examples with current semantics and independent expected languages. Original state-removal counts are not correctness oracles.",
+  "cases": [
+    {
+      "id": "paper-ab-cd",
+      "source": "2005 thesis Appendix B / 2006 paper conversion examples",
+      "expression": "ab&cd",
+      "reference": "abcd+acbd+acdb+cabd+cadb+cdab",
+      "accept": [
+        "abcd",
+        "acbd",
+        "acdb",
+        "cabd",
+        "cadb",
+        "cdab"
+      ],
+      "reject": [
+        "",
+        "ab",
+        "abdc",
+        "abcdd"
+      ]
+    },
+    {
+      "id": "paper-a-bstar",
+      "source": "2005 thesis Appendix B / 2006 paper conversion examples",
+      "expression": "a&b*",
+      "reference": "b*ab*",
+      "accept": [
+        "a",
+        "ab",
+        "ba",
+        "bbabb"
+      ],
+      "reject": [
+        "",
+        "b",
+        "aa",
+        "aba"
+      ]
+    },
+    {
+      "id": "legacy-zero-onestar",
+      "source": "SVN r120 perl-flat-legacy/t/FLAT-FA-PRE.t: 0&1*",
+      "expression": "0&1*",
+      "reference": "1*01*",
+      "accept": [
+        "0",
+        "01",
+        "10",
+        "11011"
+      ],
+      "reject": [
+        "",
+        "1",
+        "00",
+        "010"
+      ]
+    },
+    {
+      "id": "legacy-three-shuffles",
+      "source": "SVN r120 perl-flat-legacy/t/FLAT-FA-PRE.t: 00&100&1; reference words independently interleaved",
+      "expression": "00&100&1",
+      "reference": "001001+001010+001100+010001+010010+010100+011000+100001+100010+100100+101000+110000",
+      "accept": [
+        "001001",
+        "001010",
+        "001100",
+        "010001",
+        "010010",
+        "010100",
+        "011000",
+        "100001",
+        "100010",
+        "100100",
+        "101000",
+        "110000"
+      ],
+      "reject": [
+        "",
+        "0011",
+        "000011",
+        "111111"
+      ]
+    },
+    {
+      "id": "legacy-explicit-epsilon",
+      "source": "SVN r120 perl-flat-legacy/t/FLAT-FA-RE.t: 01001|11(1|); implicit epsilon rewritten explicitly",
+      "historical_expression": "01001|11(1|)",
+      "expression": "01001+11(1+[])",
+      "reference": "01001+111+11",
+      "accept": [
+        "01001",
+        "111",
+        "11"
+      ],
+      "reject": [
+        "",
+        "1",
+        "110",
+        "1111"
+      ]
+    }
+  ]
+}

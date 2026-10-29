@@ -13,3 +13,13 @@ finite-automaton import/export, token input and command exit statuses.
 Installed manuals: perldoc perlflat (library overview) and perldoc perlfash
 (CLI guide and workbench proposals). Bash completion is installed by make
 install; use fash completion bash to generate it for the current shell.
+
+=head1 SOURCE HISTORY
+
+The recovered SourceForge SVN/CVS-converted history and initial 2005 release
+are preserved under the repository's C<archive/sourceforge/> branches and tag.
+See L<https://github.com/oodler577/perl-flat/blob/master/docs/SOURCEFORGE-RECOVERY.md>
+for restore instructions, verification, comparison with the papers, and the
+inventory of useful algorithms, examples and unfinished experiments.
+
+=cut

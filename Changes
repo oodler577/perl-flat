@@ -1,4 +1,6 @@
 Development (unreleased)
+    - Archive SourceForge SVN history, branches/tag, initial release and recovery
+      evidence; document salvage inventory and add recovered language regressions.
     - Port the recovered original RE/PRE recursive-descent parser to the current
       AST with modern precedence and lexer/diagnostics/spans;
       remove the generated RecDescent grammar and its runtime dependency.
