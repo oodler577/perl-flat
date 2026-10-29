@@ -25,6 +25,11 @@ test "$status" -eq 1
 grep -F '"tokens":[]' witness.txt
 fash show ab --type nfa --format jflap --layout layered > example.jff
 fash test example.jff --input-format jflap ab
+converted=$(fash to-re --input-format jflap example.jff)
+fash compare "$converted" ab
+fash compare "$(fash to-re 'a&b')" 'ab+ba'
+perldoc -U -T FLAT::DFA::ToRegex > conversion.txt
+test -s conversion.txt
 
 completion="$work/stage/opt/flat-ci/share/bash-completion/completions/fash"
 bash -n "$completion"

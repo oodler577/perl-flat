@@ -145,9 +145,15 @@ future work. C<trim_sinks> can produce a partial DFA; complement/intersection
 complete missing transitions as needed. State IDs can change during deletion
 or conversion.
 
-FA-to-formal-RE conversion is not implemented. Consequently, RE methods that
-need that conversion should not be treated as complete. Hyper-minimization is
-also unfinished. Preamble/kernel analysis and hyper-minimization are available
+C<$dfa-E<gt>as_regex> returns an equivalent ordinary formal RE using GNFA
+state elimination. NFA/PFA conversions route through a DFA. For example:
+
+  my $re = $pre->as_pfa->as_dfa->as_regex;
+  print $re->as_string, "\n";
+
+The source is unchanged; token objects and payload references survive in the
+AST. Expression size can grow exponentially, and no shortest-expression
+guarantee is made. See L<FLAT::DFA::ToRegex>. Preamble/kernel analysis and hyper-minimization are available
 through L<FLAT::DFA::Hyper>; a larger algebra interface remains future work.
 
 =head1 ITERATORS AND INPUT WORDS

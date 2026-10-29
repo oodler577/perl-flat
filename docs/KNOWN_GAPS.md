@@ -22,7 +22,9 @@ Remaining review findings, not all represented as automated regressions yet:
 - Optional full/scalar token objects and within-process payload preservation
   are implemented. Bare reference labels fail explicitly. Reference persistence,
   occurrence identities and remote-process transfer are separate open contracts.
-- FA-to-RE conversion is missing; several RE operations depend on it.
+- Exact DFA-to-formal-RE state elimination is implemented by `as_regex`; NFA/PFA
+  conversions route through DFA. Expression growth is unbounded and elimination
+  order is fixed; advanced simplification and order heuristics remain open.
 - Shuffle and negation AST operations have explicit unimplemented paths.
 - Transition/successor/pruning tests after __END__ in t/02-fa.t do not run.
 - Some randomized generation tests assert only that emitted words are valid,

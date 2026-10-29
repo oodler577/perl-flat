@@ -13,6 +13,13 @@ use FLAT::Symbol::String;
 
 FLAT::NFA - Nondeterministic finite automata
 
+=head1 CONVERSION TO FORMAL EXPRESSIONS
+
+C<as_regex> determinizes the NFA, then invokes exact DFA state elimination.
+It returns an ordinary L<FLAT::Regex> and does not change this graph. PFA
+subclasses use their serialization-aware DFA conversion. See
+L<FLAT::DFA::ToRegex> for complexity and token-preservation details.
+
 =head1 SYNOPSIS
 
 A FLAT::NFA object is a finite automata whose transitions are labeled
@@ -26,6 +33,11 @@ sub new {
     $self->{TRANS_CLASS} = "FLAT::Transition::Simple";
     $self->{ALPHA_CLASS} = "FLAT::Symbol::String";
     return $self;
+}
+
+sub as_regex {
+    my ($self, @options) = @_;
+    return $self->as_dfa->as_regex(@options);
 }
 
 sub singleton {

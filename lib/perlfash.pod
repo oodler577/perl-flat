@@ -54,6 +54,17 @@ Compose languages and print a formal expression.
 
 Print the Kleene closure.
 
+=item to-re EXPR
+
+Convert through a DFA to an equivalent ordinary formal RE (union, concatenation
+and star). Accepts PREs and C<--input-format jflap> files or stdin. For example:
+
+  fash to-re 'ab&cd'
+  fash to-re --input-format jflap model.jff
+
+This is exact state elimination. Output can grow exponentially; it need not be
+a shortest expression. Text carries matching keys, not token payloads.
+
 =item perl-regex EXPR
 
 Print an anchored Perl-pattern representation of an ordinary RE. Shuffle is
@@ -226,8 +237,8 @@ abbreviations and inapplicable options are rejected.
   fash compare --input-format jflap model.jff copy.jff
 
 C<--input-format jflap> treats all EXPR arguments as FA C<.jff> filenames; C<->
-reads XML from stdin. AST-only operations cannot take this mode while FA-to-RE
-is missing. Import supports legacy JFLAP 4 top-level and later nested layouts.
+reads XML from stdin. C<to-re> converts imported automata to formal expressions.
+AST-only operations still take expression text rather than XML. Import supports legacy JFLAP 4 top-level and later nested layouts.
 Names, labels and positions survive direct import/export, but IDs are remapped;
 transformations can replace states and lose their layout metadata.
 

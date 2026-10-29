@@ -168,5 +168,6 @@ Historical state-removal counts and unimplemented driver calls are not oracles.
 2. If desired, add a legacy text-format adapter without reviving old graph classes.
 3. Treat the firstpos/followpos route as a separate correctness-tested construction.
 4. Use cycle prototypes as research input for an explicitly bounded explorer.
-5. DFA-to-formal-RE still requires a real implementation; the recovered placeholder
-   files do not close that gap.
+5. The recovered DFA-to-RE files remain placeholders. A new, independent GNFA
+   state-elimination implementation is now available as `as_regex`; see
+   `FLAT::DFA::ToRegex` and `t/20-dfa-to-regex.t`.

@@ -45,6 +45,7 @@ for my $case (
     [['f-equivalent','ab','#'],qr/^Yes/], [['hypermin','ab','--format','json'],qr/"states":\[0\]/],
     [['completion','bash'], qr/complete -F _fash fash/], [['--help'], qr/Exit codes:/], [['help'], qr/Usage:/],
     [['help','test'], qr/Usage: fash test/], [['--version'], qr/FLAT 1\.0\.4/],
+    [['to-re','a&b'], qr/^ab\+ba\n$|^ba\+ab\n$/],
     [['normalize','0'], qr/^0\n$/], [['perl-regex','ab*'], qr/\\A.*\\z/], [['dump','a'], qr/FLAT::Regex/],
     [['summary','a'], qr/States/], [['show','a','--format','json'], qr/"transitions"/],
     [['test','[]+0','','0'], qr/\(\+\): \n\(\+\): 0\n/],
@@ -130,6 +131,9 @@ is($io,3,'write error status'); like($io_error,qr/^fash:/,'write error prefix');
 my $jff = File::Spec->catfile($dir,'example.jff');
 my $xml=successful('', ['dfa2jflap','ab*'], qr/<read>/, 'JFLAP export');
 open my $fh,'>:raw',$jff or die $!; print $fh $xml; close $fh;
+my $converted=successful('', ['to-re','--input-format','jflap',$jff], qr/\S/, 'JFLAP to formal RE');
+chomp $converted;
+ok(FLAT::Regex->new($converted)->equals(FLAT::Regex->new('ab*')), 'JFLAP conversion language equivalence');
 successful('', ['test','--input-format','jflap',$jff,'abbb'], qr/\(\+\)/,'test JFLAP file');
 successful($xml, ['show','--input-format','jflap','-','--type','nfa','--format','json'], qr/\"states\"/, 'JFLAP stdin import');
 successful('', ['compare','--input-format','jflap',$jff,$jff], qr/Yes/,'compare JFLAP files');

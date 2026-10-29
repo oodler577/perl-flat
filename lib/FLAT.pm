@@ -57,6 +57,8 @@ languages to a I<parallel> NFA (PFA))
 
 =item * convert a DFA to a minimal DFA
 
+=item * convert a DFA, NFA or PFA to an equivalent ordinary formal RE
+
 =item * generate strings that may be accepted by a DFA
 
 =back
@@ -64,8 +66,6 @@ languages to a I<parallel> NFA (PFA))
 It is still missing some capabilities that one would expect:
 
 =over 4
-
-=item * generate equivalent REs from a NFA or DFA
 
 =item * provide targeted conversion of PFAs, NFAs, DFAs to their more
 explicit state forms; this is particularly interested to have in the case

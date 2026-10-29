@@ -23,6 +23,7 @@ my %COMMAND = (
     show       => ['EXPR', 'Inspect an automaton (--type, --format, --trim)'],
     summary    => ['EXPR', 'Print a minimized DFA summary'],
     dump       => ['EXPR', 'Dump the parsed expression tree'],
+    'to-re'    => ['EXPR', 'Convert through a DFA to an ordinary formal RE'],
     normalize  => ['EXPR', 'Print the normalized formal expression'],
     'perl-regex' => ['EXPR', 'Print an anchored Perl regex (ordinary RE only)'],
     strings    => ['EXPR', 'Enumerate bounded accepted words'],
@@ -367,6 +368,9 @@ sub _main {
     _arity($args, $command eq 'test' || $many || $two ? 2 : 1,
            $command eq 'test' || $many ? undef : $two || $command eq 'morestrings' ? 2 : 1);
     my $expression = _parse(shift @$args, $opt{'input-format'});
+    if ($command eq 'to-re') {
+        print _automaton($expression, 'dfa')->as_regex->as_string, "\n"; return 0;
+    }
     if ($command eq 'normalize') { print $expression->as_string, "\n"; return 0 }
     if ($command eq 'perl-regex') {
         _usage('shuffle cannot be converted directly to a Perl regex')

@@ -62,9 +62,13 @@ undgv, digraph, or undirected. The documented undirectedgraph spelling is also
 accepted. nfa2jflap and dfa2jflap export XML. Legacy dfa-prefixed exports now
 consistently use a minimized DFA; use `show --type dfa` for an unminimized DFA.
 
-FA-to-formal-RE, general negation (`~`) and hyper-minimization are not implemented
-and are not presented as working CLI operations. The CLI exports currently
-supported results rather than pretending to reconstruct missing expressions.
+`fash to-re EXPR` converts through a DFA to an equivalent ordinary formal RE.
+For example, `fash to-re 'a&b'` produces `ab+ba`. It accepts JFLAP input too:
+`fash to-re --input-format jflap model.jff`. State elimination is exact but
+can produce exponentially large expressions; output is not guaranteed minimal.
+Token keys are printed; reference payloads cannot be represented in text.
+General negation (`~`) remains unimplemented. Explicit lossy hyper-minimization
+is available separately as `hypermin`.
 
 ## Input and error contracts
 
@@ -129,8 +133,8 @@ layout and the later `automaton` layout. It handles sparse numeric IDs,
 nondeterministic/parallel edges, epsilon reads (empty or omitted), and
 multi-character reads. It returns an NFA; use `show --type dfa|min-dfa` to
 convert it. In `--input-format jflap` mode all expression arguments name `.jff`
-files, and `-` means XML from stdin. AST-only expression operations do not
-accept this mode because FA-to-RE is still missing.
+files, and `-` means XML from stdin. `to-re` converts imported automata into
+formal expressions. AST-only expression commands continue to take PRE text.
 
 Export creates current nested FA XML, with one read symbol per transition,
 escaped XML text, and default state coordinates. Multiple NFA starts get a

@@ -7,6 +7,11 @@ use Storable qw(dclone);
 use FLAT::DFA::Minimal;
 use Carp;
 
+sub as_regex {
+    require FLAT::DFA::ToRegex;
+    return FLAT::DFA::ToRegex->convert(@_);
+}
+
 sub set_starting {
     my $self = shift;
     $self->SUPER::set_starting(@_);
@@ -574,6 +579,14 @@ B. Estarde E<lt>estradb at gmail dot comE<gt>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+=head1 CONVERSION TO FORMAL EXPRESSIONS
+
+C<as_regex> returns an equivalent ordinary L<FLAT::Regex> using exact GNFA state
+elimination. The DFA is unchanged. Empty language, epsilon, partial transitions
+and token payload references are supported. Fixed state-ID elimination order
+is reproducible; expression size can grow exponentially. See
+L<FLAT::DFA::ToRegex> for the algorithm and limitations.
 
 =head1 COUNTEREXAMPLES
 

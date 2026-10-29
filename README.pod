@@ -14,6 +14,14 @@ Installed manuals: perldoc perlflat (library overview) and perldoc perlfash
 (CLI guide and workbench proposals). Bash completion is installed by make
 install; use fash completion bash to generate it for the current shell.
 
+=head1 FORMAL EXPRESSION CONVERSION
+
+C<$dfa-E<gt>as_regex> uses exact GNFA state elimination to return an ordinary
+L<FLAT::Regex> AST. NFAs and PFAs route through their DFA conversion. The source
+is unchanged and token payload references survive in memory. C<fash to-re>
+accepts a PRE or JFLAP input. Output may grow exponentially and is not guaranteed
+minimal. See L<FLAT::DFA::ToRegex>.
+
 =head1 SOURCE HISTORY
 
 The recovered SourceForge SVN/CVS-converted history and initial 2005 release

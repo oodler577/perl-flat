@@ -1,4 +1,6 @@
 Development (unreleased)
+    - Add exact DFA-to-formal-RE GNFA state elimination, NFA/PFA adapters,
+      token-preserving ASTs, fash to-re (including JFLAP), and round-trip tests.
     - Archive SourceForge SVN history, branches/tag, initial release and recovery
       evidence; document salvage inventory and add recovered language regressions.
     - Port the recovered original RE/PRE recursive-descent parser to the current

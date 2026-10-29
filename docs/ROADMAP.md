@@ -39,8 +39,9 @@ parallel execution, potentially using MCE, is a separate runtime responsibility.
    construction, with reproducible trace checks.
 
 4. Formal FA-to-RE conversion and algebra.
-   Implement state elimination over an expression AST, distinguishing empty
-   language from epsilon. Add simplification, elimination-order options,
+   Initial exact DFA state elimination over the expression AST is implemented,
+   distinguishing empty language from epsilon, with fixed/generated round-trip
+   tests and local simplification. Extend simplification and elimination-order options,
    equivalence/inclusion and counterexamples. Compare direct NFA conversion
    with minimized-DFA conversion rather than assuming either is always better.
    Done when fixed and generated round trips establish language equivalence.
