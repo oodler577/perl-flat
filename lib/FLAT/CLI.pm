@@ -15,6 +15,10 @@ my @OPTION_SPEC = (
     'output=s', 'force', 'length=s', 'seed=s', 'input-format=s', 'expand-labels', 'witness', 'layout=s',
 );
 my %COMMAND = (
+    partition  => ['EXPR', 'Report preamble/kernel/unreachable DFA state IDs as JSON'],
+    'f-classes'=> ['EXPR', 'Report finite-difference equivalence classes as JSON'],
+    'f-equivalent'=> ['EXPR EXPR', 'Test whether the languages differ on finitely many words'],
+    hypermin   => ['EXPR', 'Hyper-minimize (LOSSY: permits finite acceptance differences)'],
     completion => ['bash', 'Print a Bash completion script'],
     show       => ['EXPR', 'Inspect an automaton (--type, --format, --trim)'],
     summary    => ['EXPR', 'Print a minimized DFA summary'],
@@ -66,6 +70,8 @@ sub _option_names {
     $allowed{$_} = 1 for $command eq 'show' ? qw(type format trim)
         : $command =~ /^(reverse|intersect|difference|symdiff|complement)$/ ? qw(format trim)
         : $command =~ /^(strings|somestrings|morestrings)$/ ? qw(mode depth limit delimiter)
+        : $command eq 'hypermin' ? qw(format)
+        : $command eq 'f-equivalent' ? qw(quiet)
         : $command eq 'test' ? qw(tokens batch quiet)
         : $command eq 'trace' ? qw(tokens)
         : $command =~ /^(compare|subset)$/ ? qw(quiet witness)
@@ -73,8 +79,8 @@ sub _option_names {
         : $command eq 'savedfa' ? qw(output force)
         : $command =~ /^random_/ ? qw(length seed) : ();
     $allowed{'input-format'} = 1 unless $command =~ /\A(?:normalize|perl-regex|dump|union|concat|shuffle|star|random_re|random_pre)\z/;
-    $allowed{layout} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
-    $allowed{'expand-labels'} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement)\z/;
+    $allowed{layout} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement|hypermin)\z/;
+    $allowed{'expand-labels'} = 1 if $command eq 'show' || $command =~ /\A(?:reverse|intersect|difference|symdiff|complement|hypermin)\z/;
     delete $allowed{'input-format'} if $command eq 'completion';
     return sort keys %allowed;
 }
@@ -353,7 +359,7 @@ sub _main {
         push @$args, $_ while defined($_ = _line());
     }
     my $many = $command =~ /\A(?:union|concat|shuffle|intersect)\z/;
-    my $two = $command =~ /\A(?:compare|subset|difference|symdiff|trace)\z/;
+    my $two = $command =~ /\A(?:compare|subset|difference|symdiff|trace|f-equivalent)\z/;
     _arity($args, $command eq 'test' || $many || $two ? 2 : 1,
            $command eq 'test' || $many ? undef : $two || $command eq 'morestrings' ? 2 : 1);
     my $expression = _parse(shift @$args, $opt{'input-format'});
@@ -414,6 +420,20 @@ sub _main {
         return $rejected ? 1 : 0;
     }
     my $dfa = _automaton($expression, 'dfa');
+    if ($command eq 'partition' || $command eq 'f-classes') {
+        my $analysis = $command eq 'partition' ? $dfa->preamble_kernel : $dfa->f_equivalence_classes;
+        print _json($analysis), "\n"; return 0;
+    }
+    if ($command eq 'f-equivalent') {
+        my $other = _automaton(_parse($args->[0], $opt{'input-format'}), 'dfa');
+        my $answer = $dfa->is_f_equivalent($other);
+        print($answer ? "Yes\n" : "No\n") unless $opt{quiet};
+        return $answer ? 0 : 1;
+    }
+    if ($command eq 'hypermin') {
+        _show($dfa->as_hyper_min_dfa, $opt{format} // 'summary', $opt{'expand-labels'}, $opt{layout});
+        return 0;
+    }
     if ($command eq 'alphabet') { print _json([sort $dfa->alphabet]), "\n"; return 0 }
     if ($command eq 'savedfa') {
         my $file = $opt{output} // ($expression->as_string . '.dat');

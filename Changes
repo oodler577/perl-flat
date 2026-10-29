@@ -1,4 +1,6 @@
 Development (unreleased)
+    - Implement Badr preamble/kernel analysis, f-equivalence classes and explicit
+      hyper-minimization in FLAT::DFA::Hyper; expose through DFA and fash APIs.
     - Add shortest equivalence/subset witnesses with token boundaries and CLI --witness.
     - Add optional deterministic JFLAP layered layout and synthetic format fixtures.
               - add installed perlflat/perlfash manuals and plain-language

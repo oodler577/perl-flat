@@ -219,3 +219,21 @@ plain-language explanations, current status and suggested implementation order.
 Counterexamples: `fash compare EXPR EXPR --witness` and `fash subset EXPR EXPR --witness` print a shortest token-array witness with left/right acceptance. Empty arrays denote epsilon. `--quiet` remains silent.
 
 JFLAP layout: add `--layout layered` to JFLAP export to rearrange coordinates without changing semantics. Default `--layout preserve` retains imported positions. The built-in column layout needs no Graphviz and does not route edges. GUI validation across JFLAP versions remains pending.
+
+## Badr preamble/kernel and hyper-minimization
+
+`fash partition EXPR` reports preamble, kernel and unreachable state IDs as JSON.
+`fash f-classes EXPR` reports f-equivalence classes. Kernel states have infinite
+left languages, not necessarily infinite right languages. IDs are local to the
+compiled DFA; use the library methods to analyze a particular object.
+
+`fash f-equivalent EXPR EXPR` tests finite symmetric difference, with the usual
+0/1 decision statuses and `--quiet` option. `fash hypermin EXPR --format json`
+returns a smallest complete DFA under finite-difference equivalence. **This is
+lossy** and can alter any individual acceptance decision, including epsilon.
+It is distinct from exact minimization. Existing JFLAP/DOT/JSON exports work;
+JFLAP accepts `--layout` and explicit `--expand-labels` as usual.
+
+See `perldoc FLAT::DFA::Hyper` for Badr Algorithms 4-8, the existing DFA API,
+input-state analysis versus minimized-state reports, and implementation costs.
+DFCA minimization and finite factoring are not included.

@@ -249,3 +249,34 @@ See L<perlfash> for C<compare --witness>, C<subset --witness>, and JFLAP
 C<--layout layered>. See L<FLAT::DFA> for the token-preserving witness API.
 
 =cut
+
+=head1 BADR ANALYSIS AND HYPER-MINIMIZATION
+
+  fash partition 'ab+a*'
+  fash f-classes 'ab+a*'
+  fash f-equivalent 'ab' '#'
+  fash hypermin 'ab+a*' --format json
+  fash hypermin 'ab+a*' --format jflap --layout layered
+
+C<partition> reports C<preamble>, C<kernel>, and C<unreachable> state IDs in
+its compiled DFA. Kernel means infinite LEFT language, including descendants
+of reachable cycles; it does not mean an infinite right language.
+C<f-classes> partitions states by finite symmetric difference of right languages.
+State IDs are local to the compiled graph; use the library analysis methods
+when you need to associate the report with a specific automaton object.
+
+C<f-equivalent> answers whether the two languages differ on finitely many
+words (exit 0 for Yes, 1 for No; C<--quiet> suppresses output).
+C<hypermin> is explicitly LOSSY: it returns a smallest complete DFA allowing
+finite acceptance differences, including possible changes to epsilon.
+It does not replace exact minimization, equivalence, or inclusion.
+
+The library exposes C<FLAT::DFA::preamble_kernel>, C<f_equivalence_classes>,
+C<is_f_equivalent>, and the previously unimplemented C<as_hyper_min_dfa>.
+L<FLAT::DFA::Hyper> documents the source algorithms, original-ID analysis,
+minimized-graph reports, completion of partial DFAs, and complexity limits.
+Results are ordinary FLAT DFAs using the existing literal-token representation.
+The paper's additional DFCA minimization and finite-factoring construction are
+outside this implementation.
+
+=cut

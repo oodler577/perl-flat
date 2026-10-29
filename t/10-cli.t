@@ -41,6 +41,8 @@ is($ws,1,'quiet witness false status'); is($wo,'','quiet witness is silent');
 successful(undef,['show','ab','--format','jflap','--layout','layered'],qr/<structure>/,'layered CLI export');
 ($ws,$wo,$we)=cli(undef,'show','a','--layout','layered'); is($ws,2,'layout requires JFLAP');
 for my $case (
+    [['partition','a*'],qr/"kernel"/], [['f-classes','ab'],qr/^\[\[/],
+    [['f-equivalent','ab','#'],qr/^Yes/], [['hypermin','ab','--format','json'],qr/"states":\[0\]/],
     [['completion','bash'], qr/complete -F _fash fash/], [['--help'], qr/Exit codes:/], [['help'], qr/Usage:/],
     [['help','test'], qr/Usage: fash test/], [['--version'], qr/FLAT 1\.0\.4/],
     [['normalize','0'], qr/^0\n$/], [['perl-regex','ab*'], qr/\\A.*\\z/], [['dump','a'], qr/FLAT::Regex/],
@@ -136,5 +138,11 @@ successful('', ['dfa2jflap','[foo]','--expand-labels'], qr/<read>f<\/read>/,'exp
 my ($needs)=cli('', 'dfa2jflap','[foo]'); is($needs,3,'token export requires explicit mapping');
 my ($missing)=cli('', 'show','--input-format','jflap',File::Spec->catfile($dir,'missing.jff'));
 is($missing,2,'missing import is an input error');
+my ($fe_status,$fe_output,$fe_error)=cli('', 'f-equivalent','a*','b*');
+is($fe_status,1,'infinite difference is false'); is($fe_output,"No\n",'infinite difference output'); is($fe_error,'','no stderr');
+($fe_status,$fe_output)=cli('', 'f-equivalent','a*','b*','--quiet');
+is($fe_status,1,'quiet finite-difference false'); is($fe_output,'','quiet finite-difference silent');
+my $hyperxml=successful('', ['hypermin','ab+a*','--format','jflap','--layout','layered'],qr/<structure>/,'hypermin uses existing JFLAP export');
+my ($invalidhyper)=cli('', 'hypermin','a','--trim'); is($invalidhyper,2,'hypermin keeps complete DFA contract');
 for my $command (FLAT::CLI->commands) { ok($exercised{$command},"advertised command exercised: $command") }
 done_testing;

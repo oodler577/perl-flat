@@ -238,10 +238,22 @@ sub is_valid_string {
     return $OK;
 }
 
-# Need to implement! http://www.ianab.com/hyper/
-# DFA hyper-minimization using equivalence classes
+# Hyper-minimization permits finitely many acceptance errors; never used by
+# ordinary exact minimization.
 sub as_hyper_min_dfa {
-    my $self = shift()->clone;
+    require FLAT::DFA::Hyper;
+    return FLAT::DFA::Hyper->minimize($_[0]);
+}
+sub preamble_kernel {
+    require FLAT::DFA::Hyper;
+    return FLAT::DFA::Hyper->preamble_kernel($_[0]);
+}
+sub f_equivalence_classes {
+    require FLAT::DFA::Hyper;
+    return FLAT::DFA::Hyper->f_equivalence_classes($_[0]);
+}
+sub is_f_equivalent {
+    return $_[0]->symdiff($_[1])->is_finite;
 }
 
 # DFT stuff in preparation for DFA pump stuff;
@@ -571,5 +583,19 @@ length; ties follow Perl string sort order. Missing transitions reject.
 Inputs are not changed. The search visits the reachable product of the two
 DFAs and may require their product number of states in memory. Token strings
 are compared exactly; there is no Unicode normalization or reference alphabet.
+
+=cut
+
+=head1 PREAMBLE, KERNEL AND HYPER-MINIMIZATION
+
+C<preamble_kernel> reports C<preamble>, C<kernel>, and C<unreachable> arrays
+of input state IDs. C<f_equivalence_classes> partitions those IDs by finite
+symmetric difference of right languages. C<is_f_equivalent($other)> tests
+finite symmetric difference of the two accepted languages. This is weaker
+than C<equals>.
+
+C<as_hyper_min_dfa> returns a hyper-minimal DFA and can change finitely many
+acceptance decisions. It is not an exact language-preserving conversion.
+See L<FLAT::DFA::Hyper> for the algorithm, reports, cost and references.
 
 =cut
