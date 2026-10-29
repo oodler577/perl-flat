@@ -32,7 +32,8 @@ Remaining review findings, not all represented as automated regressions yet:
 - Basic state validation, partial/complete DFA behavior, exports and docs
   need systematic consistency checks.
 
-Historical TODOs include parser/parameter diagnostics, parser performance,
+Historical TODOs included parser diagnostics/performance (now addressed by the
+hand-written lexer/parser and comparison benchmarks), parameter diagnostics,
 symbol-count cleanup, PRE transformation iterators, and cycle-to-word exploration
 in scripts. Hyper-minimization and preamble/kernel analysis are now implemented
 in FLAT::DFA::Hyper.

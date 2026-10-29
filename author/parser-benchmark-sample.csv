@@ -1,0 +1,8 @@
+# sample_date=2026-10-29 baseline_commit=fc381eb43a892376545c9182a5480acf6e532320
+# same VM and Perl; parse stage excludes startup and FA compilation; no performance guarantee
+# perl=/usr/bin/perl version=5.038002 iterations=300 startups=10
+backend,stage,iterations,seconds
+baseline,startup,10,0.953051
+baseline,parse,2100,17.839287
+native,startup,10,0.390968
+native,parse,2100,0.273501

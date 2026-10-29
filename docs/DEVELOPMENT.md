@@ -5,7 +5,7 @@ The source version remains FLAT 1.0.4. No release/upload is part of preparation.
 ## Dependencies
 
 - Perl, make and a C toolchain as needed by dependencies.
-- Parse::RecDescent and XML::LibXML (runtime).
+- XML::LibXML (runtime); Parse::RecDescent only for optional parser oracle tests.
 - Test::More (tests).
 - Dist::Zilla with the plugins named in dist.ini, including
   Dist::Zilla::Plugin::MakeMaker::Awesome (maintainer distribution builds only).
@@ -73,3 +73,33 @@ The downstream job tests Sub::Genius 0.314006 at commit
 Pinning the consumer keeps failures reproducible; update the ref deliberately
 when adding coverage for a newer Sub::Genius release. These jobs do not publish
 to CPAN or certify JFLAP GUI compatibility.
+
+## Hand-written parser verification
+
+Normal runtime no longer requires Parse::RecDescent. The source CI matrix also
+runs `prove -l xt/parser-parity.t` against the frozen previous grammar. Install
+Parse::RecDescent only for this optional oracle. It compares grammar acceptance
+and ASTs for fixed errors and seeded RE/PRE expressions.
+
+`perl author/bench-parser.pl --baseline /path/to/old-checkout --iterations 500 --startups 10`
+compares startup and repeated parsing separately on the same Perl interpreter.
+Performance is workload-dependent and is not a CI threshold. Default parser
+limits are 1,000,000 input characters, 65,536 characters per bracketed key, and
+128 nested groups. They do not bound FA compilation.
+
+ASTs remain blessed arrays. Parsed nodes expose optional `source_span` metadata;
+programmatic `atom`, `epsilon`, `empty`, and `from_op` factories support literal
+keys and explicit symbol tokens. Source spans are diagnostic metadata, not
+serialized occurrence IDs. No new bracket-escape syntax is introduced.
+Recovered historical source under `historical/parser` is not a runtime backend.
+
+The modern parser is a port of the recovered original grammar routines, whose
+source is preserved under `historical/parser`. Precedence follows the later API
+(union below shuffle), with no legacy mode. Modern literals and strict operand
+validation are retained rather than all old quirks.
+
+A sample run is recorded in `author/parser-benchmark-sample.csv`: 2,100
+constructor parses of the seven-expression corpus took 17.84 seconds in the
+previous checkout and 0.27 seconds in the port on the same VM/Perl 5.38.2.
+Ten library startups took 0.95 and 0.39 seconds respectively. These are sample
+measurements, not universal speed guarantees or automaton-compilation timings.

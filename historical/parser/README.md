@@ -30,3 +30,23 @@ archives are the successful recovery source.
 
 Do not add this directory to PERL5LIB or treat these files as a current parser
 backend without porting and testing their older syntax and representations.
+
+## Modern port
+
+The default `FLAT::Regex::Parser` ports the recovered R/P/O/C/S/L and
+continuation routines into current AST nodes, replacing mutable character
+queues and concatenation toggles with indexed lexer tokens and iterative
+continuations. It adds strict operands, diagnostics and source spans. Modern shuffle/union
+precedence is retained; no legacy mode is offered. The old artificial end-marker is not inserted.
+
+The uploaded thesis *An Investigation of Equivalent Serialized Forms of Parallel
+Finite Automata* (Brett Dominique Estrade, 2005), printed page 8 (PDF page 19),
+contains the R/P/O/C/S/L grammar and left-recursion elimination. Its shuffle
+production is above union, confirming the recovered legacy precedence. Appendix
+A identifies RE.pm and PRE.pm. The uploaded 2006 paper *Explicitly Parallel
+Regular Expressions* (Estrade, Perkins and Harris), PDF page 3, also describes
+the recursive-descent parse tree and its role in modified Thompson construction.
+The supplied PDFs were consulted as references, not added to the distribution.
+
+The old 0x743.com site did not resolve during this check, and the Archive.org
+CDX request timed out. No claim is made that archived site content was recovered.

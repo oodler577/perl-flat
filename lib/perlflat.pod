@@ -214,7 +214,7 @@ explains the CLI proposals in plain language.
 =head1 DEVELOPMENT AND INSTALLATION
 
 The distribution uses Dist::Zilla; a built release uses ExtUtils::MakeMaker.
-Runtime dependencies include Parse::RecDescent and XML::LibXML.
+Runtime dependencies include XML::LibXML. Parse::RecDescent is no longer a runtime dependency.
 
   dzil build
   dzil test
@@ -316,5 +316,38 @@ same immutable symbol objects and live payload references. Conflicting explicit
 bindings for the same key throw. No execution or callbacks are triggered by
 symbol matching. Persistence and interchange do not preserve live bindings;
 see L<FLAT::Symbol::Token> for exact guarantees and limitations.
+
+=cut
+
+=head1 PARSER AND AST INTERFACE
+
+The default parser ports the recovered original hand-written RE/PRE routines
+and keeps the existing AST node classes.
+It does not load Parse::RecDescent. C<FLAT::Regex-E<gt>new> throws a
+L<FLAT::Regex::ParseError> on invalid syntax, with character offset, line and
+column; C<fash> reports the same location with its input-error status.
+Operator precedence and bracket quoting retain the existing grammar.
+Non-ASCII keys are bracketed; backslashes inside brackets remain literal.
+
+Parsed nodes expose C<source_span>. Programmatic C<atom>, C<epsilon>, C<empty>,
+and C<from_op> constructors support typed tokens and validated AST operands.
+C<atom($token)> uses the matching key and retains the live payload; it does not
+parse the display label. Unicode atom text now round trips using brackets;
+keys containing a closing bracket require the programmatic API.
+
+See L<FLAT::Regex::Parser>, L<FLAT::Regex::Lexer>, and L<FLAT::Regex::Op> for
+configuration, nesting/input limits, source-span limitations, and factories.
+Parsing general negation does not implement its unfinished language operations.
+
+=cut
+
+=head1 ORIGINAL GRAMMAR COMPATIBILITY
+
+The recovered original PRE parser put shuffle below union. The later parser
+put union below shuffle. Default parsing preserves the later ordering, so
+existing expressions retain their meaning. There is no legacy precedence mode;
+use parentheses to request a different grouping. Modern bracket literals and
+strict operand validation are retained.
+Original source and checksums are retained under F<historical/parser>.
 
 =cut

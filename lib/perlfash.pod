@@ -423,3 +423,13 @@ it does not accept Perl reference literals, execute payloads, or reconstruct
 live reference bindings from text. Text exports retain matching keys.
 
 =cut
+
+=head1 PARSER DIAGNOSTICS
+
+Malformed formal expressions report a character offset and one-based line and
+column, retaining input-error exit status 2. Input uses a hand-written parser;
+Parse::RecDescent is no longer required at runtime. Source and AST APIs are
+documented in L<FLAT::Regex::Parser> and L<FLAT::Regex::Op>. Resource limits on
+parsing do not bound automaton compilation costs.
+
+=cut

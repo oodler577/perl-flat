@@ -1,8 +1,36 @@
 package FLAT::Regex::Op;
 use strict;
+use Carp ();
+use Scalar::Util qw(blessed);
+use Hash::Util::FieldHash qw(fieldhash);
+fieldhash my %SOURCE_SPAN;
+
+sub source_span {
+    my ($self)=@_;
+    return exists($SOURCE_SPAN{$self}) ? {%{$SOURCE_SPAN{$self}}} : undef;
+}
+sub _set_source_span {
+    my ($self,$span)=@_;
+    $SOURCE_SPAN{$self}={%$span};
+    return $self;
+}
+
 
 sub new {
     my $pkg = shift;
+    if ($pkg eq 'FLAT::Regex::Op::atomic') {
+        Carp::croak('an atom requires exactly one key or symbol') unless @_==1;
+        Carp::croak('reference atoms must be FLAT::Symbol::Token objects')
+            if ref($_[0]) && !(blessed($_[0]) && $_[0]->isa('FLAT::Symbol::Token'));
+    }
+    elsif ($pkg =~ /::(?:star|negate)\z/) {
+        Carp::croak('unary operator requires exactly one AST node') unless @_==1
+            && blessed($_[0]) && $_[0]->isa('FLAT::Regex::Op');
+    }
+    elsif ($pkg =~ /::(?:alt|concat|shuffle)\z/) {
+        Carp::croak('operator requires AST node operands') unless @_ && !grep {
+            !blessed($_) || !$_->isa('FLAT::Regex::Op') } @_;
+    }
     ## flatten alike operations, i.e, "a+(b+c)" into "a+b+c"
     my @flat = map {UNIVERSAL::isa($_, $pkg) ? $_->members : $_} @_;
 
@@ -20,17 +48,24 @@ sub members {
 package FLAT::Regex::Op::atomic;
 use parent 'FLAT::Regex::Op';
 
-sub as_string {
-    my $t = $_[0]->members;
+sub key {
+    my $value=$_[0]->members;
+    return ref($value) ? $value->key : $value;
+}
+sub symbol {
+    my $value=$_[0]->members;
+    return ref($value) ? $value : undef;
+}
 
+sub as_string {
+    my $t = $_[0]->key;
     return "#" if not defined $t;
-    return $t =~ /^\w$/
-        ? $t
-        : "[$t]";
+    Carp::croak("cannot represent a key containing ']' in formal-expression text") if index($t,']')>=0;
+    return $t =~ /\A[A-Za-z0-9_]\z/ ? $t : "[$t]";
 }
 
 sub as_perl_regex {
-    my $r = $_[0]->members;
+    my $r = $_[0]->key;
 
     return "(?!)" if not defined $r;
 
@@ -68,7 +103,7 @@ sub is_empty {
 
 sub has_nonempty_string {
     my $self = shift;
-    defined $self->members and length $self->members;
+    defined $self->key and length $self->key;
 }
 
 sub is_finite {
@@ -270,3 +305,34 @@ sub is_finite {
     return 1;
 }
 1;
+
+__END__
+
+=head1 NAME
+
+FLAT::Regex::Op - formal-expression AST nodes
+
+=head1 CONTRACT
+
+Existing blessed-array nodes and C<members> remain the representation.
+Atoms carry exactly one literal key, undef (empty language), an empty string
+(epsilon), or a L<FLAT::Symbol::Token>. Unary operators require one AST node;
+union, concatenation and shuffle require nonempty node lists. Associative
+operators flatten nested operands as before. Constructors reject raw data
+references in atoms; wrap payloads explicitly in a symbol token.
+
+Atoms expose C<key> and C<symbol> (the latter returns undef for string atoms).
+Formal-expression text and Perl pattern conversion use matching keys, never
+display labels. Automaton conversion retains explicit token bindings and payload
+identity. Keys containing a closing bracket cannot be represented by the current
+formal text syntax; C<as_string> rejects them explicitly. Programmatic automaton
+and AST operations can still use such keys.
+
+C<source_span> returns a copy of optional parser location metadata. It counts
+characters, not bytes, with an exclusive end offset and one-based line/column.
+The metadata is weakly associated with nodes, contains no input text, and does
+not survive serialization. Programmatic nodes normally have no source span;
+transformed nodes do not acquire invented source locations. Source spans are
+not execution-occurrence IDs or a lossless concrete syntax tree.
+
+=cut

@@ -144,5 +144,8 @@ is($fe_status,1,'infinite difference is false'); is($fe_output,"No\n",'infinite 
 is($fe_status,1,'quiet finite-difference false'); is($fe_output,'','quiet finite-difference silent');
 my $hyperxml=successful('', ['hypermin','ab+a*','--format','jflap','--layout','layered'],qr/<structure>/,'hypermin uses existing JFLAP export');
 my ($invalidhyper)=cli('', 'hypermin','a','--trim'); is($invalidhyper,2,'hypermin keeps complete DFA contract');
+my ($syntax_status,undef,$syntax_error)=cli('', 'normalize',"a+\n)");
+is($syntax_status,2,'located parse failure keeps input-error status');
+like($syntax_error,qr/line 2, column 1.*offset 3/s,'CLI reports parser location');
 for my $command (FLAT::CLI->commands) { ok($exercised{$command},"advertised command exercised: $command") }
 done_testing;

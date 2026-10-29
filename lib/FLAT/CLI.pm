@@ -178,7 +178,7 @@ Exit codes: 0 success/true; 1 false/rejected; 2 usage/input; 3 operation/I/O err
 Only undef ends a word iterator: epsilon prints as an empty line, 0 as '0'.
 Traversal bounds are per graph state, not a complete enumeration of infinite
 languages. --limit bounds output, not compilation time or memory use.
-FA-to-RE, general negation (~), and hyper-minimization are not implemented.
+FA-to-RE and general negation (~) are not implemented. Hypermin permits finite errors.
 Manuals: perldoc perlflat (library), perldoc perlfash (CLI).
 Bash completion: source <(fash completion bash)
 See docs/CLI.md for examples, compatibility changes, and remaining limitations.
@@ -206,7 +206,11 @@ sub _parse {
         _usage('no expression on stdin') unless defined $text && length $text;
     }
     my $expression = eval { FLAT::Regex::WithExtraOps->new($text) };
-    _usage('invalid formal expression') unless defined $expression;
+    if (!defined $expression) {
+        my $error=$@;
+        _usage(ref($error) && eval { $error->isa('FLAT::Regex::ParseError') }
+            ? "$error" : 'invalid formal expression');
+    }
     _usage('negation (~) is not implemented; use complement EXPR instead')
         if _has_op($expression->op, 'FLAT::Regex::Op::negate');
     return $expression;

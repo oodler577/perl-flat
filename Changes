@@ -1,4 +1,8 @@
 Development (unreleased)
+    - Port the recovered original RE/PRE recursive-descent parser to the current
+      AST with modern precedence and lexer/diagnostics/spans;
+      remove the generated RecDescent grammar and its runtime dependency.
+    - Add validated literal/token AST factories and correct formal key rendering.
     - Add optional full/scalar symbol tokens with display stringification,
       shared payload identity, explicit bindings and atomic token matching.
     - Preserve bindings across cloning and automaton transformations; fix

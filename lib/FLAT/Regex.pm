@@ -2,19 +2,18 @@ package FLAT::Regex;
 use parent 'FLAT';
 use strict;
 use Carp;
+use Scalar::Util ();
 
 use FLAT::Regex::Parser;
 use FLAT::Regex::Op;
 
 my $PARSER = FLAT::Regex::Parser->new(qw[ alt concat star ]);
-#### TODO: error checking in the parse
 
 sub _parser { $PARSER }
 
 sub new {
     my ( $pkg, $string ) = @_;
-    my $result = $pkg->_parser->parse($string)
-      or croak qq[``$string'' is not a valid regular expression];
+    my $result = $pkg->_parser->parse_or_die($string);
 
     $pkg->_from_op($result);
 }
@@ -25,6 +24,20 @@ sub _from_op {
 
     bless [$op], $proto;
 }
+
+sub from_op {
+    my ($class,$op)=@_;
+    croak 'expected a FLAT::Regex::Op node'
+        unless Scalar::Util::blessed($op) && $op->isa('FLAT::Regex::Op');
+    return $class->_from_op($op);
+}
+sub atom {
+    my ($class,$key)=@_;
+    return $class->from_op(FLAT::Regex::Op::atomic->new($key));
+}
+sub epsilon { return $_[0]->atom('') }
+sub empty { return $_[0]->atom(undef) }
+sub contains_tokens { return $_[0]->as_pfa->as_nfa->contains_tokens($_[1]) }
 
 sub op {
     $_[0][0];
@@ -53,6 +66,7 @@ sub as_nfa {
 }
 
 sub as_pfa {
+    require FLAT::PFA;
     $_[0]->op->as_pfa;
 }
 
@@ -188,3 +202,27 @@ B. Estarde E<lt>estradb at gmail dot comE<gt>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+=head1 PARSING AND PROGRAMMATIC ASTS
+
+C<new($text)> uses the hand-written L<FLAT::Regex::Parser>. Syntax failures throw
+L<FLAT::Regex::ParseError> with character offset, line and column. Syntax and
+precedence follow the existing formal-language grammar; these are not Perl
+regular-expression literals. The parser's limits do not bound FA compilation.
+
+C<atom($key_or_symbol)> constructs a literal atom without parsing display text.
+C<epsilon> and C<empty> construct the empty word and empty language respectively.
+C<from_op($node)> wraps a validated L<FLAT::Regex::Op>. Existing composition
+methods operate on these nodes. A literal C<atom('#')> differs from textual
+C<new('#')>, which denotes empty language.
+
+  my $atom = FLAT::Regex->atom($token);
+  my $plan = $atom->concat(FLAT::Regex->atom('finish'));
+  $plan->contains_tokens([$token, 'finish']);
+
+Token-backed atoms retain matching keys and payload references through AST
+composition and FA conversion. Display labels are never parsed as syntax.
+C<op-E<gt>source_span> exposes optional source locations for parsed nodes;
+programmatic/transformed nodes need not have locations.
+
+=cut
