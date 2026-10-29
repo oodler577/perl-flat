@@ -29,13 +29,13 @@ fash test example.jff --input-format jflap ab
 completion="$work/stage/opt/flat-ci/share/bash-completion/completions/fash"
 bash -n "$completion"
 bash --noprofile --norc -c 'source "$1"; COMP_WORDS=(fash compare --w); COMP_CWORD=2; _fash; [[ " ${COMPREPLY[*]} " == *" --witness "* ]]' bash "$completion"
-# The installer records logical paths, never staging paths.
+# The completion hook records its logical path, matching its uninstall contract.
 perl -MExtUtils::Packlist -e '
     my @files = glob "$ARGV[0]/lib/perl5/*/auto/FLAT/.packlist";
     die "expected one packlist" unless @files == 1;
     my $pack = ExtUtils::Packlist->new($files[0]);
     die "completion missing from packlist" unless exists $pack->{"/opt/flat-ci/share/bash-completion/completions/fash"};
-    die "staging path recorded" if grep { index($_, $ARGV[1]) == 0 } keys %$pack;
+    die "staged completion path recorded" if exists $pack->{"$ARGV[1]/opt/flat-ci/share/bash-completion/completions/fash"};
 ' "$work/stage/opt/flat-ci" "$work/stage"
 
 cd "$work/dist"
