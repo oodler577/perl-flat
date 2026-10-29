@@ -412,3 +412,14 @@ The paper's additional DFCA minimization and finite-factoring construction are
 outside this implementation.
 
 =cut
+
+=head1 LIBRARY SYMBOL OBJECTS
+
+The library optionally supports L<FLAT::Symbol::Token> (key, display label,
+shared payload reference) and L<FLAT::Symbol::Token::Scalar> (scalar-backed key
+and display, no payload). See L<perlflat> for examples. These are programmatic
+interfaces: C<fash> continues to consume string keys and JSON token arrays;
+it does not accept Perl reference literals, execute payloads, or reconstruct
+live reference bindings from text. Text exports retain matching keys.
+
+=cut

@@ -2,6 +2,7 @@ package FLAT::NFA;
 
 use strict;
 use warnings;
+use Carp qw(croak);
 use parent qw(FLAT::FA);
 
 use FLAT::Transition::Simple;
@@ -35,7 +36,7 @@ sub singleton {
         $nfa->add_states(1);
         $nfa->set_starting(0);
     }
-    elsif ( $char eq "" ) {
+    elsif ( !ref($char) && $char eq "" ) {
         $nfa->add_states(1);
         $nfa->set_starting(0);
         $nfa->set_accepting(0);
@@ -219,6 +220,21 @@ sub epsilon_closure {
     keys %seen;
 }
 
+sub contains_tokens {
+    my ($self, $tokens) = @_;
+    croak 'contains_tokens expects an array reference' unless ref($tokens) eq 'ARRAY';
+    return $self->as_nfa->contains_tokens($tokens) if $self->isa('FLAT::PFA');
+    my @keys = map { FLAT::FA::_symbol_key($_) } @$tokens;
+    croak 'tokens must have nonempty defined keys'
+        if grep { !defined($_) || !length($_) } @keys;
+    my @active = $self->epsilon_closure($self->get_starting);
+    for my $key (@keys) {
+        @active = $self->epsilon_closure($self->successors(\@active, $key));
+        return 0 unless @active;
+    }
+    return !!grep { $self->is_accepting($_) } @active;
+}
+
 sub contains {
     my ( $self, $string ) = @_;
 
@@ -270,6 +286,7 @@ sub as_dfa {
     my $self = shift;
 
     my $result = FLAT::DFA->new;
+    $result->_inherit_symbols($self);
     my %subset;
 
     my %final = map  { $_ => 1 } $self->get_accepting;
@@ -548,3 +565,12 @@ B. Estarde E<lt>estradb at gmail dot comE<gt>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+=head1 TOKEN INPUT
+
+C<contains_tokens(\@tokens)> tests an array of literal keys or
+L<FLAT::Symbol::Token> objects. An empty array denotes epsilon. Unlike
+C<contains($text)>, it does not split a string into characters. A PFA is first
+converted to an NFA. Payloads and display labels do not affect matching.
+
+=cut

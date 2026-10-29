@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use parent qw(FLAT);
 use Carp;
+use Scalar::Util qw(blessed refaddr);
 
 use FLAT::Transition::Simple;
 
@@ -32,6 +33,59 @@ sub new {
         ALPHA         => {},
         ALPHA_BLESSED => {},
     }, $pkg;
+}
+
+# Explicit symbol bindings are separate from legacy per-edge alphabet counts.
+sub register_symbols {
+    my ($self, @symbols) = @_;
+    return $self unless @symbols;
+    my %bindings = %{$self->{SYMBOLS} || {}};
+    for my $symbol (@symbols) {
+        croak 'expected a FLAT::Symbol::Token'
+            unless blessed($symbol) && $symbol->isa('FLAT::Symbol::Token');
+        my $key = $symbol->key;
+        if (exists $bindings{$key}) {
+            my $old = $bindings{$key};
+            my ($a, $b) = ($old->payload, $symbol->payload);
+            croak "conflicting symbol binding for key '$key'"
+                if $old->label ne $symbol->label
+                || (defined($a) != defined($b))
+                || (defined($a) && refaddr($a) != refaddr($b));
+        }
+        else { $bindings{$key} = $symbol }
+    }
+    $self->{SYMBOLS} = \%bindings;
+    return $self;
+}
+sub _inherit_symbols {
+    my ($self, @others) = @_;
+    my @symbols = map { values %{$_->{SYMBOLS} || {}} } @others;
+    return @symbols ? $self->register_symbols(@symbols) : $self;
+}
+sub _symbol_key {
+    my ($symbol) = @_;
+    return $symbol unless ref $symbol;
+    croak 'reference labels must be wrapped in FLAT::Symbol::Token'
+        unless blessed($symbol) && $symbol->isa('FLAT::Symbol::Token');
+    return $symbol->key;
+}
+sub _label_keys {
+    my ($self, @labels) = @_;
+    my @keys = map { _symbol_key($_) } @labels;
+    my @objects = grep { ref $_ } @labels;
+    $self->register_symbols(@objects) if @objects;
+    return @keys;
+}
+sub symbol {
+    my ($self, $key) = @_;
+    $key = _symbol_key($key);
+    return undef unless defined $key;
+    return $self->{SYMBOLS}{$key} if $self->{SYMBOLS} && exists $self->{SYMBOLS}{$key};
+    return $self->{ALPHA_BLESSED}{$key};
+}
+sub symbols {
+    my ($self) = @_;
+    return map { $self->symbol($_) } sort $self->alphabet;
 }
 
 sub get_states {
@@ -178,9 +232,9 @@ sub _incr_alphabet {
 
 sub set_transition {
     my ( $self, $state1, $state2, @label ) = @_;
+    $self->_assert_states($state1, $state2);
+    @label = $self->_label_keys(grep defined, @label);
     $self->remove_transition( $state1, $state2 );
-
-    @label = grep defined, @label;
     return if not @label;
 
     my $t = $self->{TRANS_CLASS}->new(@label);
@@ -191,7 +245,8 @@ sub set_transition {
 sub add_transition {
     my ( $self, $state1, $state2, @label ) = @_;
 
-    @label = grep defined, @label;
+    $self->_assert_states($state1, $state2);
+    @label = $self->_label_keys(grep defined, @label);
     return if not @label;
 
     my $t = $self->get_transition( $state1, $state2 );
@@ -234,6 +289,7 @@ sub successors {
       : ();
 
     $self->_assert_states(@states);
+    @symbs = map { _symbol_key($_) } @symbs;
 
     my %succ;
     for my $s (@states) {
@@ -307,7 +363,14 @@ sub prune {
 use Storable 'dclone';
 
 sub clone {
-    dclone( $_[0] );
+    my ($self) = @_;
+    # _swallow also calls this helper on plain arrays of states/transitions.
+    return dclone($self) unless blessed($self) && $self->isa('FLAT::FA');
+    my %graph = %$self;
+    delete $graph{SYMBOLS};
+    my $copy = dclone(bless \%graph, ref($self));
+    $copy->{SYMBOLS} = {%{$self->{SYMBOLS}}} if $self->{SYMBOLS};
+    return $copy;
 }
 
 sub _transpose {
@@ -404,12 +467,13 @@ sub array_intersect {
 sub get_valid_symbols {
     my $self    = shift;
     my $symbols = shift;
-    return $self->array_intersect( [ $self->alphabet() ], [ @{$symbols} ] );
+    return $self->array_intersect( [ $self->alphabet() ], [ map { _symbol_key($_) } @{$symbols} ] );
 }
 
 ## add an FA's states & transitions to this FA (as disjoint union)
 sub _swallow {
     my ( $self, $other ) = @_;
+    $self->_inherit_symbols($other);
     my $N1 = $self->num_states;
     my $N2 = $other->num_states;
 
@@ -589,3 +653,16 @@ B. Estarde E<lt>estradb at gmail dot comE<gt>.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
+
+=head1 SYMBOL OBJECTS
+
+C<register_symbols(@tokens)> binds L<FLAT::Symbol::Token> objects by key and
+returns the automaton. C<symbol($key)> resolves an explicit binding (including
+inactive ones), falls back to the legacy symbol object for active string keys,
+or returns undef. C<symbols> lists active objects sorted by key; C<alphabet>
+continues to return matching strings. Builders accept tokens or plain keys.
+Matching and transformations use keys, never overloaded display strings.
+Cloned graphs share immutable token objects and their payload references.
+See L<FLAT::Symbol::Token> for conflict rules and persistence limitations.
+
+=cut

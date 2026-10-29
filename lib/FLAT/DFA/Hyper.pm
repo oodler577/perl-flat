@@ -37,7 +37,8 @@ sub _model {
         $final[$n] = 0;
     }
     return {delta=>\@delta, final=>\@final, alphabet=>\@alphabet,
-            start=>$start[0], original_count=>$n};
+            start=>$start[0], original_count=>$n,
+            symbols=>[values %{$dfa->{SYMBOLS} || {}}]};
 }
 
 sub _reachable {
@@ -135,6 +136,7 @@ sub _materialize {
     my $reachable = _reachable($m);
     my @states = sort {$a <=> $b} keys %$reachable;
     my $dfa = FLAT::DFA->new;
+    $dfa->register_symbols(@{$m->{symbols} || []});
     my %id;
     $id{$_} = $dfa->add_states(1) for @states;
     $dfa->set_starting($id{$m->{start}});

@@ -32,7 +32,7 @@ sub singleton {
         $pfa->add_states(1);
         $pfa->set_starting(0);
     }
-    elsif ( $char eq "" ) {
+    elsif ( !ref($char) && $char eq "" ) {
         $pfa->add_states(1);
         $pfa->set_starting(0);
         $pfa->set_accepting(0);
@@ -48,6 +48,10 @@ sub singleton {
 
 # attack of the clones
 sub as_pfa { $_[0]->clone() }
+
+# NFA's inherited subset construction cannot interpret parallel lambda edges.
+sub as_dfa { return $_[0]->as_nfa->as_dfa }
+
 
 sub set_starting {
     my ( $self, @states ) = @_;
@@ -178,6 +182,7 @@ sub kleene {
 sub as_nfa {
     my $self   = shift;
     my $result = FLAT::NFA->new();
+    $result->_inherit_symbols($self);
 
     # Dstates is initially populated with the start state, which
     # is exactly the set of all nodes marked as a starting node

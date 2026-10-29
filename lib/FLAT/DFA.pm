@@ -96,6 +96,7 @@ sub intersect {
     my @dfas = map { $_->as_dfa } @_;
 
     my $return = FLAT::DFA->new;
+    $return->_inherit_symbols(@dfas);
     my %newstates;
     my @alpha = _uniq( map { $_->alphabet } @dfas );
 
@@ -190,6 +191,7 @@ sub as_min_dfa {
         last if !$changed;
     }
     my $result = FLAT::DFA::Minimal->new;
+    $result->_inherit_symbols($self);
     my %newstate;
     my @classes;
     for my $s ( 0 .. $N - 1 ) {

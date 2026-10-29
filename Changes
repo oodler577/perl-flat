@@ -1,4 +1,8 @@
 Development (unreleased)
+    - Add optional full/scalar symbol tokens with display stringification,
+      shared payload identity, explicit bindings and atomic token matching.
+    - Preserve bindings across cloning and automaton transformations; fix
+      direct PFA-to-DFA conversion to serialize parallel edges first.
     - Implement Badr preamble/kernel analysis, f-equivalence classes and explicit
       hyper-minimization in FLAT::DFA::Hyper; expose through DFA and fash APIs.
     - Add shortest equivalence/subset witnesses with token boundaries and CLI --witness.

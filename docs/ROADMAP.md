@@ -1,7 +1,9 @@
 # FLaT development roadmap
 
-Status: core cleanup underway, 2026-10-28. Production source baseline: CPAN FLAT
-1.0.4, restored in commit 0ebfc29.
+Status: core repairs, CLI/JFLAP, Badr analysis and optional full/scalar symbol
+bindings are implemented in the development repository. Structured expression,
+occurrence and runtime work below remains planned. Production source baseline:
+CPAN FLAT 1.0.4, restored in commit 0ebfc29.
 
 ## Purpose
 

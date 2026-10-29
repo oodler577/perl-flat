@@ -111,8 +111,9 @@ word generators and closure operations. Minimize before trimming dead states.
 =item L<FLAT::FA>, L<FLAT::Transition::Simple>, L<FLAT::Symbol::String>
 
 State/transition manipulation and literal alphabet-symbol bookkeeping.
-Reference-valued symbols preserving payload identity are a planned interface,
-not yet an implemented public contract.
+Optional L<FLAT::Symbol::Token> objects bind matching keys to display labels
+and payload references. L<FLAT::Symbol::Token::Scalar> provides a scalar-backed,
+payload-free subclass. Bare string labels remain supported.
 
 =item L<FLAT::JFLAP>
 
@@ -146,8 +147,8 @@ or conversion.
 
 FA-to-formal-RE conversion is not implemented. Consequently, RE methods that
 need that conversion should not be treated as complete. Hyper-minimization is
-also unfinished. Preamble/kernel analysis and a larger algebra interface are
-planned work rather than present capabilities.
+also unfinished. Preamble/kernel analysis and hyper-minimization are available
+through L<FLAT::DFA::Hyper>; a larger algebra interface remains future work.
 
 =head1 ITERATORS AND INPUT WORDS
 
@@ -167,8 +168,9 @@ chosen graph representation.
 
 The current library's string membership methods consume individual characters.
 For multi-character alphabet symbols, C<fash test --tokens> accepts explicit
-JSON token arrays. A general public library token/reference API is still being
-designed. Unicode labels use exact equality: no implicit normalization,
+JSON token arrays. The library's C<contains_tokens> accepts arrays of keys or
+optional symbol objects, including reference-carrying tokens. Unicode labels
+use exact equality: no implicit normalization,
 case-folding, grapheme segmentation or visual-equivalence rules are provided.
 
 =head1 JFLAP INTERCHANGE
@@ -278,5 +280,41 @@ minimized-graph reports, completion of partial DFAs, and complexity limits.
 Results are ordinary FLAT DFAs using the existing literal-token representation.
 The paper's additional DFCA minimization and finite-factoring construction are
 outside this implementation.
+
+=cut
+
+=head1 SYMBOL IDENTITY AND SHARED PAYLOADS
+
+  use FLAT::Symbol::Token;
+  use FLAT::Symbol::Token::Scalar;
+  use FLAT::PFA;
+
+  my $data = {name => 'compile'};
+  my $compile = FLAT::Symbol::Token->new(
+      key => 'compile', label => 'Compile source', payload => $data);
+  my $finish = FLAT::Symbol::Token::Scalar->new('finish');
+  my $dfa = FLAT::PFA->singleton($compile)
+      ->concat(FLAT::PFA->singleton($finish))->as_dfa->as_min_dfa;
+  print "$compile\n";                       # Compile source
+  my $text = sprintf '%s', $compile;        # Compile source
+  my $same_object = $compile;               # assignment retains reference
+  $dfa->contains_tokens([$compile, $finish]);
+  $dfa->symbol('compile')->payload->{name} = 'compile again';
+  # $data now contains the changed name: the reference was retained.
+
+Tokens are optional. Matching uses the immutable key, never the display label
+or payload. Scalar tokens use one immutable scalar for key and label and have
+no payload. Bare strings require no explicit registry and remain the default.
+C<alphabet> returns keys; C<symbols> returns active symbol objects; C<symbol>
+resolves one binding. Use C<contains_tokens(\@tokens)> for atomic key/object
+sequences, and C<contains($text)> for legacy character-string input.
+
+Compiled formal expressions can receive bindings using
+C<$pre-E<gt>as_pfa-E<gt>register_symbols(@tokens)> before further conversion.
+Cloning and automaton transformations copy graph structure while sharing the
+same immutable symbol objects and live payload references. Conflicting explicit
+bindings for the same key throw. No execution or callbacks are triggered by
+symbol matching. Persistence and interchange do not preserve live bindings;
+see L<FLAT::Symbol::Token> for exact guarantees and limitations.
 
 =cut

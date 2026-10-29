@@ -1,6 +1,14 @@
 # Design decisions and open questions
 
-This is a proposal, not a description of implemented APIs.
+This is primarily a proposal. The optional symbol layer is now implemented:
+`FLAT::Symbol::Token` stores an explicit stable key, display label and optional
+shared payload; `FLAT::Symbol::Token::Scalar` is the scalar-backed variant.
+`alphabet` remains string keys, and `contains_tokens` matches key/object arrays.
+Explicit keys define identity; payload reference identity is used to detect
+conflicting bindings, not to generate implicit address-based keys. Distinct
+keys can carry identical payloads or equal-content distinct references.
+See `perldoc FLAT::Symbol::Token` for the implemented contract; the remaining
+expression, occurrence and execution design below is future work.
 
 ## Symbols and input
 

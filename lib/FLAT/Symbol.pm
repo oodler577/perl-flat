@@ -2,6 +2,12 @@ package FLAT::Symbol;
 
 use strict;
 use Carp;
+use overload '""' => 'as_string', 'bool' => sub { 1 }, fallback => 1;
+
+sub key { exists $_[0]->{KEY} ? $_[0]->{KEY} : $_[0]->{LABEL} }
+sub label { $_[0]->{LABEL} }
+sub payload { exists $_[0]->{PAYLOAD} ? $_[0]->{PAYLOAD} : undef }
+
 
 sub new {
     my ( $pkg, $label ) = @_;

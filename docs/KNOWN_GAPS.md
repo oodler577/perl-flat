@@ -17,10 +17,11 @@ This does not imply that every advertised operation has been completed.
 
 Remaining review findings, not all represented as automated regressions yet:
 
-- String acceptance splits characters even when labels are multi-character
-  tokens; define token acceptance explicitly before extending this API.
-- Transitions stringify references; dclone copies payloads; new output
-  automata reconstruct labels. Object symbols need an end-to-end contract.
+- Character-string membership intentionally splits characters; use the new
+  `contains_tokens` API for atomic multi-character keys and symbol objects.
+- Optional full/scalar token objects and within-process payload preservation
+  are implemented. Bare reference labels fail explicitly. Reference persistence,
+  occurrence identities and remote-process transfer are separate open contracts.
 - FA-to-RE conversion is missing; several RE operations depend on it.
 - Shuffle and negation AST operations have explicit unimplemented paths.
 - Transition/successor/pruning tests after __END__ in t/02-fa.t do not run.
@@ -32,8 +33,9 @@ Remaining review findings, not all represented as automated regressions yet:
   need systematic consistency checks.
 
 Historical TODOs include parser/parameter diagnostics, parser performance,
-symbol-count cleanup, PRE transformation iterators, hyper-minimization,
-P/K graph exploration, and cycle-to-word exploration in scripts.
+symbol-count cleanup, PRE transformation iterators, and cycle-to-word exploration
+in scripts. Hyper-minimization and preamble/kernel analysis are now implemented
+in FLAT::DFA::Hyper.
 Abstract FLAT::Transition methods are intentional interfaces, not six separate
 missing features. PFA documentation saying "not implemented yet" is stale.
 
@@ -56,3 +58,10 @@ universe remains future work.
 CLI cleanup replaces shell interpolation, fixes DFA/DOT dispatch, and routes
 legacy generator adapters through the bounded iterators. See CLI.md for JFLAP
 character/token mapping and remaining import/export restrictions.
+
+Direct PFA `as_dfa` now goes through PFA serialization before subset construction;
+the inherited NFA shortcut previously treated parallel control edges as ordinary
+alphabet symbols. Optional `FLAT::Symbol::Token` and `Token::Scalar` bindings
+survive the standard automaton conversions and closure operations; matching
+continues to use literal string keys. No reference-backed registry is allocated
+for ordinary string-only graphs.
