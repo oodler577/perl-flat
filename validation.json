@@ -1,0 +1,46 @@
+{
+  "svn_revisions": 120,
+  "git_commits": 114,
+  "svn_uuid": "29d5d42d-ca11-0410-8b08-e15d86285476",
+  "authors_match": true,
+  "dates_match_seconds_precision": true,
+  "unrepresented_directory_only_or_manufactured_revisions": [
+    6,
+    9,
+    19,
+    22,
+    59,
+    60
+  ],
+  "heads": [
+    {
+      "ref": "refs/heads/archive/sourceforge/trunk",
+      "commit": "d792a1426b051670aeb9f797db0ee4fc22113027",
+      "svn_path": "trunk",
+      "revision": 120,
+      "files_verified": 82
+    },
+    {
+      "ref": "refs/heads/archive/sourceforge/branches/estrabd",
+      "commit": "9276b12de4e6db0dfe075d91e6b198c02116e732",
+      "svn_path": "branches/estrabd",
+      "revision": 58,
+      "files_verified": 39
+    },
+    {
+      "ref": "refs/heads/archive/sourceforge/branches/perl-flat",
+      "commit": "9b4ca3df601eefab0cb5078162a946ebcdfb9e29",
+      "svn_path": "branches/perl-flat",
+      "revision": 21,
+      "files_verified": 18
+    },
+    {
+      "ref": "refs/tags/archive/sourceforge/DEV",
+      "commit": "c180183d6c64738d5f4e3814c2019c2b6d9ebbaa",
+      "svn_path": "tags/DEV",
+      "revision": 61,
+      "files_verified": 57
+    }
+  ],
+  "raw_dump_sha256": "05302692e33657f0e37e60ceb1ce7d5f362acc628595612e0f811b3f2ba94106"
+}

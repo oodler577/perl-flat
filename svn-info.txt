@@ -1,0 +1,11 @@
+Path: code
+URL: https://svn.code.sf.net/p/perl-flat/code
+Relative URL: ^/
+Repository Root: https://svn.code.sf.net/p/perl-flat/code
+Repository UUID: 29d5d42d-ca11-0410-8b08-e15d86285476
+Revision: 120
+Node Kind: directory
+Last Changed Author: estrabd
+Last Changed Rev: 120
+Last Changed Date: 2007-05-16 03:25:53 +0000 (Wed, 16 May 2007)
+

@@ -1,0 +1,2938 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+<logentry
+   revision="120">
+<author>estrabd</author>
+<date>2007-05-16T03:25:53.370149Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="R">/trunk/perl-flat/MANIFEST</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/Makefile</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/Makefile.PL</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/TODO</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="119">
+<author>estrabd</author>
+<date>2007-05-16T03:11:59.119373Z</date>
+<paths>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/branches</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/explode.pl</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk/perl-flat/tags</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk/perl-flat/trunk</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="118">
+<author>estrabd</author>
+<date>2007-05-04T21:20:47.520702Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/explode.pl</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="117">
+<author>estrabd</author>
+<date>2007-03-05T23:01:08.530579Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/explode.pl</path>
+</paths>
+<msg>modified acyclic path search to accept @goals nodes in addition to the src node</msg>
+</logentry>
+<logentry
+   revision="116">
+<author>estrabd</author>
+<date>2007-03-05T22:50:48.953304Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/all-strings-no-cycles.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/explode.pl</path>
+</paths>
+<msg>modified acyclic path search to accept @goals nodes in addition to the src node</msg>
+</logentry>
+<logentry
+   revision="115">
+<author>estrabd</author>
+<date>2007-03-05T04:52:51.886125Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/explode.pl</path>
+</paths>
+<msg>adding file to implement prototype of my new method for getting strings from an infinite dfa</msg>
+</logentry>
+<logentry
+   revision="114">
+<author>estrabd</author>
+<date>2007-03-02T04:17:49.756708Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>took out dependency for Sub::Recursive</msg>
+</logentry>
+<logentry
+   revision="113">
+<author>estrabd</author>
+<date>2007-03-02T04:16:19.510688Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>took out dependency for Sub::Recursive</msg>
+</logentry>
+<logentry
+   revision="112">
+<author>estrabd</author>
+<date>2007-03-02T04:14:12.166745Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/Makefile.PL</path>
+</paths>
+<msg>took out dependency for Sub::Recursive</msg>
+</logentry>
+<logentry
+   revision="111">
+<author>estrabd</author>
+<date>2007-02-27T23:31:43.212814Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/all-strings-no-cycles.pl</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="110">
+<author>estrabd</author>
+<date>2007-02-27T20:50:51.656580Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/dev-scripts/all-strings-no-cycles.pl</path>
+</paths>
+<msg>new file contains the code to generate all valid strings possible that do not include cycles due to closure</msg>
+</logentry>
+<logentry
+   revision="109">
+<author>estrabd</author>
+<date>2007-02-27T05:11:54.056584Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+</paths>
+<msg>more playing with script - need to put it into module code...also, need to figure out iterative thing and cycle thing</msg>
+</logentry>
+<logentry
+   revision="108">
+<author>estrabd</author>
+<date>2007-02-27T03:01:37.636242Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg>prototype function emits all valid strings for all acyclic paths in the digraph ... on to handling cycles</msg>
+</logentry>
+<logentry
+   revision="107">
+<author>estrabd</author>
+<date>2007-02-26T22:52:23.579025Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="106">
+<author>estrabd</author>
+<date>2007-02-26T13:31:56.543243Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="105">
+<author>estrabd</author>
+<date>2007-02-23T22:42:52.070682Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg></msg>
+</logentry>
+<logentry
+   revision="104">
+<author>estrabd</author>
+<date>2007-02-23T22:40:01.944123Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>fixed major implementation issue wrt dft and mini-dfa - i.e., removal of sink states is required; also, very basic proof of concept regarding the use of a dft to generate valid strings is working</msg>
+</logentry>
+<logentry
+   revision="103">
+<author>estrabd</author>
+<date>2007-02-23T03:28:40.896442Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/Makefile.PL</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg>added a fix for recursive anonymous subroutine via Sub::Recursive</msg>
+</logentry>
+<logentry
+   revision="102">
+<author>estrabd</author>
+<date>2007-02-22T22:27:12.732997Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg>dft needs more testing</msg>
+</logentry>
+<logentry
+   revision="101">
+<author>estrabd</author>
+<date>2007-02-22T05:27:24.513352Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+</paths>
+<msg>started dfa-&gt;as_depth_first_tree .. screaming errors, but the basic stuff is there..</msg>
+</logentry>
+<logentry
+   revision="100">
+<author>estrabd</author>
+<date>2007-02-19T21:48:47.516374Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>created node list for DFA, next step is dft creation</msg>
+</logentry>
+<logentry
+   revision="99">
+<author>estrabd</author>
+<date>2007-02-19T14:59:39.439143Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>setting the stage for regex pump</msg>
+</logentry>
+<logentry
+   revision="98">
+<author>estrabd</author>
+<date>2007-02-18T01:05:37.727935Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>supports test command!</msg>
+</logentry>
+<logentry
+   revision="97">
+<author>estrabd</author>
+<date>2007-02-17T19:28:55.320791Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>got as_undirected to work by avoiding the unset_start thing and it now looks like it works fine</msg>
+</logentry>
+<logentry
+   revision="96">
+<author>estrabd</author>
+<date>2007-02-17T00:20:43.946807Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/bin/util-put.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>fixed issue; had to comment out DFA::unset_starting bc it caused a self reference issue; did some had verifications for directed and undirected - probably need to do more testing, though</msg>
+</logentry>
+<logentry
+   revision="95">
+<author>estrabd</author>
+<date>2007-02-16T22:06:13.761453Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>found bug in FA-&gt;predecessors, but not sure what it really is; need to test FA::as_directed, etc</msg>
+</logentry>
+<logentry
+   revision="94">
+<author>estrabd</author>
+<date>2007-02-16T19:59:22.555071Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>committing, but think I found a weird bug </msg>
+</logentry>
+<logentry
+   revision="93">
+<author>estrabd</author>
+<date>2007-02-15T17:54:42.144563Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/bin/fash</path>
+</paths>
+<msg>...</msg>
+</logentry>
+<logentry
+   revision="92">
+<author>estrabd</author>
+<date>2007-02-15T17:53:10.935008Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/MANIFEST</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/Makefile.PL</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk/perl-flat/bin</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/bin/fash</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/bin/util-put.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Symbol.pm</path>
+</paths>
+<msg>added /usr/bin/local/fash utility stub and added ExtUtils::MakeMaker run script to install it</msg>
+</logentry>
+<logentry
+   revision="91">
+<author>estrabd</author>
+<date>2007-02-15T05:56:19.040614Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>updated the help section</msg>
+</logentry>
+<logentry
+   revision="90">
+<author>estrabd</author>
+<date>2007-02-15T05:45:35.267630Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>pimped out the one liner interface!</msg>
+</logentry>
+<logentry
+   revision="89">
+<author>estrabd</author>
+<date>2007-02-14T22:53:19.868281Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>tet
+</msg>
+</logentry>
+<logentry
+   revision="88">
+<author>estrabd</author>
+<date>2007-02-14T16:01:27.675903Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>one liners looking good!</msg>
+</logentry>
+<logentry
+   revision="87">
+<author>estrabd</author>
+<date>2007-02-14T06:37:25.406493Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/MANIFEST</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib/FLAT/Regex/Transform</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/t/04-transform.t</path>
+</paths>
+<msg>added preliminary support for one liners such as: perl -MFLAT "pfa2dot('a&amp;b&amp;c') | dot -Tpng &gt; test.png"</msg>
+</logentry>
+<logentry
+   revision="86">
+<author>estrabd</author>
+<date>2007-02-13T15:20:36.211622Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/MANIFEST</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/lib/FLAT/Regex/Transform.pm</path>
+</paths>
+<msg>getting ready for transform</msg>
+</logentry>
+<logentry
+   revision="85">
+<author>estrabd</author>
+<date>2007-02-09T17:17:25.381727Z</date>
+<paths>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/dfa.gdl</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/dfa.png</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/mindfa.gdl</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/mindfa.png</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/nfa.gdl</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/dev-scripts/nfa.png</path>
+<path
+   text-mods="false"
+   kind="file"
+   action="D"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/output.png</path>
+<path
+   text-mods="false"
+   kind="file"
+   action="D"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pfa.gdl</path>
+<path
+   text-mods="false"
+   kind="file"
+   action="D"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pfa.png</path>
+</paths>
+<msg>cleaned up</msg>
+</logentry>
+<logentry
+   revision="84">
+<author>estrabd</author>
+<date>2007-02-09T17:16:21.749289Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/dfa.gdl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/dfa.png</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/mindfa.gdl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/mindfa.png</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/nfa.gdl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/dev-scripts/nfa.png</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/dev-scripts/output.png</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pfa.gdl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/dev-scripts/pfa.png</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/test.sh</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>added another pfa test</msg>
+</logentry>
+<logentry
+   revision="83">
+<author>estrabd</author>
+<date>2006-12-14T01:54:44.727398Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pre_compare.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/test.sh</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>added some tests</msg>
+</logentry>
+<logentry
+   revision="82">
+<author>estrabd</author>
+<date>2006-10-07T12:52:05.608074Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pre_compare.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>just in case I missed something</msg>
+</logentry>
+<logentry
+   revision="81">
+<author>estrabd</author>
+<date>2006-10-03T22:40:35.555406Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/test.sh</path>
+</paths>
+<msg>test commit ...</msg>
+</logentry>
+<logentry
+   revision="80">
+<author>estrabd</author>
+<date>2006-10-03T19:49:52.629629Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/03-pregex-pfa.t</path>
+</paths>
+<msg>started some basic testing</msg>
+</logentry>
+<logentry
+   revision="79">
+<author>estrabd</author>
+<date>2006-10-03T19:04:14.706435Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/dev-scripts/pre_compare.pl</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/pregex-stress.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>working on pre tests</msg>
+</logentry>
+<logentry
+   revision="78">
+<author>estrabd</author>
+<date>2006-10-03T13:41:20.293489Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/test.sh</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+</paths>
+<msg>PFA-&gt;as_nfa seems to work; added DFA-&gt;trim_sinks to make all throwaway transitions disappear from the minimal DFA; I need to write tests and start getting things ready for 1.0</msg>
+</logentry>
+<logentry
+   revision="77">
+<author>estrabd</author>
+<date>2006-10-03T06:58:18.986332Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/TODO</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/test.sh</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>testing PFA-&gt;as_nfa</msg>
+</logentry>
+<logentry
+   revision="76">
+<author>estrabd</author>
+<date>2006-09-28T05:13:47.368399Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/test.sh</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>I am pretty sure PRE-&gt;as_pfa is working as I want it too!!</msg>
+</logentry>
+<logentry
+   revision="75">
+<author>estrabd</author>
+<date>2006-09-28T01:07:57.692029Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>seemed like a good time; working on PRE-&gt;PFA to get a more compact PFA to make the PFA-&gt;NFA more efficient; also added FA-&gt;predecessors...gets the nodes leading up to a given node on a give symbol.  Very useful!</msg>
+</logentry>
+<logentry
+   revision="74">
+<author>estrabd</author>
+<date>2006-09-27T03:38:17.961008Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/TODO</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>added NFA-&gt;as_gdl, which outputs to the graph description language; sub routine basically identical to as_graphviz, but with different formatting</msg>
+</logentry>
+<logentry
+   revision="73">
+<author>estrabd</author>
+<date>2006-09-26T23:27:06.242602Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/regex-to-nfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>..</msg>
+</logentry>
+<logentry
+   revision="72">
+<author>estrabd</author>
+<date>2006-09-26T23:17:12.367028Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/PFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA.pm</path>
+</paths>
+<msg>fixed the spelling of complement</msg>
+</logentry>
+<logentry
+   revision="71">
+<author>estrabd</author>
+<date>2006-09-26T13:22:54.361971Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/TODO</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>added some psuedo code to PFA.pm for the PFA-&gt;NFA conversion; updated TODO</msg>
+</logentry>
+<logentry
+   revision="70">
+<author>estrabd</author>
+<date>2006-09-12T14:37:09.279688Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>...</msg>
+</logentry>
+<logentry
+   revision="69">
+<author>estrabd</author>
+<date>2006-08-08T03:36:18.612666Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>figure this svn thing out! (hopefully)..onward to PFS-&gt;NFA!</msg>
+</logentry>
+<logentry
+   revision="68">
+<author>estrabd</author>
+<date>2006-05-28T03:39:53.386794Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>I think PRE-&gt;as_pfa is complete</msg>
+</logentry>
+<logentry
+   revision="67">
+<author>estrabd</author>
+<date>2006-05-24T05:53:43.486058Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>made some adjustments - not there yet</msg>
+</logentry>
+<logentry
+   revision="66">
+<author>estrabd</author>
+<date>2006-05-05T18:55:09.911961Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+</paths>
+<msg>PRE-&gt;to_pfa is now at a state ready for testing!  Once I have verified that it is working correctly, I will move on to PFA-&gt;NFA</msg>
+</logentry>
+<logentry
+   revision="65">
+<author>estrabd</author>
+<date>2006-04-26T16:32:41.897536Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>testing notification</msg>
+</logentry>
+<logentry
+   revision="64">
+<author>estrabd</author>
+<date>2006-04-26T16:17:08.172241Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Symbol.pm</path>
+</paths>
+<msg>added file that might become base class for any symbols...</msg>
+</logentry>
+<logentry
+   revision="63">
+<author>estrabd</author>
+<date>2006-04-20T12:38:44.801541Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>test commit</msg>
+</logentry>
+<logentry
+   revision="62">
+<author>estrabd</author>
+<date>2006-03-22T03:39:19.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat-legacy/Makefile.PL</path>
+</paths>
+<msg>change minimum version of perl
+</msg>
+</logentry>
+<logentry
+   revision="61">
+<date>2006-03-15T03:06:52.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   copyfrom-path="/branches/estrabd"
+   copyfrom-rev="60">/tags/DEV</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   copyfrom-path="/branches/perl-flat/perl-flat"
+   copyfrom-rev="60">/tags/DEV/perl-flat</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create tag 'DEV'.</msg>
+</logentry>
+<logentry
+   revision="60">
+<author>estrabd</author>
+<date>2006-03-15T03:06:52.000000Z</date>
+<msg>initial import with new FLAT::Legacy::FA structure
+</msg>
+</logentry>
+<logentry
+   revision="59">
+<author>estrabd</author>
+<date>2006-03-15T03:06:51.000000Z</date>
+<msg>initial import with new FLAT::Legacy::FA structure
+</msg>
+</logentry>
+<logentry
+   revision="58">
+<date>2006-03-15T03:06:51.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   copyfrom-path="/trunk"
+   copyfrom-rev="57"
+   action="A">/branches/estrabd</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="D">/branches/estrabd/CVSROOT</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/estrabd/perl-flat</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create branch 'estrabd'.</msg>
+</logentry>
+<logentry
+   revision="57">
+<author>estrabd</author>
+<date>2006-03-15T03:06:51.000000Z</date>
+<paths>
+<path
+   kind="dir"
+   action="A"
+   prop-mods="false"
+   text-mods="false">/trunk/perl-flat-legacy</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/Changes</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/MANIFEST</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/META.yml</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/Makefile.PL</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/README</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat-legacy/dev-scripts</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/dev-scripts/pretest.pl</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat-legacy/lib</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat-legacy/lib/FLAT</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat-legacy/lib/FLAT/Legacy</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/DFA.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/NFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/PFA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/PRE.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA/RE.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/lib/FLAT/Legacy/FA.pm</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat-legacy/lib/FLAT.pm</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk/perl-flat-legacy/samples</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/bench.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/dfa2re.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/dfatest.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/make.tests.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/nfatest.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/pfa2nfa.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/pfatest.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/pre2dfa.stress.pl</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat-legacy/samples/pretest.pl</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat-legacy/samples/re2nfa.pl</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat-legacy/samples/re2nfa.stress.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/samples/retest.pl</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat-legacy/t</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/FLAT-FA-PRE.t</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/t/FLAT-FA-RE.t</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/t/FLAT.t</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat-legacy/t/input</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/t/input/dfa.1</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat-legacy/t/input/nfa.1</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/input/nfa.2</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat-legacy/t/input/nfa.3</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat-legacy/t/input/nfa.4</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat-legacy/t/input/nfa.5</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat-legacy/t/input/nfa.6</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/input/nfa.7</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/input/pfa.1</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/input/pfa.2</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat-legacy/t/input/pfa.3</path>
+</paths>
+<msg>Initial revision
+</msg>
+</logentry>
+<logentry
+   revision="56">
+<author>estrabd</author>
+<date>2006-03-12T05:03:50.000000Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+</paths>
+<msg>getting things down slowly
+</msg>
+</logentry>
+<logentry
+   revision="55">
+<author>estrabd</author>
+<date>2006-03-10T06:00:24.000000Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+</paths>
+<msg>made some more tweaks and trying to figure things out - ran make tests to ensure I did not screw anything up that was already working
+</msg>
+</logentry>
+<logentry
+   revision="54">
+<author>estrabd</author>
+<date>2006-03-10T04:04:33.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/dev-scripts/pregex-to-pfa.pl</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="file"
+   action="D">/trunk/perl-flat/lib/FLAT/Regex/WithNegations.pm</path>
+</paths>
+<msg>saving tonight's minor work :)
+</msg>
+</logentry>
+<logentry
+   revision="53">
+<author>blokhead</author>
+<date>2006-03-03T15:17:44.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/t/01-regex.t</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/t/02-fa.t</path>
+</paths>
+<msg>added preliminary FLAT::FA test suite
+</msg>
+</logentry>
+<logentry
+   revision="52">
+<author>blokhead</author>
+<date>2006-03-01T18:29:22.000000Z</date>
+<paths>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/MANIFEST</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>DFA complement, intersection (still needs work)
+NFA extend alphabet
+</msg>
+</logentry>
+<logentry
+   revision="51">
+<author>estrabd</author>
+<date>2006-03-01T16:25:26.000000Z</date>
+<paths>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat/dev-scripts/profile.sh</path>
+</paths>
+<msg>added wrapper script for profiler - usage: sh profile.sh profilethis.pl arg1 agr2 argN
+</msg>
+</logentry>
+<logentry
+   revision="50">
+<author>blokhead</author>
+<date>2006-02-24T18:42:09.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/01-regex.t</path>
+</paths>
+<msg>- updates to regex ops (especially handling extended [] characters)
+- added more regex tests
+- anchoring option to as_perl_regex
+- "contains" method for regexes (just pass off regex matching to perl ;))
+</msg>
+</logentry>
+<logentry
+   revision="49">
+<author>estrabd</author>
+<date>2006-02-24T15:41:03.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithNegations.pm</path>
+</paths>
+<msg>moving forward in reverse on this PFA.pm thing :)
+</msg>
+</logentry>
+<logentry
+   revision="48">
+<author>estrabd</author>
+<date>2006-02-24T07:35:35.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/pregex-stress.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/regex-stress.pl</path>
+</paths>
+<msg>playing with some dev-scripts
+</msg>
+</logentry>
+<logentry
+   revision="47">
+<author>estrabd</author>
+<date>2006-02-24T06:49:42.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/PFA.pm</path>
+</paths>
+<msg>added PFA.pm place holder, generating more cvs spam :)
+</msg>
+</logentry>
+<logentry
+   revision="46">
+<author>blokhead</author>
+<date>2006-02-24T06:20:26.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/MANIFEST</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>POD stubs for all public modules, with all method definitions
+
+updated Regex.pm for clearer handling of "[foo]" extended characters..
+  this really needs to be made uniform across all modules, so we always
+  handle input strings, alphabets the same way
+</msg>
+</logentry>
+<logentry
+   revision="45">
+<author>blokhead</author>
+<date>2006-02-24T01:04:52.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>added NFA-&gt;contains, NFA-&gt;trace methods. now we can actually *use* these
+  regular languages..
+</msg>
+</logentry>
+<logentry
+   revision="44">
+<author>blokhead</author>
+<date>2006-02-24T00:12:39.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>initial POD for FLAT.pm -- mostly to test the cvs commit email spammer
+</msg>
+</logentry>
+<logentry
+   revision="43">
+<author>estrabd</author>
+<date>2006-02-23T20:43:19.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+</paths>
+<msg>yet another testwq
+</msg>
+</logentry>
+<logentry
+   revision="42">
+<author>estrabd</author>
+<date>2006-02-23T20:39:36.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+</paths>
+<msg>testing nofification
+</msg>
+</logentry>
+<logentry
+   revision="41">
+<author>estrabd</author>
+<date>2006-02-23T20:22:37.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/CVSROOT/loginfo</path>
+</paths>
+<msg>modified send to info email addy
+</msg>
+</logentry>
+<logentry
+   revision="40">
+<author>estrabd</author>
+<date>2006-02-23T19:55:02.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+</paths>
+<msg>testing commit notification setup
+</msg>
+</logentry>
+<logentry
+   revision="39">
+<author>estrabd</author>
+<date>2006-02-23T19:54:07.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/CVSROOT/loginfo</path>
+</paths>
+<msg>modified loginfo so commit messages go to the perl-flat-devel
+</msg>
+</logentry>
+<logentry
+   revision="38">
+<author>estrabd</author>
+<date>2006-02-23T19:46:12.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>Put as_summary into FA since it is generic to NFA and DFA - might need to be overided in PFA.pm; adjusted sub so that it handles multiple start states (for nfa) and also lists the alphabet of symbols
+</msg>
+</logentry>
+<logentry
+   revision="37">
+<author>blokhead</author>
+<date>2006-02-23T14:26:02.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/TODO</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>fallbacks in FLAT.pm revised
+
+god help me if I overwrite your last commits - I hate CVS
+</msg>
+</logentry>
+<logentry
+   revision="36">
+<author>estrabd</author>
+<date>2006-02-22T23:24:31.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/regex-to-nfa.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>add NFA-&gt;as_summary both as a way to play with the code and to give me a familiar way to look at what is going on in the NFA - may put one in DFA.pm, though it is the same so it might want to go into FA.pm..
+</msg>
+</logentry>
+<logentry
+   revision="35">
+<author>blokhead</author>
+<date>2006-02-22T04:58:23.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/DFA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/Transition.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>transitions are now multi-valued FLAT::Transition objects (duh for not doing
+  this sooner)
+
+preliminary NFA-&gt;DFA construction
+
+preliminary DFA minimization
+
+minor fixes to NFA::is_finite/is_empty (reversed some logic)
+</msg>
+</logentry>
+<logentry
+   revision="34">
+<author>blokhead</author>
+<date>2006-02-22T00:30:29.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+</paths>
+<msg>improved disjoint union of FAs (via _swallow), instead of manually
+  adding all transitions
+
+FA::_transpose and NFA::reverse
+
+NFA::is_finite, NFA::is_empty
+</msg>
+</logentry>
+<logentry
+   revision="33">
+<author>blokhead</author>
+<date>2006-02-21T20:43:09.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/TODO</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/regex-to-nfa.pl</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/lib/FLAT/NFA.pm</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+</paths>
+<msg>removed labelled states from FA, now states are always numbers 0..N
+
+preliminary NFA union/concat/kleene AND graphviz output
+
+preliminary regex-&gt;nfa conversion, including sexy wrapper in dev-scripts/
+</msg>
+</logentry>
+<logentry
+   revision="32">
+<author>blokhead</author>
+<date>2006-02-21T19:35:01.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+</paths>
+<msg>minor updates, about to remove state labels
+</msg>
+</logentry>
+<logentry
+   revision="31">
+<author>blokhead</author>
+<date>2005-11-20T02:03:12.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+</paths>
+<msg>minor changes
+</msg>
+</logentry>
+<logentry
+   revision="30">
+<author>blokhead</author>
+<date>2005-11-20T00:15:37.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/FA.pm</path>
+</paths>
+<msg>initial version FA.pm
+</msg>
+</logentry>
+<logentry
+   revision="29">
+<author>estrabd</author>
+<date>2005-11-16T04:02:30.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="true"
+   kind="file"
+   action="M">/trunk/perl-flat/dev-scripts/regex-stress.pl</path>
+</paths>
+<msg>error with negation or my fault?
+</msg>
+</logentry>
+<logentry
+   revision="28">
+<author>estrabd</author>
+<date>2005-11-16T03:47:37.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/dev-scripts/regex-stress.pl</path>
+</paths>
+<msg>*** empty log message ***
+</msg>
+</logentry>
+<logentry
+   revision="27">
+<author>blokhead</author>
+<date>2005-11-15T20:08:08.000000Z</date>
+<paths>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/dev-scripts/bloktest.pl</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+</paths>
+<msg>Regex::as_perl_regex
+</msg>
+</logentry>
+<logentry
+   revision="26">
+<author>blokhead</author>
+<date>2005-11-15T17:09:32.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+</paths>
+<msg>minor changes
+</msg>
+</logentry>
+<logentry
+   revision="25">
+<author>estrabd</author>
+<date>2005-11-15T16:29:12.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/dev-scripts</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/README</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/dev-scripts/bdetest.pl</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/Regex/WithExtraOps.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithNegations.pm</path>
+</paths>
+<msg>Trying to figure things out and adding shuffle operator.  Added dev-scripts for development time testing.  Added file lib/FLAT/Regex/WithExtraOps.pm as a common location for all extended RE operations.
+</msg>
+</logentry>
+<logentry
+   revision="24">
+<author>blokhead</author>
+<date>2005-11-14T18:05:03.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/MANIFEST</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat/Makefile.PL</path>
+</paths>
+<msg>I still hate CVS...
+</msg>
+</logentry>
+<logentry
+   revision="23">
+<author>blokhead</author>
+<date>2005-11-14T18:02:43.000000Z</date>
+<paths>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/FLAT</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/FLAT.pm</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="D"
+   prop-mods="false">/trunk/perl-flat/lib/blokhead</path>
+<path
+   text-mods="false"
+   kind="file"
+   action="D"
+   prop-mods="false">/trunk/perl-flat/lib/cvs-commands</path>
+</paths>
+<msg>I hate CVS
+</msg>
+</logentry>
+<logentry
+   revision="22">
+<author>blokhead</author>
+<date>2005-11-14T17:53:15.000000Z</date>
+<msg>CVS can bite me 
+
+</msg>
+</logentry>
+<logentry
+   revision="21">
+<date>2005-11-14T17:53:14.000000Z</date>
+<paths>
+<path
+   copyfrom-path="/trunk/perl-flat/lib/FLAT"
+   copyfrom-rev="20"
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/perl-flat/perl-flat/lib/FLAT</path>
+<path
+   text-mods="false"
+   kind="file"
+   copyfrom-path="/trunk/perl-flat/lib/FLAT.pm"
+   copyfrom-rev="20"
+   action="A"
+   prop-mods="false">/branches/perl-flat/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create branch 'perl-flat'.</msg>
+</logentry>
+<logentry
+   revision="20">
+<author>blokhead</author>
+<date>2005-11-14T17:53:14.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib/FLAT</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib/FLAT/Regex</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/trunk/perl-flat/lib/FLAT/Regex/Op.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/Parser.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex/WithNegations.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT/Regex.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/FLAT.pm</path>
+</paths>
+<msg>Initial revision
+</msg>
+</logentry>
+<logentry
+   revision="19">
+<author>blokhead</author>
+<date>2005-11-14T17:50:14.000000Z</date>
+<msg>trying to move directories, but I suck with CVS
+
+</msg>
+</logentry>
+<logentry
+   revision="18">
+<date>2005-11-14T17:50:14.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   copyfrom-path="/trunk/perl-flat/lib/blokhead/lib"
+   copyfrom-rev="17"
+   action="A">/branches/perl-flat/perl-flat/lib/blokhead/lib</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   copyfrom-path="/trunk/perl-flat/lib/blokhead/t"
+   copyfrom-rev="17"
+   action="A">/branches/perl-flat/perl-flat/lib/blokhead/t</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create branch 'perl-flat'.</msg>
+</logentry>
+<logentry
+   revision="17">
+<author>blokhead</author>
+<date>2005-11-14T17:50:13.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib/blokhead</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/blokhead/MANIFEST</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/lib/blokhead/Makefile.PL</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/lib/blokhead/lib</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/lib/blokhead/lib/FLAT</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/perl-flat/lib/blokhead/lib/FLAT/Regex</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/perl-flat/lib/blokhead/lib/FLAT/Regex/Op.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/blokhead/lib/FLAT/Regex/Parser.pm</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/lib/blokhead/lib/FLAT/Regex/WithNegations.pm</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/lib/blokhead/lib/FLAT/Regex.pm</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/perl-flat/lib/blokhead/lib/FLAT.pm</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/lib/blokhead/t</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/blokhead/t/01-regex.t</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/blokhead/t/foo</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/blokhead/t/tmon.out</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/lib/cvs-commands</path>
+</paths>
+<msg>Initial revision
+</msg>
+</logentry>
+<logentry
+   revision="16">
+<author>blokhead</author>
+<date>2005-11-14T17:50:12.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/perl-flat/perl-flat/lib</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/perl-flat/perl-flat/lib/blokhead</path>
+<path
+   kind="file"
+   action="A"
+   prop-mods="true"
+   text-mods="true">/branches/perl-flat/perl-flat/lib/blokhead/MANIFEST</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/branches/perl-flat/perl-flat/lib/blokhead/Makefile.PL</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/branches/perl-flat/perl-flat/lib/cvs-commands</path>
+</paths>
+<msg>trying to move directories, but I suck with CVS
+
+</msg>
+</logentry>
+<logentry
+   revision="15">
+<author>blokhead</author>
+<date>2005-11-13T17:56:30.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/WithNegations.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex.pm</path>
+</paths>
+<msg>Regex::WithNegations example
+</msg>
+</logentry>
+<logentry
+   revision="14">
+<author>blokhead</author>
+<date>2005-11-12T23:08:56.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Parser.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/FLAT/Regex.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/FLAT.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/t/01-regex.t</path>
+</paths>
+<msg>FLAT.pm skeleton, fallback methods
+</msg>
+</logentry>
+<logentry
+   revision="13">
+<author>blokhead</author>
+<date>2005-11-12T19:28:00.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Parser.pm</path>
+<path
+   kind="file"
+   action="M"
+   prop-mods="false"
+   text-mods="true">/trunk/perl-flat/FLAT/Regex.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/01-regex.t</path>
+</paths>
+<msg>Regex: is_finite, is_empty, has_nonempty_string (&amp; tests)
+</msg>
+</logentry>
+<logentry
+   revision="12">
+<author>blokhead</author>
+<date>2005-11-12T18:43:17.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Parser.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex.pm</path>
+</paths>
+<msg>extensible regex parser
+</msg>
+</logentry>
+<logentry
+   revision="11">
+<author>blokhead</author>
+<date>2005-11-12T18:30:26.000000Z</date>
+<paths>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Op.pm</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="M"
+   prop-mods="false">/trunk/perl-flat/FLAT/Regex.pm</path>
+</paths>
+<msg>troubles with CVS
+</msg>
+</logentry>
+<logentry
+   revision="10">
+<author>blokhead</author>
+<date>2005-11-12T15:38:02.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/FLAT/Regex</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex/Op.pm</path>
+<path
+   action="M"
+   prop-mods="false"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex.pm</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT.pm</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat/t</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/t/01-regex.t</path>
+</paths>
+<msg>factor out regex ops, add a few tests
+</msg>
+</logentry>
+<logentry
+   revision="9">
+<author>blokhead</author>
+<date>2005-11-11T03:00:41.000000Z</date>
+<msg>import module
+</msg>
+</logentry>
+<logentry
+   revision="8">
+<date>2005-11-11T03:00:41.000000Z</date>
+<paths>
+<path
+   copyfrom-path="/trunk/perl-flat/FLAT"
+   copyfrom-rev="7"
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/perl-flat/perl-flat/FLAT</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create branch 'perl-flat'.</msg>
+</logentry>
+<logentry
+   revision="7">
+<author>blokhead</author>
+<date>2005-11-11T02:32:59.000000Z</date>
+<paths>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk/perl-flat/FLAT</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/FLAT/Regex.pm</path>
+<path
+   action="D"
+   prop-mods="false"
+   text-mods="false"
+   kind="file">/trunk/perl-flat/cvs-commands</path>
+</paths>
+<msg>initial version FLAT/Regex.pm
+</msg>
+</logentry>
+<logentry
+   revision="6">
+<author>blokhead</author>
+<date>2005-11-11T02:28:12.000000Z</date>
+<msg>imported module
+
+</msg>
+</logentry>
+<logentry
+   revision="5">
+<date>2005-11-11T02:28:12.000000Z</date>
+<paths>
+<path
+   copyfrom-path="/trunk"
+   copyfrom-rev="4"
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/branches/perl-flat</path>
+<path
+   text-mods="false"
+   kind="dir"
+   action="D"
+   prop-mods="false">/branches/perl-flat/CVSROOT</path>
+</paths>
+<msg>This commit was manufactured by cvs2svn to create branch 'perl-flat'.</msg>
+</logentry>
+<logentry
+   revision="4">
+<author>blokhead</author>
+<date>2005-11-11T02:28:11.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/trunk/perl-flat</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/perl-flat/cvs-commands</path>
+</paths>
+<msg>Initial revision
+</msg>
+</logentry>
+<logentry
+   revision="3">
+<author>root</author>
+<date>2005-11-09T17:10:56.000000Z</date>
+<paths>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/CVSROOT/checkoutlist</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/CVSROOT/commitinfo</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/config</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/cvswrappers</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/editinfo</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/modules</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/notify</path>
+<path
+   text-mods="true"
+   kind="file"
+   action="A"
+   prop-mods="true">/trunk/CVSROOT/rcsinfo</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/CVSROOT/taginfo</path>
+<path
+   prop-mods="true"
+   text-mods="true"
+   kind="file"
+   action="A">/trunk/CVSROOT/verifymsg</path>
+</paths>
+<msg>initial checkin</msg>
+</logentry>
+<logentry
+   revision="2">
+<author>root</author>
+<date>2005-11-09T17:10:56.000000Z</date>
+<paths>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/trunk/CVSROOT</path>
+<path
+   action="A"
+   prop-mods="true"
+   text-mods="true"
+   kind="file">/trunk/CVSROOT/loginfo</path>
+</paths>
+<msg>initial checkin
+</msg>
+</logentry>
+<logentry
+   revision="1">
+<date>2005-11-09T17:10:56.000000Z</date>
+<paths>
+<path
+   text-mods="false"
+   kind="dir"
+   action="A"
+   prop-mods="false">/branches</path>
+<path
+   action="A"
+   prop-mods="false"
+   text-mods="false"
+   kind="dir">/tags</path>
+<path
+   prop-mods="false"
+   text-mods="false"
+   kind="dir"
+   action="A">/trunk</path>
+</paths>
+<msg>New repository initialized by cvs2svn.</msg>
+</logentry>
+</log>

@@ -1,0 +1,5 @@
+{
+  "git --version": "git version 2.43.0",
+  "git svn --version": "git-svn version 2.43.0 (svn 1.14.3)",
+  "svn --version --quiet": "1.14.3"
+}
