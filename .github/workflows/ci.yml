@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  perl:
+    name: Perl ${{ matrix.perl }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        perl: ['5.32', '5.38', '5.40']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: XML build dependencies
+        run: sudo apt-get update && sudo apt-get install -y libxml2-dev
+      - uses: shogo82148/actions-setup-perl@66c3bf4d723291e6e93e621800f8364199de0563 # v1
+        with:
+          perl-version: ${{ matrix.perl }}
+      - name: Perl dependencies
+        run: cpanm --notest Parse::RecDescent XML::LibXML
+      - name: Complete FLaT suite
+        run: prove -lr t
+
+  distribution:
+    name: Distribution and installed commands
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Distribution dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdist-zilla-perl libdist-zilla-plugin-makemaker-awesome-perl libparse-recdescent-perl libxml-libxml-perl perl-doc bash-completion
+      - name: Test generated distribution
+        run: dzil test
+      - name: Build and check staged installation
+        run: bash ci/check-installed.sh
+
+  sub-genius:
+    name: Sub::Genius compatibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: oodler577/p5-Sub-Genius
+          ref: a63042dcad686b1739e51e36fa2624ad4b7c66b9 # 0.314006
+          path: compatibility/sub-genius
+          persist-credentials: false
+      - name: Compatibility dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cpanminus libparse-recdescent-perl libxml-libxml-perl libtest-exception-perl
+          cpanm --local-lib-contained "$RUNNER_TEMP/sub-genius-deps" --notest --mirror https://cpan.metacpan.org --mirror-only Util::H2O::More
+      - name: Test downstream against this checkout
+        run: |
+          export PERL5LIB="$GITHUB_WORKSPACE/lib:$RUNNER_TEMP/sub-genius-deps/lib/perl5"
+          perl -MFLAT -e 'print "Testing FLAT from $INC{\"FLAT.pm\"}\n"'
+          cd compatibility/sub-genius
+          prove -lr t

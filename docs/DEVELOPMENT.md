@@ -59,3 +59,17 @@ Dist::Zilla or the plugin. `make install FASH_COMPLETION_DIR=none` opts out; an
 absolute FASH_COMPLETION_DIR overrides the default inside the staging root.
 Older bash-completion loaders may require an explicit directory override or
 `source <(fash completion bash)`. See `perldoc perlfash`. No shell RC is edited.
+
+## Continuous integration
+
+GitHub Actions runs on pushes, pull requests, and manual dispatch. Source tests
+run on Perl 5.32, 5.38 and 5.40. A distribution job uses Dist::Zilla and runs
+`bash ci/check-installed.sh` to check staged installation, both perldoc manuals,
+CLI witnesses, JFLAP layout, Bash completion, packlist paths and installation
+overrides. The script writes only to temporary directories.
+
+The downstream job tests Sub::Genius 0.314006 at commit
+`a63042dcad686b1739e51e36fa2624ad4b7c66b9` against this checkout's FLaT library.
+Pinning the consumer keeps failures reproducible; update the ref deliberately
+when adding coverage for a newer Sub::Genius release. These jobs do not publish
+to CPAN or certify JFLAP GUI compatibility.
