@@ -17,8 +17,9 @@ one-second precision. Synthetic `<username>@<SVN-UUID>` Git email addresses
 are git-svn identifiers, not verified personal email addresses. No guessed
 identity map was applied. CVS-to-SVN manufactured branch/tag commits are kept.
 
-`validation.json` lists the six revisions without separate Git commits and
-records comparisons of every file at all four Git heads with restored SVN.
+`validation.json` lists the six empty SVN revisions without separate Git commits and
+records identical complete file sets and byte comparisons at all four Git heads
+against restored SVN.
 The full SVN dump preserves revision properties, fractional timestamps, empty
 directories, copy paths and other data Git does not represent. It was loaded
 into a fresh SVN repository; youngest revision and UUID matched. The bundle was

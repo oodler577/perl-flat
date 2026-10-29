@@ -7,28 +7,32 @@
       "commit": "d792a1426b051670aeb9f797db0ee4fc22113027",
       "svn_path": "trunk",
       "revision": 120,
-      "files_verified": 82
+      "files_verified": 82,
+      "complete_file_set_match": true
     },
     {
       "ref": "refs/heads/archive/sourceforge/branches/estrabd",
       "commit": "9276b12de4e6db0dfe075d91e6b198c02116e732",
       "svn_path": "branches/estrabd",
       "revision": 58,
-      "files_verified": 39
+      "files_verified": 39,
+      "complete_file_set_match": true
     },
     {
       "ref": "refs/heads/archive/sourceforge/branches/perl-flat",
       "commit": "9b4ca3df601eefab0cb5078162a946ebcdfb9e29",
       "svn_path": "branches/perl-flat",
       "revision": 21,
-      "files_verified": 18
+      "files_verified": 18,
+      "complete_file_set_match": true
     },
     {
       "ref": "refs/tags/archive/sourceforge/DEV",
       "commit": "c180183d6c64738d5f4e3814c2019c2b6d9ebbaa",
       "svn_path": "tags/DEV",
       "revision": 61,
-      "files_verified": 57
+      "files_verified": 57,
+      "complete_file_set_match": true
     }
   ],
   "downloads": [
@@ -53,7 +57,7 @@
   ],
   "limitations": [
     "Git dates have second precision; raw SVN dump retains fractional seconds and original revision properties.",
-    "Six revisions have no separate git-svn commit: see validation.json. All 120 SVN revisions remain in the dump.",
+    "Six SVN revisions have no changed paths and produce no separate git-svn commit: see validation.json. All 120 revisions remain in the dump.",
     "Git omits empty directories and SVN properties; raw dump is authoritative.",
     "This preserves history available in the CVS-to-SVN repository, not an independently recovered original CVS RCS database."
   ]

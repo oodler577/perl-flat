@@ -1,0 +1,720 @@
+{
+  "source_commit": "d792a1426b051670aeb9f797db0ee4fc22113027",
+  "semantics": "Historical expressions only. Old implicit epsilon and shuffle precedence require review. Old removed-state counts are not imported as correctness expectations.",
+  "cases": [
+    {
+      "kind": "RE",
+      "index": 1,
+      "expression": "1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 2,
+      "expression": "1|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 3,
+      "expression": "0*0|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 4,
+      "expression": "00*0*1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 5,
+      "expression": "000|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 6,
+      "expression": "100*1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 7,
+      "expression": "10*11",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 8,
+      "expression": "1110*11*10",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 9,
+      "expression": "0010*1001*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 10,
+      "expression": "111011*01",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 11,
+      "expression": "00|1*0|0010",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 12,
+      "expression": "01001|11(1|)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 13,
+      "expression": "11*0*110|00*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 14,
+      "expression": "0*11*1100*0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 15,
+      "expression": "101*11|1*0*1",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 16,
+      "expression": "10|0*1100*1101|1100|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 17,
+      "expression": "0100|100001001|0|1|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 18,
+      "expression": "01001|10101001111",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 19,
+      "expression": "1*1*000|1011110*1011",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 20,
+      "expression": "100100*0|011*11(1*0)0|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 21,
+      "expression": "11011(10*11|0100011*)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 22,
+      "expression": "1*0*011|0|1101110|111",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 23,
+      "expression": "1(101|1001|0|1000|111)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 24,
+      "expression": "11011*0110101110001000|000100*10100",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 25,
+      "expression": "01(11*11*0*01|1*1|0)010101010|000001|11100|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 26,
+      "expression": "10(0*00*0)10001(10*01101100)00*0*11(1)10100",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 27,
+      "expression": "1011|010111|00*0000110110110*0101110",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 28,
+      "expression": "0*11*0*000*1*0|10|11*11101010010|11111110*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 29,
+      "expression": "1*1010100111110|11111(0*110000110|111)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 30,
+      "expression": "0010000000|000110101|00|1|11111|0*0011",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 31,
+      "expression": "10*0010100|10100*010110*01011*0|010011*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 32,
+      "expression": "01011110*0*101|110100100|1*100010*111*1",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 33,
+      "expression": "1*0100011(111|1|10*0000110*01111101010)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 34,
+      "expression": "1|0011*110*11011|00(1(11|00110*110*0*010*0*01*11)001*01101)0100001000*01*1101101|01|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 35,
+      "expression": "1|001|1(1)1*0|0(101|01000|01010111|11(0011|0)0011)00|1(0110*0)01|0|0(01101|000011|0|1*000)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 36,
+      "expression": "0101000*10101|100(1101|1|0)0|1111101010111*01*1011000011001010*0100010|001|0*",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 37,
+      "expression": "1111*1*10(00|0100*01011011|1|110*010|11*000100010*00(1)1*1(0000(1|0|1010)11101|01(000)))",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 38,
+      "expression": "1(0(11*1*00|0011)01*1111001*10)01(010111(001101011001|0100110|10)1*01011|001*01(11))",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 39,
+      "expression": "111|000*010|0(0*00*0|001001111|111111010010)0(1*00)010|011010101001*1111000*011",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 40,
+      "expression": "11|1100011000*10(1110(010111|1001010001*0*110*1|110|01*000110100*0(100*11(010*00))))",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 41,
+      "expression": "10*00|111110(0*010001001100|1*01111|0|00*0001(101010(000)101)111001|0111001*10*0)",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 42,
+      "expression": "11100*00000*1001*0|101|0111(0)000|101110011011101|11|0110010001110|001|1|0|111",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "RE",
+      "index": 43,
+      "expression": "1*11000000(01000001000(10)1(01*01(10110*001*0110111001|10010|000010111110*11*)))",
+      "source": "perl-flat-legacy/t/FLAT-FA-RE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 1,
+      "expression": "1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 2,
+      "expression": "0&1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 3,
+      "expression": "0|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 4,
+      "expression": "10*1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 5,
+      "expression": "1&1*00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 6,
+      "expression": "111|1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 7,
+      "expression": "1|1000|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 8,
+      "expression": "00&100&1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 9,
+      "expression": "10&11*00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 10,
+      "expression": "1*1110&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 11,
+      "expression": "1*10&100*0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 12,
+      "expression": "01110|00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 13,
+      "expression": "0&1&10&10&01&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 14,
+      "expression": "0|10110|10",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 15,
+      "expression": "001*1001|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 16,
+      "expression": "0&000(11|0)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 17,
+      "expression": "100&11|00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 18,
+      "expression": "00101*00*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 19,
+      "expression": "0*11(11*0&1())",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 20,
+      "expression": "0110*00*1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 21,
+      "expression": "00000*1|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 22,
+      "expression": "1000|111",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 23,
+      "expression": "1(100(1*00))",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 24,
+      "expression": "01*11|010&1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 25,
+      "expression": "0110*10(1)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 26,
+      "expression": "0&01|1100",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 27,
+      "expression": "10|10&10(0)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 28,
+      "expression": "1110|011",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 29,
+      "expression": "00|0|1*100*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 30,
+      "expression": "1(101&011)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 31,
+      "expression": "0010001*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 32,
+      "expression": "0&0|111|10",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 33,
+      "expression": "00|00&110",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 34,
+      "expression": "00|1110|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 35,
+      "expression": "010011*1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 36,
+      "expression": "01&011(01)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 37,
+      "expression": "0111|0*1(1)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 38,
+      "expression": "01&100|10",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 39,
+      "expression": "11000|00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 40,
+      "expression": "11|0110(1*)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 41,
+      "expression": "1*01|010&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 42,
+      "expression": "0&001&00|1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 43,
+      "expression": "010&11(1|0)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 44,
+      "expression": "1*011010&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 45,
+      "expression": "1&1&00101",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 46,
+      "expression": "0010|011",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 47,
+      "expression": "1110001|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 48,
+      "expression": "001101(0*)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 49,
+      "expression": "000|1*101",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 50,
+      "expression": "11&01|000*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 51,
+      "expression": "0|01&1*110",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 52,
+      "expression": "111001|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 53,
+      "expression": "00&0&0010*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 54,
+      "expression": "110*1011",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 55,
+      "expression": "0&1100|10",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 56,
+      "expression": "1*0|10011&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 57,
+      "expression": "1|010&000",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 58,
+      "expression": "1*00&10|10",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 59,
+      "expression": "0001&0(10)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 60,
+      "expression": "01&1&01|0&1",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 61,
+      "expression": "0(0*0*1000)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 62,
+      "expression": "111*1&0*01",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 63,
+      "expression": "00*0|010&1*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 64,
+      "expression": "011&1000",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 65,
+      "expression": "01100&00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 66,
+      "expression": "1|0(00|011)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 67,
+      "expression": "10|0(1|11&0)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 68,
+      "expression": "10010&01()",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 69,
+      "expression": "1010&11*0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 70,
+      "expression": "01001*00",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 71,
+      "expression": "1*00&10&01|0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 72,
+      "expression": "1*00*1|00*0&0",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 73,
+      "expression": "0000|0(10)",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 74,
+      "expression": "010|10&01",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 75,
+      "expression": "1000110*",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    },
+    {
+      "kind": "PRE",
+      "index": 76,
+      "expression": "110*1111",
+      "source": "perl-flat-legacy/t/FLAT-FA-PRE.t"
+    }
+  ]
+}
