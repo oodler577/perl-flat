@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 use Test::More;
-use Storable qw(freeze);
+use Storable qw(dclone);
 use FLAT;
 use FLAT::Regex;
 use FLAT::NFA;
@@ -43,16 +43,17 @@ is_deeply($token->subset_counterexample(dfa('#'))->{tokens}, ['open'], 'multi-ch
 my $unicode = FLAT::NFA->singleton('猫')->as_dfa;
 is_deeply($unicode->equivalence_counterexample(dfa('#'))->{tokens}, ['猫'], 'Unicode token stays intact');
 my $a=dfa('a'); my $b=dfa('b');
-my ($before_a,$before_b) = (freeze($a),freeze($b));
+# Compare semantic values: stringification may alter Perl scalar flags.
+my ($before_a,$before_b) = (dclone($a),dclone($b));
 $a->equivalence_counterexample($b);
-is(freeze($a),$before_a,'left input unchanged'); is(freeze($b),$before_b,'right input unchanged');
+is_deeply($a,$before_a,'left input unchanged'); is_deeply($b,$before_b,'right input unchanged');
 # Check the layerer on cycles, unreachable states and synthetic token states.
 my $nfa=FLAT::NFA->singleton('ab');
 my $dead=$nfa->add_states(1);
 $nfa->{STATES}[0]{jflap_x}=999;
-my $before=freeze($nfa);
+my $before=dclone($nfa);
 my $xml=$nfa->as_jflap(expand_labels=>1,layout=>'layered');
-is(freeze($nfa),$before,'layout does not mutate input');
+is_deeply($nfa,$before,'layout does not mutate input');
 my $doc=XML::LibXML->load_xml(string=>$xml);
 is($doc->findvalue('//state[@id="0"]/x'),100,'initial state in first column');
 my %positions;
