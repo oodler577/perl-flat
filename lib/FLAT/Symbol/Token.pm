@@ -78,4 +78,38 @@ matching keys, not payloads or display labels. No reference persistence or
 reconnection protocol is provided here. Arbitrary Perl references must be
 wrapped explicitly; passing a bare hash/array/code reference as a label fails.
 
+=head1 MUTATING PAYLOAD CONTENTS
+
+Accessors are ordinary read-only methods, not C<:lvalue> methods. Dereferencing
+the returned payload provides normal Perl assignment and update syntax:
+
+  $symbol->payload->{completed}++;
+  $symbol->payload->{status} = 'finished';
+  push @{$symbol->payload->{results}}, $result;
+
+For an array or scalar reference payload, respectively:
+
+  push @{$array_symbol->payload}, $result;
+  ${$scalar_symbol->payload} = 'finished';
+
+Choose and initialize the payload shape when constructing the token. An absent
+payload is undef; it is not an automatically allocated hash. To replace an
+application value while retaining the fixed binding, put it in a container:
+
+  my $symbol = FLAT::Symbol::Token->new(
+      key => 'job', payload => {value => undef});
+  $symbol->payload->{value} = $new_value;
+
+Assignments such as C<$symbol-E<gt>key = 'other'>,
+C<$symbol-E<gt>label = 'Other'> and C<$symbol-E<gt>payload = $new_reference>
+are unsupported. Changes to identity, label or payload binding require a new
+token, subject to the existing same-key binding conflict checks.
+
+Payload edits are visible through every graph/AST retaining that token,
+including DFA-to-RE conversion and conversion back to an automaton. They do
+not change the recognized language. This is shared application data within
+one process, not per-run or per-occurrence execution state. FLaT does not run
+callbacks or synchronize edits; a future workflow runner needs its own context
+and concurrency contract.
+
 =cut

@@ -308,6 +308,19 @@ outside this implementation.
   $dfa->symbol('compile')->payload->{name} = 'compile again';
   # $data now contains the changed name: the reference was retained.
 
+Payload contents support ordinary Perl updates through the returned reference:
+
+  $compile->payload->{completed} = 1;
+  $dfa->symbol('compile')->payload->{completed}++;
+
+The same update is visible through a converted formal RE and its reconstructed
+automaton; matching is unchanged. C<key>, C<label> and C<payload> are ordinary
+read-only accessors, not C<:lvalue> methods: the reference binding stays fixed.
+Initialize a container payload when a value needs replacement. See
+L<FLAT::Symbol::Token/MUTATING PAYLOAD CONTENTS> for hash, array and scalar
+examples. Shared payload data is not per-run execution context, and updates
+are not synchronized across workers.
+
 Tokens are optional. Matching uses the immutable key, never the display label
 or payload. Scalar tokens use one immutable scalar for key and label and have
 no payload. Bare strings require no explicit registry and remain the default.

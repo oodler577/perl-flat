@@ -1,4 +1,6 @@
 Development (unreleased)
+    - Document reference-based payload updates and fixed accessor bindings;
+      test shared mutation through PFA/NFA/DFA/RE conversions without language changes.
     - Add exact DFA-to-formal-RE GNFA state elimination, NFA/PFA adapters,
       token-preserving ASTs, fash to-re (including JFLAP), and round-trip tests.
     - Archive SourceForge SVN history, branches/tag, initial release and recovery
